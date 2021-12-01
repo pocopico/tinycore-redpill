@@ -216,6 +216,8 @@ Actions: build, ext, auto, run, clean
 
 - clean:    Removes all cached files and starts over
 
+- update:   Checks github repo for latest version of rploader 
+
 Available platform versions:
 ----------------------------------------------------------------------------------------
 $(getPlatforms)

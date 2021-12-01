@@ -377,30 +377,32 @@ loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | c
 	if [ -d localdiskp1 ] ; 
 	then 
 	sudo mount  /dev/${loaderdisk}1 localdiskp1 
-	echo  /dev/${loaderdisk}1 localdiskp1 
+	echo  "Mounting /dev/${loaderdisk}1 to localdiskp1 "
 	else
 	mkdir localdiskp1 
 	sudo mount  /dev/${loaderdisk}1 localdiskp1	
-	echo  /dev/${loaderdisk}1 localdiskp1 
+	echo  "Mounting /dev/${loaderdisk}1 to localdiskp1 "
 	fi
 	
 	if [ -d localdiskp2 ] ; 
 	then 
-	sudo mount  /dev/${loaderdisk}1 localdiskp2 
-	echo  /dev/${loaderdisk}2 localdiskp2 
+	sudo mount  /dev/${loaderdisk}2 localdiskp2 
+	echo  "Mounting /dev/${loaderdisk}2 to localdiskp2 "
 	else
 	mkdir localdiskp1 
-	sudo mount  /dev/${loaderdisk}1 localdiskp2	
+	sudo mount  /dev/${loaderdisk}2 localdiskp2	
 	echo  /dev/${loaderdisk}2 localdiskp2 
 	fi
 
-mount |grep -v optional
 
-
+if [ `mount |grep -i part1 |wc -l` -eq 1 ] && [ `mount |grep -i part2 |wc -l` -eq 1 ] && [ `mount |grep -i localdiskp1 |wc -l` -eq 1 ] && [ `mount |grep -i localdiskp2 |wc -l` -eq 1 ] ; then
 sudo cp -rp part1/* localdiskp1/
 sudo cp -rp part2/* localdiskp2/
 echo "Creating tinycore entry"
 tinyentry |  sudo tee --append localdiskp1/boot/grub/grub.cfg
+else
+echo "ERROR: Failed to mount correctly all required partitions"
+fi
 
 echo "Entries in Localdisk bootloader : "
 echo "======================================================================="

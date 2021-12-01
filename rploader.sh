@@ -446,7 +446,13 @@ echo "Checking if a newer version exists on the repo"
 
 curl -s --location "$rploaderepo" --output latestrploader.sh 
 
-	if [ ! "`sha256sum rploader.sh`" = "`sha256sum latestrploader.sh`" ] ; then 
+CURRENTSHA="`sha256sum rploader.sh`"
+REPOSHA="`sha256sum latestrploader.sh`"
+
+
+
+
+	if [ "${CURRENTSHA%% *}" != "${REPOSHA}" ] ; then 
 	echo -n "There is a newer version of the script on the repo should we use that ? [yY/nN]" 
 	read confirmation
 		if [ "$confirmation" = "y" ] || [ "$confirmation" = "Y" ] ; then
@@ -603,7 +609,6 @@ exit 99
 ;;
 
 esac 
-
 
 
 

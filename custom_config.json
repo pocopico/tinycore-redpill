@@ -24,7 +24,7 @@
                 "branch": "master"
             },
             "redpill_load": {
-                "source_url": "https://github.com/unknown-o/redpill-load.git",
+                "source_url": "https://github.com/jumkey/redpill-load.git",
                 "branch": "master"
             },
             "add_extensions": [

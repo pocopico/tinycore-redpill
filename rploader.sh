@@ -126,6 +126,18 @@ fi
 
 }
 
+
+function cleanloader(){
+
+
+echo "Clearing local redpill files"
+sudo rm -rf /home/tc/redpill*
+sudo rm -rf /home/tc/*tgz
+sudo rm -rf /home/tc/latestrploader.sh
+
+
+}
+
 function compileredpill(){
 
 cd /home/tc
@@ -483,6 +495,11 @@ REPOSHA="`sha256sum latestrploader.sh | awk '{print $1}'`"
 	echo "Version is current"
 	fi
 
+loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
+
+echo "Updating tinycore loader with latest updates"
+
+findtool.sh -b ${loaderdisk}3
 
 }
 
@@ -610,16 +627,12 @@ gitdownload
 
 
 clean)
-
-echo "Clearing local redpill files"
-sudo rm -rf /home/tc/redpill*
-sudo rm -rf /home/tc/*tgz
+cleanloader
 ;;
 
 update)
 checkinternet
 getlatestrploader
-
 ;;
 
 *)

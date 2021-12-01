@@ -499,7 +499,9 @@ loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | c
 
 echo "Updating tinycore loader with latest updates"
 
-findtool.sh -b ${loaderdisk}3
+cleanloader 
+
+filetool.sh -b ${loaderdisk}3
 
 }
 

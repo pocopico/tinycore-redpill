@@ -469,9 +469,10 @@ REPOSHA="`sha256sum latestrploader.sh | awk '{print $1}'`"
 		cp -f /home/tc/latestrploader.sh /home/tc/rploader.sh
 		exit
 		else
-		echo "Version is current"
 		return
 		fi
+	else 
+	echo "Version is current"
 	fi
 
 

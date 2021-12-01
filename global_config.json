@@ -12,18 +12,7 @@
         "clean_images": "all",
         "use_custom_bind_mounts": "true",
         "custom_bind_mounts": [
-            {
-		"host_path": "/home/labrouss/redpill-loader/custom",
-                "container_path" :"/opt/redpill-load/custom"
-	    },
-	    {
-                "host_path": "/home/labrouss/dsm-kernel",
-                "container_path" :"/opt/dsm-kernel"
-	    },
-            {
-                "host_path": "/home/labrouss/redpill-loader/bundled-exts.json",
-                "container_path" :"/opt/redpill-load/bundled-exts.json"
-	    }
+         
         ]
     },
     "build_configs": [

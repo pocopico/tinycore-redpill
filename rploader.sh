@@ -359,36 +359,42 @@ sudo losetup -fP ./loader.img
 loopdev=`losetup -j loader.img | awk '{print $1}'| sed -e 's/://'`
 
 	if [ -d part1 ] ; then
-	sudo mount -o rw ${loopdev}p1 part1
+	sudo mount ${loopdev}p1 part1
 	else 
 	mkdir part1 
-	sudo mount -o rw ${loopdev}p1 part1
+	sudo mount ${loopdev}p1 part1
 	fi
 
 	if [ -d part2 ] ; then
-	sudo mount -o rw ${loopdev}p2 part2
+	sudo mount ${loopdev}p2 part2
 	else 
 	mkdir part2 
-	sudo mount -o rw ${loopdev}p2 part2
+	sudo mount ${loopdev}p2 part2
 	fi
 
-loaderdisk=`mount |grep -i optional | awk -F / '{print $3}' |uniq | cut -c 1-3`
+loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
 
 	if [ -d localdiskp1 ] ; 
 	then 
-	sudo mount -o rw /dev/${loaderdisk}1 localdiskp1 
+	sudo mount  /dev/${loaderdisk}1 localdiskp1 
+	echo  /dev/${loaderdisk}1 localdiskp1 
 	else
 	mkdir localdiskp1 
-	sudo mount -o rw /dev/${loaderdisk}1 localdiskp1	
+	sudo mount  /dev/${loaderdisk}1 localdiskp1	
+	echo  /dev/${loaderdisk}1 localdiskp1 
 	fi
 	
 	if [ -d localdiskp2 ] ; 
 	then 
-	sudo mount -o rw /dev/${loaderdisk}1 localdiskp2 
+	sudo mount  /dev/${loaderdisk}1 localdiskp2 
+	echo  /dev/${loaderdisk}2 localdiskp2 
 	else
 	mkdir localdiskp1 
-	sudo mount -o rw /dev/${loaderdisk}1 localdiskp2	
+	sudo mount  /dev/${loaderdisk}1 localdiskp2	
+	echo  /dev/${loaderdisk}2 localdiskp2 
 	fi
+
+mount |grep -v optional
 
 
 sudo cp -rp part1/* localdiskp1/

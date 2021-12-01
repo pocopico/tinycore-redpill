@@ -389,7 +389,7 @@ loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | c
 	sudo mount  /dev/${loaderdisk}2 localdiskp2 
 	echo  "Mounting /dev/${loaderdisk}2 to localdiskp2 "
 	else
-	mkdir localdiskp1 
+	mkdir localdiskp2
 	sudo mount  /dev/${loaderdisk}2 localdiskp2	
 	echo  /dev/${loaderdisk}2 localdiskp2 
 	fi
@@ -406,7 +406,7 @@ fi
 
 echo "Entries in Localdisk bootloader : "
 echo "======================================================================="
-grep menuentry localdisk/boot/grub/grub.cfg
+grep menuentry localdiskp1/boot/grub/grub.cfg
 
 
 sudo umount part1 

@@ -444,7 +444,7 @@ make modules_prepare
 
 getlatestrploader(){
 
-echo "Checking if a newer version exists on the repo"
+echo -n "Checking if a newer version exists on the repo -> "
 
 curl -s --location "$rploaderepo" --output latestrploader.sh 
 
@@ -459,6 +459,7 @@ REPOSHA="`sha256sum latestrploader.sh | awk '{print $1}'`"
 		cp -f /home/tc/latestrploader.sh /home/tc/rploader.sh
 		exit
 		else
+		echo "Version is current"
 		return
 		fi
 	fi

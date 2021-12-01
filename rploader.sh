@@ -359,33 +359,42 @@ sudo losetup -fP ./loader.img
 loopdev=`losetup -j loader.img | awk '{print $1}'| sed -e 's/://'`
 
 	if [ -d part1 ] ; then
-	sudo mount -rw ${loopdev}p1 part1
+	sudo mount -o rw ${loopdev}p1 part1
 	else 
 	mkdir part1 
-	sudo mount -rw ${loopdev}p1 part1
+	sudo mount -o rw ${loopdev}p1 part1
 	fi
 
 	if [ -d part2 ] ; then
-	sudo mount -rw ${loopdev}p2 part2
+	sudo mount -o rw ${loopdev}p2 part2
 	else 
 	mkdir part2 
-	sudo mount -rw ${loopdev}p2 part2
+	sudo mount -o rw ${loopdev}p2 part2
 	fi
 
 loaderdisk=`mount |grep -i optional | awk -F / '{print $3}' |uniq | cut -c 1-3`
 
-	if [ -d localdisk ] ; 
+	if [ -d localdiskp1 ] ; 
 	then 
-	sudo mount -o rw /dev/${loaderdisk}1 localdisk 
+	sudo mount -o rw /dev/${loaderdisk}1 localdiskp1 
 	else
-	mkdir localdisk 
-	sudo mount -o rw /dev/${loaderdisk}1 localdisk 
+	mkdir localdiskp1 
+	sudo mount -o rw /dev/${loaderdisk}1 localdiskp1	
+	fi
+	
+	if [ -d localdiskp2 ] ; 
+	then 
+	sudo mount -o rw /dev/${loaderdisk}1 localdiskp2 
+	else
+	mkdir localdiskp1 
+	sudo mount -o rw /dev/${loaderdisk}1 localdiskp2	
 	fi
 
 
-sudo cp -rp part1/* localdisk/
+sudo cp -rp part1/* localdiskp1/
+sudo cp -rp part2/* localdiskp2/
 echo "Creating tinycore entry"
-tinyentry |  sudo tee --append localdisk/boot/grub/grub.cfg
+tinyentry |  sudo tee --append localdiskp1/boot/grub/grub.cfg
 
 echo "Entries in Localdisk bootloader : "
 echo "======================================================================="
@@ -394,7 +403,8 @@ grep menuentry localdisk/boot/grub/grub.cfg
 
 sudo umount part1 
 sudo umount part2
-sudo umount localdisk
+sudo umount localdiskp1
+sudo umount localdiskp2
 
 sudo losetup -D 
 

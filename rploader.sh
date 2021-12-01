@@ -8,6 +8,7 @@
 # User Variables :
 
 rploaderver="0.1"
+rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
 
 # END Do not modify after this line
@@ -110,6 +111,7 @@ if [ -f synokernel.txz ] ; then
 	echo "OK, file matches sha256sum, extracting"
 	tar xf /home/tc/synokernel.txz 
 	mv `tar --exclude="*/*/*" -tf synokernel.txz | head -1` linux-kernel
+	rm -rf synokernel.txz
 
 else
 	echo "Downloading and caching synokernel"
@@ -119,6 +121,7 @@ else
 	echo "Extracting synokernel"
 	tar xf /home/tc/synokernel.txz
 	mv `tar --exclude="*/*/*" -tf synokernel.txz | head -1` linux-kernel
+	rm -rf synokernel.txz
 fi
 
 }
@@ -139,6 +142,9 @@ if [ "$COMPILE_METHOD" = "toolkit_dev" ] ; then
 	cd redpill-lkm && make ${REDPILL_LKM_MAKE_TARGET} 
 	strip --strip-debug /home/tc/redpill-lkm/redpill.ko
 	modinfo /home/tc/redpill-lkm/redpill.ko
+	REDPILL_MOD_NAME="redpill-linux-v`modinfo redpill.ko |grep vermagic | awk '{print $2}'`.ko"
+	cp /home/tc/redpill-lkm/redpill.ko /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
+	
 else
 	export DSM_VERSION=${TARGET_VERSION}
 	export LINUX_SRC=/home/tc/linux-kernel
@@ -151,6 +157,8 @@ else
 	cd redpill-lkm && make ${REDPILL_LKM_MAKE_TARGET}
 	strip --strip-debug /home/tc/redpill-lkm/redpill.ko
 	modinfo /home/tc/redpill-lkm/redpill.ko
+	REDPILL_MOD_NAME="redpill-linux-v`modinfo redpill.ko |grep vermagic | awk '{print $2}'`.ko"
+	cp /home/tc/redpill-lkm/redpill.ko /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
 fi
 
 
@@ -218,7 +226,7 @@ EOF
 }
 
 
-checkInternet() {
+checkinternet() {
 echo  -n "Checking Internet Access -> "
 nslookup github.com 2>&1 > /dev/null
 	if [ $? -eq 0 ] ; then
@@ -432,6 +440,27 @@ make modules_prepare
 }
 
 
+getlatestrploader(){
+
+echo "Checking if a newer version exists on the repo"
+
+curl -s --location "$rploaderepo" --output latestrploader.sh 
+	if [ ! "`sha256sum rploader.sh`" = "`sha256sum latestrploader.sh`" ] ; then 
+	echo -n "There is a newer version of the script on the repo should we use that ? [yY/nN]" 
+	read confirmation
+		if [ "$confirmation" = "y" ] || [ "$confirmation" = "Y" ] ; then
+		echo "OK, updating, please re-run after updating"
+		cp latestrploader.sh rploader.sh
+		exit
+		else
+		return
+		fi
+	fi
+
+
+}
+
+
 
 getvars(){ 
 CONFIG=$(readConfig) ; selectPlatform $1
@@ -500,29 +529,36 @@ case $1 in
 
 
 download)
+
 getvars $2
+checkinternet
 gitdownload 
+
 ;;
 
 build)
-getvars $2
 
+getvars $2
+checkinternet
+getlatestrploader
 gitdownload
 
 
-
-if [ "$4" = "compile" ] ; then
+if [ "$3" = "compile" ] ; then
 
 prepareforcompile
 
 	if [ "$COMPILE_METHOD" = "toolkit_dev" ] ; then 
 	gettoolchain
 	compileredpill
-	
+	echo "Starting loader creation "
+	buildloader
 	else 
 	getsynokernel
 	kernelprepare
 	compileredpill
+	echo "Starting loader creation "
+	buildloader
 	fi 
 	
 else 
@@ -539,15 +575,24 @@ fi
 ;;
 
 ext)
+
 getvars $2
+checkinternet
+gitdownload
 
 ;;
 
 
 clean)
+
 echo "Clearing local redpill files"
 sudo rm -rf /home/tc/redpill*
 sudo rm -rf /home/tc/*tgz
+;;
+
+
+update)
+getlatestrploader
 ;;
 
 *)

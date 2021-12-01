@@ -446,18 +446,15 @@ echo "Checking if a newer version exists on the repo"
 
 curl -s --location "$rploaderepo" --output latestrploader.sh 
 
-CURRENTSHA="`sha256sum rploader.sh`"
-REPOSHA="`sha256sum latestrploader.sh`"
+CURRENTSHA="`sha256sum rploader.sh | awk '{print $1}'`"
+REPOSHA="`sha256sum latestrploader.sh | awk '{print $1}'`"
 
-
-
-
-	if [ "${CURRENTSHA%% *}" != "${REPOSHA}" ] ; then 
+	if [ "${CURRENTSHA}" != "${REPOSHA}" ] ; then 
 	echo -n "There is a newer version of the script on the repo should we use that ? [yY/nN]" 
 	read confirmation
 		if [ "$confirmation" = "y" ] || [ "$confirmation" = "Y" ] ; then
 		echo "OK, updating, please re-run after updating"
-		cp /home/tc/latestrploader.sh /home/tc/rploader.sh
+		cp -f /home/tc/latestrploader.sh /home/tc/rploader.sh
 		exit
 		else
 		return

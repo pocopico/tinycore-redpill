@@ -704,7 +704,7 @@ else
  echo "Using static compiled redpill extension"
  getstaticmodule
  echo "Creating module alias json file"
- getmodaliasfile > module.alias.json
+ getmodaliasfile > modules.alias.json
  echo "Got $REDPILL_MOD_NAME "
  echo "------------------------------------------------------------------------------------------------"
  echo " It looks that you will need the following modules :"

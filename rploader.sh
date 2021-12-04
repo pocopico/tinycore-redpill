@@ -552,7 +552,7 @@ lspci -n | awk '{ print $3}' | uniq | awk -F : '{print $1 " " $2}' |uniq > lspci
 
 while read vendor device
 do
-grep -i $vendor /lib/modules/5.10.3-tinycore64/modules.alias |grep -i $device | awk '{print $3}'
+grep -i ${vendor}d0000${device} /lib/modules/5.10.3-tinycore64/modules.alias  | awk '{print $3}'
 done  < lspci
 
 rm lspci
@@ -566,25 +566,60 @@ rm lspci
 getmodulealiasjson(){
 
 
+
 echo "{"
 echo "\"modules\" : ["
 
 for module in `ls *.ko`
 do
-echo "{"
         if [ `modinfo ./$module --field alias |grep -ie pci -ie usb | wc -l` -ge 1 ] ; then
-        echo "\"name\" : \"${module}\","
-        modinfo ./$module --field alias |grep -ie pci -ie usb | awk '{ print "\"alias\" : \"" $1 "\" ,"}' | sed '$ s/,//'
-        else
-        echo "\"name\" : \"${module}\""
-        fi
 
-echo "},"
-done | sed '$ s/,//'
+        for alias in `modinfo ./$module --field alias |grep -ie pci -ie usb`
+        do
+        echo "{"
+        echo "\"name\" :  \"${module}\"",
+        echo "\"alias\" :  \"${alias}\""
+        echo "}",
+        done
+        fi
+#       echo "},"
+
+done |  sed '$ s/,//'
 
 echo "]"
 echo "}"
 
+#
+# To query alias for module run #cat n | jq '.modules[] | select(.alias | test ("8086d00001000")?) .name'
+# or cat modules.alias.json | jq '.modules[] | select(.alias | test("(?i)1000d00000030")?) |  .name'
+# 
+#
+
+
+}
+
+getmodaliasfile(){
+
+
+
+echo "{"
+echo "\"modules\" : ["
+
+grep -ie pci -ie usb /lib/modules/modules.alias | while read line
+do
+
+read alias pciid module <<<"$line"
+
+        echo "{"
+        echo "\"name\" :  \"${module}\"",
+        echo "\"alias\" :  \"${pciid}\""
+        echo "}",
+#       echo "},"
+
+done |  sed '$ s/,//'
+
+echo "]"
+echo "}"
 
 
 

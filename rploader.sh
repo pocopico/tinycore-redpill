@@ -716,11 +716,11 @@ else
 
  echo "Using static compiled redpill extension"
  getstaticmodule
+ echo "Got $REDPILL_MOD_NAME "
  echo "Creating module alias json file"
  getmodaliasfile > modules.alias.json
- echo "Got $REDPILL_MOD_NAME "
  echo "------------------------------------------------------------------------------------------------"
- echo " It looks that you will need the following modules :"
+ echo "It looks that you will need the following modules :"
  listpci
  echo "------------------------------------------------------------------------------------------------"
  echo "Starting loader creation "
@@ -751,9 +751,8 @@ getlatestrploader
 
 listmods)
 getmodaliasfile > modules.alias.json
- echo "Got $REDPILL_MOD_NAME "
  echo "------------------------------------------------------------------------------------------------"
- echo " It looks that you will need the following modules :"
+ echo "It looks that you will need the following modules :"
  listpci
  echo "------------------------------------------------------------------------------------------------"
 ;;

@@ -669,6 +669,31 @@ echo "}"
 
 }
 
+function listmodules(){
+
+	if [ ! -f modules.alias.json  ] ; then 
+ 	echo "Creating module alias json file"
+ 	getmodaliasfile > modules.alias.json
+ 	fi
+	
+	echo -n "Testing modules.alias.json -> "
+	if  `jq '.' modules.alias.json > /dev/null`  ; then
+	echo "File OK"	
+ 	echo "------------------------------------------------------------------------------------------------"
+ 	echo "It looks that you will need the following modules :"
+ 	listpci
+ 	echo "------------------------------------------------------------------------------------------------"
+ 	echo "Starting loader creation "
+	
+	else 
+	echo "Error : File modules.alias.json could not be parsed"	
+	fi 
+
+
+}
+
+
+
 if [ $# -lt 2 ] ; then
 showhelp
 exit 99
@@ -717,12 +742,7 @@ else
  echo "Using static compiled redpill extension"
  getstaticmodule
  echo "Got $REDPILL_MOD_NAME "
- echo "Creating module alias json file"
- getmodaliasfile > modules.alias.json
- echo "------------------------------------------------------------------------------------------------"
- echo "It looks that you will need the following modules :"
- listpci
- echo "------------------------------------------------------------------------------------------------"
+ listmodules
  echo "Starting loader creation "
  buildloader
 
@@ -750,11 +770,7 @@ getlatestrploader
 ;;
 
 listmods)
-getmodaliasfile > modules.alias.json
- echo "------------------------------------------------------------------------------------------------"
- echo "It looks that you will need the following modules :"
- listpci
- echo "------------------------------------------------------------------------------------------------"
+listmodules
 ;;
 
 *)

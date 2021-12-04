@@ -635,7 +635,7 @@ getmodaliasfile(){
 echo "{"
 echo "\"modules\" : ["
 
-grep -ie pci -ie usb ls /lib/modules/`uname -r`/modules.alias | while read line
+grep -ie pci -ie usb /lib/modules/`uname -r`/modules.alias | while read line
 do
 
 read alias pciid module <<<"$line"

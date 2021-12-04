@@ -689,6 +689,9 @@ function listmodules(){
 	echo "Error : File modules.alias.json could not be parsed"	
 	fi 
 
+	## Get extension author rpext-index.json and then parse for extension download with : 
+      	#	jq '. | select(.id | contains("vxge")) .url  ' rpext-index.json
+
 
 }
 

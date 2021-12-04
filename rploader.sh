@@ -547,7 +547,7 @@ echo "REDPILL_LKM_MAKE_TARGET : $REDPILL_LKM_MAKE_TARGET"
 
 function matchpciidmodule() {
 
-jq -e -r ".modules[] | select(.alias | test(\"(?i)${1}\")?) |   .name " detailed.modules.alias.json
+jq -e -r ".modules[] | select(.alias | test(\"(?i)${1}\")?) |   .name " modules.alias.json
 #jq ".build_configs[] | select(.id==\"${1}\")"`
 
 }
@@ -635,7 +635,7 @@ getmodaliasfile(){
 echo "{"
 echo "\"modules\" : ["
 
-grep -ie pci -ie usb /lib/modules/modules.alias | while read line
+grep -ie pci -ie usb ls /lib/modules/`uname -r`/modules.alias | while read line
 do
 
 read alias pciid module <<<"$line"
@@ -703,6 +703,8 @@ else
 
  echo "Using static compiled redpill extension"
  getstaticmodule
+ echo "Creating module alias json file"
+ getmodaliasfile > module.alias.json
  echo "Got $REDPILL_MOD_NAME "
  echo "------------------------------------------------------------------------------------------------"
  echo " It looks that you will need the following modules :"

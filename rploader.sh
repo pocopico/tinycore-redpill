@@ -545,17 +545,47 @@ echo "REDPILL_LKM_MAKE_TARGET : $REDPILL_LKM_MAKE_TARGET"
 
 
 
+function matchpciidmodule() {
+
+jq -e -r ".modules[] | select(.alias | test(\"(?i)${1}\")?) |   .name " detailed.modules.alias.json
+#jq ".build_configs[] | select(.id==\"${1}\")"`
+
+}
+
+
 listpci(){
 
-lspci -n | awk '{ print $3}' | uniq | awk -F : '{print $1 " " $2}' |uniq > lspci 
 
-
-while read vendor device
+lspci -n  | while read line
 do
-grep -i ${vendor}d0000${device} /lib/modules/5.10.3-tinycore64/modules.alias  | awk '{print $3}'
-done  < lspci
 
-rm lspci
+        bus="`echo $line | cut -c 1-7`"
+        class="`echo $line | cut -c 9-12`"
+        vendor="`echo $line | cut -c 15-18`"
+        device="`echo $line | cut -c 20-23`"
+
+        #echo "PCI : $bus Class : $class Vendor: $vendor Device: $device"
+        case $class in
+
+        0200)
+        echo "Found Ethernet Interface : pciid ${vendor}d0000${device} Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
+        ;;
+        0100)
+        echo "Fount SCSI Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
+        ;;
+        0300)
+        echo "Fount VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
+                        ;;
+
+
+
+        esac
+
+
+
+
+
+done
 
 
 

@@ -549,8 +549,16 @@ echo "REDPILL_LKM_MAKE_TARGET : $REDPILL_LKM_MAKE_TARGET"
 
 function matchpciidmodule() {
 
-jq -e -r ".modules[] | select(.alias | test(\"(?i)${1}\")?) |   .name " modules.alias.json
-#jq ".build_configs[] | select(.id==\"${1}\")"`
+
+vendor="`echo $1 | sed 's/[a-z]/\U&/g'`"
+device="`echo $2| sed 's/[a-z]/\U&/g'`"
+
+pciid="${vendor}d0000${device}"
+
+#jq -e -r ".modules[] | select(.alias | test(\"(?i)${1}\")?) |   .name " modules.alias.json
+# Correction to work with tinycore jq
+jq -e -r ".modules[] | select(.alias | contains(\"${pciid}\")?) |   .name " modules.alias.json
+
 
 }
 
@@ -570,13 +578,16 @@ do
         case $class in
 
         0200)
-        echo "Found Ethernet Interface : pciid ${vendor}d0000${device} Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
+        echo "Found Ethernet Interface : pciid ${vendor}d0000${device} Required Extension : $(matchpciidmodule ${vendor} ${device})"
         ;;
         0100)
-        echo "Found SCSI Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
+        echo "Found SCSI Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+        ;;
+        0106)
+        echo "Found SATA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
         ;;
         0300)
-        echo "Found VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
+        echo "Found VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device}")"
                         ;;
 
 

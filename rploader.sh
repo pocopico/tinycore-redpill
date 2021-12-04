@@ -230,6 +230,8 @@ Actions: build, ext, auto, run, clean
 
 - update:   Checks github repo for latest version of rploader 
 
+- listmods  Tries to figure out required extensions
+
 Available platform versions:
 ----------------------------------------------------------------------------------------
 $(getPlatforms)
@@ -734,6 +736,15 @@ cleanloader
 update)
 checkinternet
 getlatestrploader
+;;
+
+listmods)
+getmodaliasfile > modules.alias.json
+ echo "Got $REDPILL_MOD_NAME "
+ echo "------------------------------------------------------------------------------------------------"
+ echo " It looks that you will need the following modules :"
+ listpci
+ echo "------------------------------------------------------------------------------------------------"
 ;;
 
 *)

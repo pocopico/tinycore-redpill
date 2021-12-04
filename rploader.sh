@@ -571,10 +571,10 @@ do
         echo "Found Ethernet Interface : pciid ${vendor}d0000${device} Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
         ;;
         0100)
-        echo "Fount SCSI Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
+        echo "Found SCSI Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
         ;;
         0300)
-        echo "Fount VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
+        echo "Found VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule "${vendor}d0000${device}")"
                         ;;
 
 

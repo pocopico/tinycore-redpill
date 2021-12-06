@@ -559,7 +559,14 @@ pciid="${vendor}d0000${device}"
 
 #jq -e -r ".modules[] | select(.alias | test(\"(?i)${1}\")?) |   .name " modules.alias.json
 # Correction to work with tinycore jq
-jq -e -r ".modules[] | select(.alias | contains(\"${pciid}\")?) |   .name " modules.alias.json
+matchedmodule=`jq -e -r ".modules[] | select(.alias | contains(\"${pciid}\")?) |   .name " modules.alias.json`
+
+# Call listextensions for extention matching
+
+echo "$matchedmodule"
+
+listextension $matchedmodule
+
 
 
 }
@@ -590,7 +597,7 @@ do
         ;;
         0300)
         echo "Found VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
-                        ;;
+        ;;
 
 
 
@@ -695,7 +702,7 @@ function listmodules(){
 
 }
 
-function listextention() {
+function listextension() {
 
 	if [ ! -f rpext-index.json ] ; then
     	curl --progress-bar --location "${modextention}" --output rpext-index.json
@@ -704,7 +711,12 @@ function listextention() {
         ## Get extension author rpext-index.json and then parse for extension download with :
         #       jq '. | select(.id | contains("vxge")) .url  ' rpext-index.json
 
-        jq '. | select(.id | contains("${1}")) .url  ' rpext-index.json
+	if [ ! -z $1 ] ; then
+	echo "Searching for matching extension for $1"
+        jq ". | select(.id | contains(\"${1}\")) .url  " rpext-index.json
+	else
+	echo "No matching extension"
+fi
 
 
 

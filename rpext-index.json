@@ -1,0 +1,966 @@
+{
+  "id": "pocopico.8139cp",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/rpext-index.json",
+  "info": {
+    "name": "8139cp",
+    "description": "Adds RealTek RTL-8139C+ series 10/100 PCI Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/8139cp",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.8139too",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/rpext-index.json",
+  "info": {
+    "name": "8139too",
+    "description": "Adds RealTek RTL-8139 Fast Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/8139too",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.aacraid",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/rpext-index.json",
+  "info": {
+    "name": "aacraid",
+    "description": "Adds Dell PERC2, 2/Si, 3/Si, 3/Di, Adaptec Advanced Raid Products, HP NetRAID-4M, IBM ServeRAID & ICP SCSI driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/aacraid",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.aic94xx",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aic94xx/rpext-index.json",
+  "info": {
+    "name": "aic94xx",
+    "description": "Adds Adaptec aic94xx SAS/SATA driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/aic94xx",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aic94xx/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aic94xx/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aic94xx/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aic94xx/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aic94xx/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aic94xx/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.alx",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/rpext-index.json",
+  "info": {
+    "name": "alx",
+    "description": "Adds Qualcomm Atheros(R) AR816x/AR817x PCI-E Ethernet Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/alx",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.asix",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/asix/rpext-index.json",
+  "info": {
+    "name": "asix",
+    "description": "Adds ASIX AX8817X based USB 2.0 Ethernet Devices Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/asix",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/asix/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/asix/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/asix/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/asix/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/asix/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/asix/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.atl1c",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/rpext-index.json",
+  "info": {
+    "name": "atl1c",
+    "description": "Adds Qualcomm Atheros 100/1000M Ethernet Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/atl1c",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.atl1e",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/rpext-index.json",
+  "info": {
+    "name": "atl1e",
+    "description": "Adds Atheros 1000M Ethernet Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/atl1e",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.atl1",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/rpext-index.json",
+  "info": {
+    "name": "atl1",
+    "description": "Adds Atheros L1 Gigabit Ethernet Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/atl1",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.atl2",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/rpext-index.json",
+  "info": {
+    "name": "atl2",
+    "description": "Adds Atheros Fast Ethernet Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/atl2",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.atlantic",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atlantic/rpext-index.json",
+  "info": {
+    "name": "atlantic",
+    "description": "Adds Marvell (Aquantia) Corporation(R) Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/atlantic",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atlantic/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atlantic/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atlantic/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atlantic/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atlantic/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atlantic/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.ax88179_178a",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ax88179_178a/rpext-index.json",
+  "info": {
+    "name": "ax88179_178a",
+    "description": "Adds ASIX AX88179/178A based USB 3.0/2.0 Gigabit Ethernet Devices Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/ax88179_178a",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ax88179_178a/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ax88179_178a/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ax88179_178a/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ax88179_178a/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ax88179_178a/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ax88179_178a/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.be2net",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/rpext-index.json",
+  "info": {
+    "name": "be2net",
+    "description": "Adds Emulex OneConnect NIC Driver 10.6.0.3 Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/be2net",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.bna",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/rpext-index.json",
+  "info": {
+    "name": "bna",
+    "description": "Adds QLogic BR-series 10G PCIe Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/bna",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.bnx2",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/rpext-index.json",
+  "info": {
+    "name": "bnx2",
+    "description": "Adds QLogic BCM5706/5708/5709/5716 Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/bnx2",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.bnx2x",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/rpext-index.json",
+  "info": {
+    "name": "bnx2x",
+    "description": "Adds QLogic BCM57710/57711/57711E/57712/57712_MF/57800/57800_MF/57810/57810_MF/57840/57840_MF Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/bnx2x",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.dm9601",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/dm9601/rpext-index.json",
+  "info": {
+    "name": "dm9601",
+    "description": "Adds Davicom DM96xx USB 10/100 ethernet devices Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/dm9601",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/dm9601/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/dm9601/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/dm9601/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/dm9601/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/dm9601/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/dm9601/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.e1000e",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/rpext-index.json",
+  "info": {
+    "name": "e1000e",
+    "description": "Adds Intel(R) PRO/1000 Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/e1000e",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.e1000",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/rpext-index.json",
+  "info": {
+    "name": "e1000",
+    "description": "Adds Intel(R) PRO/1000 Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/e1000",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.early-telnet",
+  "url": "https://github.com/pocopico/rp-ext/raw/main/early-telnet/rpext-index.json",
+  "info": {
+    "name": "Early telnet start",
+    "description": "Simple extension which starts telnet early at boot",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/early-telnet",
+    "help_url": "https://github.com/pocopico/rp-ext/early-telnet"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://github.com/pocopico/rp-ext/raw/main/early-telnet/recipes/universal.json",
+    "ds3615xs_41222": "https://github.com/pocopico/rp-ext/raw/main/early-telnet/recipes/universal.json",
+    "ds3615xs_42218": "https://github.com/pocopico/rp-ext/raw/main/early-telnet/recipes/universal.json",
+    "ds918p_25556": "https://github.com/pocopico/rp-ext/raw/main/early-telnet/recipes/universal.json",
+    "ds918p_41890": "https://github.com/pocopico/rp-ext/raw/main/early-telnet/recipes/universal.json",
+    "ds918p_42218": "https://github.com/pocopico/rp-ext/raw/main/early-telnet/recipes/universal.json"
+  }
+}
+{
+  "id": "pocopico.hpsa",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/rpext-index.json",
+  "info": {
+    "name": "hpsa",
+    "description": "Adds Driver for HP Smart Array Controller version 3.4.14-0 Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/hpsa",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.i40e",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/rpext-index.json",
+  "info": {
+    "name": "i40e",
+    "description": "Adds Intel(R) Ethernet Connection XL710 Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/i40e",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.igb",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/rpext-index.json",
+  "info": {
+    "name": "igb",
+    "description": "Adds Intel(R) Gigabit Ethernet Linux Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/igb",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.igbvf",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/rpext-index.json",
+  "info": {
+    "name": "igbvf",
+    "description": "Adds Intel(R) Gigabit Virtual Function Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/igbvf",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.ixgbe",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbe/rpext-index.json",
+  "info": {
+    "name": "ixgbe",
+    "description": "Adds Intel(R) 10GbE PCI Express Linux Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/ixgbe",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbe/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbe/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbe/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbe/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbe/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbe/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.ixgbevf",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/rpext-index.json",
+  "info": {
+    "name": "ixgbevf",
+    "description": "Adds Intel(R) 10 Gigabit Virtual Function Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/ixgbevf",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.megaraid_sas",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/rpext-index.json",
+  "info": {
+    "name": "megaraid_sas",
+    "description": "Adds Avago MegaRAID SAS Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/megaraid_sas",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.mlx4_core",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mlx4_core/rpext-index.json",
+  "info": {
+    "name": "mlx4_core",
+    "description": "Adds Mellanox ConnectX HCA low-level driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/mlx4_core",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mlx4_core/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mlx4_core/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mlx4_core/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mlx4_core/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mlx4_core/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mlx4_core/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.mpt2sas",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt2sas/rpext-index.json",
+  "info": {
+    "name": "mpt2sas",
+    "description": "Adds  Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/mpt2sas",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt2sas/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt2sas/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt2sas/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt2sas/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt2sas/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt2sas/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.mpt3sas",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/rpext-index.json",
+  "info": {
+    "name": "mpt3sas",
+    "description": "Adds LSI MPT Fusion SAS 3.0 Device Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/mpt3sas",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.mptsas",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mptsas/rpext-index.json",
+  "info": {
+    "name": "mptsas",
+    "description": "Adds Fusion MPT SAS Host driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/mptsas",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mptsas/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mptsas/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mptsas/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mptsas/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mptsas/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mptsas/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.qlcnic",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/rpext-index.json",
+  "info": {
+    "name": "qlcnic",
+    "description": "Adds QLogic 1/10 GbE Converged/Intelligent Ethernet Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/qlcnic",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.r8101",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/rpext-index.json",
+  "info": {
+    "name": "r8101",
+    "description": "Adds RealTek RTL-8101 Fast Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/r8101",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.r8125",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/rpext-index.json",
+  "info": {
+    "name": "r8125",
+    "description": "Adds Realtek RTL8125 2.5Gigabit Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/r8125",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.r8152",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/rpext-index.json",
+  "info": {
+    "name": "r8152",
+    "description": "Adds Realtek RTL8152/RTL8153 Based USB Ethernet Adapters Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/r8152",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8152/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.r8168",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/rpext-index.json",
+  "info": {
+    "name": "r8168",
+    "description": "Adds RealTek RTL-8168 Gigabit Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/r8168",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.r8169",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/rpext-index.json",
+  "info": {
+    "name": "r8169",
+    "description": "Adds RealTek RTL-8169 Gigabit Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/r8169",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.raspbi-pill",
+  "url": "https://github.com/pocopico/rp-ext/raw/main/raspbi-pill/rpext-index.json",
+  "info": {
+    "name": "Early telnet start",
+    "description": "Simple extension which starts telnet early at boot",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/raspbi-pill",
+    "help_url": "https://github.com/pocopico/rp-ext/raspbi-pill"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://github.com/pocopico/rp-ext/raw/main/raspbi-pill/recipes/universal.json",
+    "ds3615xs_41222": "https://github.com/pocopico/rp-ext/raw/main/raspbi-pill/recipes/universal.json",
+    "ds3615xs_42218": "https://github.com/pocopico/rp-ext/raw/main/raspbi-pill/recipes/universal.json",
+    "ds918p_25556": "https://github.com/pocopico/rp-ext/raw/main/raspbi-pill/recipes/universal.json",
+    "ds918p_41890": "https://github.com/pocopico/rp-ext/raw/main/raspbi-pill/recipes/universal.json",
+    "ds918p_42218": "https://github.com/pocopico/rp-ext/raw/main/raspbi-pill/recipes/universal.json"
+  }
+}
+{
+  "id": "jumkey.acpid2",
+  "url": "https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid/rpext-index.json",
+  "info": {
+    "name": "ACPI Daemon v2",
+    "description": "ACPI Daemon v2 that handles power button events",
+    "author_url": "https://sourceforge.net/projects/acpid2/",
+    "packer_url": "https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid",
+    "help_url": "https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid/recipes/universal_v6.json",
+    "ds3615xs_41222": "https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid/recipes/universal.json",
+    "ds3615xs_42218": "https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid/recipes/universal.json",
+    "ds918p_25556": "https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid/recipes/universal_v6.json",
+    "ds918p_41890": "https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid/recipes/universal.json",
+    "ds918p_42218": "https://github.com/jumkey/redpill-load/raw/develop/redpill-acpid/recipes/universal.json"
+  }
+}
+{
+  "id": "redpill-boot-wait",
+  "url": "https://github.com/pocopico/rp-ext/raw/main/redpill-boot-wait/rpext-index.json",
+  "info": {
+    "name": "RedPill Bootwait",
+    "description": "Simple extension which stops the execution early waiting for the boot device to appear",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/redpill-boot-wait",
+    "help_url": "https://github.com/pocopico/rp-ext/redpill-boot-wait"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://github.com/pocopico/rp-ext/raw/main/redpill-boot-wait/recipes/universal.json",
+    "ds3615xs_41222": "https://github.com/pocopico/rp-ext/raw/main/redpill-boot-wait/recipes/universal.json",
+    "ds3615xs_42218": "https://github.com/pocopico/rp-ext/raw/main/redpill-boot-wait/recipes/universal.json",
+    "ds918p_25556": "https://github.com/pocopico/rp-ext/raw/main/redpill-boot-wait/recipes/universal.json",
+    "ds918p_41890": "https://github.com/pocopico/rp-ext/raw/main/redpill-boot-wait/recipes/universal.json",
+    "ds918p_42218": "https://github.com/pocopico/rp-ext/raw/main/redpill-boot-wait/recipes/universal.json"
+  }
+}
+{
+  "id": "pocopico.redpill",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/redpill/rpext-index.json",
+  "info": {
+    "name": "redpill",
+    "description": "Static Redpill Module",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/redpill",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/redpill/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/redpill/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/redpill/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/redpill/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/redpill/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/redpill/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.rtl8150",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/rtl8150/rpext-index.json",
+  "info": {
+    "name": "rtl8150",
+    "description": "Adds rtl8150 based usb-ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/rtl8150",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/rtl8150/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/rtl8150/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/rtl8150/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/rtl8150/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/rtl8150/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/rtl8150/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.skge",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/rpext-index.json",
+  "info": {
+    "name": "skge",
+    "description": "Adds SysKonnect Gigabit Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/skge",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.sky2",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/rpext-index.json",
+  "info": {
+    "name": "sky2",
+    "description": "Adds Marvell Yukon 2 Gigabit Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/sky2",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.tg3",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tg3/rpext-index.json",
+  "info": {
+    "name": "tg3",
+    "description": "Adds Broadcom Tigon3 ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/tg3",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tg3/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tg3/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tg3/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tg3/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tg3/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tg3/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.tn40xx",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tn40xx/rpext-index.json",
+  "info": {
+    "name": "tn40xx",
+    "description": "Adds Tehuti Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/tn40xx",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tn40xx/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tn40xx/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tn40xx/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tn40xx/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tn40xx/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/tn40xx/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.via-rhine",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/rpext-index.json",
+  "info": {
+    "name": "via-rhine",
+    "description": "Adds VIA Rhine PCI Fast Ethernet driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/via-rhine",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.via-velocity",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/rpext-index.json",
+  "info": {
+    "name": "via-velocity",
+    "description": "Adds VIA Networking Velocity Family Gigabit Ethernet Adapter Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/via-velocity",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.vmw_pvscsi",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/rpext-index.json",
+  "info": {
+    "name": "vmw_pvscsi",
+    "description": "Adds VMware PVSCSI driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/vmw_pvscsi",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.vmxnet3",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/rpext-index.json",
+  "info": {
+    "name": "vmxnet3",
+    "description": "Adds VMware vmxnet3 virtual NIC driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/vmxnet3",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.vxge",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/rpext-index.json",
+  "info": {
+    "name": "vxge",
+    "description": "Adds Neterion's X3100 Series 10GbE PCIe I/OVirtualized Server Adapter Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/vxge",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds3615xs_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds918p_42218.json"
+  }
+}

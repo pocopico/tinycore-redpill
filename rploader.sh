@@ -595,6 +595,9 @@ do
         0106)
         echo "Found SATA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
         ;;
+        0107)
+        echo "Found SAS Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+        ;;
         0300)
         echo "Found VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
         ;;
@@ -689,10 +692,9 @@ function listmodules(){
 	if  `jq '.' modules.alias.json > /dev/null`  ; then
 	echo "File OK"	
  	echo "------------------------------------------------------------------------------------------------"
- 	echo "It looks that you will need the following modules :"
+ 	echo -e "It looks that you will need the following modules : \n\n" 
  	listpci
  	echo "------------------------------------------------------------------------------------------------"
- 	echo "Starting loader creation "
 	
 	else 
 	echo "Error : File modules.alias.json could not be parsed"	
@@ -713,7 +715,9 @@ function listextension() {
 
 	if [ ! -z $1 ] ; then
 	echo "Searching for matching extension for $1"
-        jq ". | select(.id | contains(\"${1}\")) .url  " rpext-index.json
+        matchingextension=(`jq ". | select(.id | contains(\"${1}\")) .url  " rpext-index.json`)
+	echo $matchingextension
+	extensionslist+=($matchingextension)
 	else
 	echo "No matching extension"
 fi

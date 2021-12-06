@@ -9,7 +9,9 @@
 
 rploaderver="0.1"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
+
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
+modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 
 # END Do not modify after this line
 ######################################################################################################
@@ -689,8 +691,22 @@ function listmodules(){
 	echo "Error : File modules.alias.json could not be parsed"	
 	fi 
 
-	## Get extension author rpext-index.json and then parse for extension download with : 
-      	#	jq '. | select(.id | contains("vxge")) .url  ' rpext-index.json
+
+
+}
+
+function listextention() {
+
+	if [ ! -f rpext-index.json ] ; then
+    	curl --progress-bar --location "${modextention}" --output rpext-index.json
+	fi
+
+        ## Get extension author rpext-index.json and then parse for extension download with :
+        #       jq '. | select(.id | contains("vxge")) .url  ' rpext-index.json
+
+        jq '. | select(.id | contains("${1}")) .url  ' rpext-index.json
+
+
 
 
 }

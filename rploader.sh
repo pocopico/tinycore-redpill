@@ -717,7 +717,7 @@ function listextension() {
 	echo "Searching for matching extension for $1"
         matchingextension=(`jq ". | select(.id | contains(\"${1}\")) .url  " rpext-index.json`)
 	echo $matchingextension
-	extensionslist+=($matchingextension)
+	extensionslist+=("${matchingextension}")
 	else
 	echo "No matching extension"
 fi
@@ -806,6 +806,7 @@ getlatestrploader
 
 listmods)
 listmodules
+echo "$extensionslist"
 ;;
 
 *)

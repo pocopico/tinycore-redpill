@@ -491,6 +491,10 @@ REPOSHA="`sha256sum latestrploader.sh | awk '{print $1}'`"
 		if [ "$confirmation" = "y" ] || [ "$confirmation" = "Y" ] ; then
 		echo "OK, updating, please re-run after updating"
 		cp -f /home/tc/latestrploader.sh /home/tc/rploader.sh
+		loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
+		echo "Updating tinycore loader with latest updates"
+		cleanloader 
+		filetool.sh -b ${loaderdisk}3
 		exit
 		else
 		return
@@ -499,13 +503,6 @@ REPOSHA="`sha256sum latestrploader.sh | awk '{print $1}'`"
 	echo "Version is current"
 	fi
 
-loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
-
-echo "Updating tinycore loader with latest updates"
-
-cleanloader 
-
-filetool.sh -b ${loaderdisk}3
 
 }
 
@@ -717,7 +714,7 @@ function listextension() {
 	echo "Searching for matching extension for $1"
         matchingextension=(`jq ". | select(.id | contains(\"${1}\")) .url  " rpext-index.json`)
 	echo $matchingextension
-	extensionslist+="${matchingextension}"
+	extensionslist+="${matchingextension} "
 	#echo $extensionslist
 	else
 	echo "No matching extension"

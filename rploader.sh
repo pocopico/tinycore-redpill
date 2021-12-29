@@ -526,6 +526,15 @@ TARGET_REVISION="`echo $platform_selected | jq -r -e '.platform_version | split(
 REDPILL_LKM_MAKE_TARGET="`echo $platform_selected | jq -r -e   '.redpill_lkm_make_target'`"
 
 
+if  [ -z "$TARGET_PLATFORM" ] || [ -z  "$TARGET_VERSION" ] || [ -z "$TARGET_REVISION" ]; then
+
+echo "Error : Platform not found "
+showhelp
+exit 99
+
+fi
+
+
 
 #echo "Platform : $platform_selected"
 echo "Loader source : $LD_SOURCE_URL"
@@ -541,6 +550,8 @@ echo "TARGET_PLATFORM       : $TARGET_PLATFORM"
 echo "TARGET_VERSION    : $TARGET_VERSION"
 echo "TARGET_REVISION : $TARGET_REVISION"
 echo "REDPILL_LKM_MAKE_TARGET : $REDPILL_LKM_MAKE_TARGET"
+
+
 
 }
 
@@ -748,16 +759,6 @@ gitdownload
 build)
 
 getvars $2
-
-if  [ -z "$TARGET_PLATFORM" ] || [ -z  "$TARGET_VERSION" ] || [ -z "$TARGET_REVISION" ]; then
-
-echo "Error : Platform not found "
-showhelp
-exit 99
-
-fi
-
-
 checkinternet
 getlatestrploader
 gitdownload

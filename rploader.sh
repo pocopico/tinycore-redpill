@@ -801,7 +801,13 @@ getvars $2
 checkinternet
 gitdownload
 listmodules
-echo "$extensionslist"
+echo "Automatically add the matched extensions"
+
+for extension in ${extensionslist}
+do
+    echo "$extension"
+done
+
 
 ;;
 

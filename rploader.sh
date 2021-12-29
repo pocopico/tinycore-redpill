@@ -729,15 +729,7 @@ function listextension() {
 		
 		echo "Found matching extension : "
 		echo $matchingextension
-		echo -n "Do you want me to add it to the build extensions ? : (Yy/Nn) "
-		read answer 
-		
-			if [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-			./redpill-load/ext-manager.sh add $matchingextension
-			else
-			echo "OK"
-			fi
-		
+		./redpill-load/ext-manager.sh add $matchingextension
 		fi 
 	
 	extensionslist+="${matchingextension} "

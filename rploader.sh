@@ -800,6 +800,8 @@ ext)
 getvars $2
 checkinternet
 gitdownload
+listmodules
+echo "$extensionslist"
 
 ;;
 

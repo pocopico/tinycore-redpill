@@ -576,7 +576,6 @@ echo "$matchedmodule"
 listextension $matchedmodule
 
 
-
 }
 
 
@@ -724,7 +723,23 @@ function listextension() {
 	if [ ! -z $1 ] ; then
 	echo "Searching for matching extension for $1"
         matchingextension=(`jq ". | select(.id | contains(\"${1}\")) .url  " rpext-index.json`)
-	echo $matchingextension
+	
+	
+		if [ -n $matchingextension ] ; then
+		
+		echo "Found matching extension : "
+		echo $matchingextension
+		echo -n "Do you want me to add it to the build extensions ? : (Yy/Nn) "
+		read answer 
+		
+			if [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
+			./redpill-load/ext-manager.sh add $matchingextension
+			else
+			echo "OK"
+			fi
+		
+		fi 
+	
 	extensionslist+="${matchingextension} "
 	#echo $extensionslist
 	else
@@ -803,10 +818,10 @@ gitdownload
 listmodules
 echo "Automatically add the matched extensions"
 
-for extension in ${extensionslist}
-do
-    echo "$extension"
-done
+#for extension in ${extensionslist}
+#do
+#    echo "$extension"
+#done
 
 
 ;;

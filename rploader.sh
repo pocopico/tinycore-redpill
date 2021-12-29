@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author : 
-# Date :
-# Version :
+# Date : 211229
+# Version : 0.2.1
 #
 #
 # User Variables :
 
-rploaderver="0.2"
+rploaderver="0.2.1"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"

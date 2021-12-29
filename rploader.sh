@@ -748,6 +748,16 @@ gitdownload
 build)
 
 getvars $2
+
+if  [ -z "$TARGET_PLATFORM" ] || [ -z  "$TARGET_VERSION" ] || [ -z "$TARGET_REVISION" ]; then
+
+echo "Error : Platform not found "
+showhelp
+exit 99
+
+fi
+
+
 checkinternet
 getlatestrploader
 gitdownload

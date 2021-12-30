@@ -729,7 +729,7 @@ function listextension() {
 		
 		echo "Found matching extension : "
 		echo $matchingextension
-		./redpill-load/ext-manager.sh add $matchingextension
+		./redpill-load/ext-manager.sh add "${matchingextension//\"}"
 		fi 
 	
 	extensionslist+="${matchingextension} "

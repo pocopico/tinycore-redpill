@@ -563,9 +563,6 @@ function listpci( ){
 
         #echo "PCI : $bus Class : $class Vendor: $vendor Device: $device"
         case $class in
-            0200)
-            echo "Found Ethernet Interface : pciid ${vendor}d0000${device} Required Extension : $(matchpciidmodule ${vendor} ${device} )"
-            ;;
             0100)
             echo "Found SCSI Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
             ;;
@@ -574,6 +571,9 @@ function listpci( ){
             ;;
             0107)
             echo "Found SAS Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+            ;;
+            0200)
+            echo "Found Ethernet Interface : pciid ${vendor}d0000${device} Required Extension : $(matchpciidmodule ${vendor} ${device} )"
             ;;
             0300)
             echo "Found VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"

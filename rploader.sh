@@ -746,7 +746,7 @@ case $1 in
         checkinternet
         gitdownload
 		
-			if [ "$3" = "auto "] ; then 
+			if [ "$3" = "auto" ] ; then 
 			listmodules
 			else 
 			ext_manager $@ # instead of listmodules

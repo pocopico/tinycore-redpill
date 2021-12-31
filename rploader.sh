@@ -578,6 +578,9 @@ function listpci( ){
             0300)
             echo "Found VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
             ;;
+			0c04)
+            echo "Found Fibre Channel Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+            ;;
         esac
     done
 

@@ -212,13 +212,13 @@ Actions: build, ext, auto, run, clean
 
 - ext:      Manage extensions, options go after platform (add/force_add/info/remove/update/cleanup/auto)
 
-example: 
-
-rploader.sh ext apollolake-7.0.1-42218 add https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/rpext-index.json
-
-or for auto detect use 
-
-rploader.sh ext apollolake-7.0.1-42218 auto 
+            example: 
+            
+            rploader.sh ext apollolake-7.0.1-42218 add https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/rpext-index.json
+            
+            or for auto detect use 
+            
+            rploader.sh ext apollolake-7.0.1-42218 auto 
 
 - download: Download redpill sources only
 

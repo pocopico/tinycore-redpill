@@ -896,7 +896,13 @@ case $1 in
 		fi
         ;;
 	interactive)
+	    if [ -f interactive.sh ] ; then 
 	    . ./interactive.sh
+		else
+		#curl --location --progress "https://github.com/pocopico/tinycore-redpill/raw/main/interactive.sh" --output interactive.sh
+		#. ./interactive.sh
+		exit 99
+	    fi 
 		;;
 		
     *)

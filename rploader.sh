@@ -895,6 +895,10 @@ case $1 in
 		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221"
 		fi
         ;;
+	interactive)
+	    . ./interactive.sh
+		;;
+		
     *)
         showhelp
         exit 99

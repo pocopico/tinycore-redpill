@@ -2,12 +2,12 @@
 #
 # Author : 
 # Date : 211229021
-# Version : 0.2.3
+# Version : 0.3.1
 #
 #
 # User Variables :
 
-rploaderver="0.2.3"
+rploaderver="0.3.1"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
@@ -15,6 +15,117 @@ modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 
 # END Do not modify after this line
 ######################################################################################################
+
+
+function beginArray() {
+
+case $1 in 
+
+
+DS3615xs)
+permanent="LWN"
+serialstart="1130 1230 1330 1430"
+;;
+DS3617xs)
+permanent="ODN"
+serialstart="1130 1230 1330 1430"
+;;
+DS916+)
+permanent="NZN"
+serialstart="1130 1230 1330 1430"
+;;
+DS918+)
+permanent="PDN"
+serialstart="1780 1790 1860 1980"
+;;
+DS920+)
+permanent="SBR"
+serialstart="2030 2040 20C0 2150"
+;;
+DVA3219)
+permanent="RFR"
+serialstart="1930 1940"
+;;
+DVA3221)
+permanent="SJR"
+serialstart="2030 2040 20C0 2150"
+;;
+
+esac
+
+}
+
+
+function random() {
+     	 printf "%06d" $(($RANDOM %30000 +1 ))
+}
+function randomhex() {
+     val=$(( $RANDOM %255 +1)) 
+     echo "obase=16; $val" | bc
+}
+
+function generateRandomLetter() {
+	 for i in a b c d e f g h j k l m n p q r s t v w x y z
+	 do echo $i
+	 done | sort -R|tail -1
+}
+
+
+function generateRandomValue() {
+	 for i in 0 1 2 3 4 5 6 7 8 9 a b c d e f g h j k l m n p q r s t v w x y z
+	 do echo $i
+	 done | sort -R|tail -1
+}
+
+function toupper() {
+
+echo $1 | tr '[:lower:]' '[:upper:]'
+
+}
+
+
+function generateMacAddress() {
+
+#toupper "Mac Address: 00:11:32:$(randomhex):$(randomhex):$(randomhex)"
+printf '00:11:32:%02X:%02X:%02X' $[RANDOM%256]  $[RANDOM%256]  $[RANDOM%256]
+
+}
+
+function generateSerial(){
+
+	beginArray $1
+
+	case $1 in 
+
+DS3615xs)
+serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
+;;
+DS3617xs)
+serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
+;;
+DS916+)
+serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
+;;
+DS918+)
+serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
+;;
+DS920+)
+serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+;;
+DVA3219)
+serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+;;
+DVA3221)
+serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+;;
+
+esac
+
+	echo $serialnum
+
+}
+
+
 
 
 function prepareforcompile() {

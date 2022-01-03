@@ -131,6 +131,11 @@ EOF
 if [ -z "$1" ] ; then 
 showhelp
 else
-echo "Generating a random mac address : " $(generateMacAddress)
-echo "Generating a Serial Number for Model $1: " $(generateSerial $1)
+     if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
+     echo "Generating a random mac address : " $(generateMacAddress)
+     echo "Generating a Serial Number for Model $1: " $(generateSerial $1)
+	 else 
+	 echo "Error : $1 is not an available model for serial number generation. "
+	 echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221"
+	 fi
 fi

@@ -316,28 +316,32 @@ Version : $rploaderver
 ----------------------------------------------------------------------------------------
 Usage: ${0} <action> <platform version> <static or compile module> [extension manager arguments]
 
-Actions: build, ext, auto, run, clean
+Actions: build, ext, download, clean, update, listmod, serialgen
 
-- build:    Build the 💊 RedPill LKM and update the loader image for the specified 
-            platform version and update current loader.
-
-- ext:      Manage extensions, options go after platform (add/force_add/info/remove/update/cleanup/auto)
-
-            example: 
-            
-            rploader.sh ext apollolake-7.0.1-42218 add https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/rpext-index.json
-            
-            or for auto detect use 
-            
-            rploader.sh ext apollolake-7.0.1-42218 auto 
-
-- download: Download redpill sources only
-
-- clean:    Removes all cached files and starts over
-
-- update:   Checks github repo for latest version of rploader 
-
-- listmods  Tries to figure out required extensions
+- build:     Build the 💊 RedPill LKM and update the loader image for the specified 
+             platform version and update current loader.
+			 
+- ext:       Manage extensions, options go after platform (add/force_add/info/remove/update/cleanup/auto)
+			 
+             example: 
+             
+             rploader.sh ext apollolake-7.0.1-42218 add https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/rpext-index.json
+             
+             or for auto detect use 
+             
+             rploader.sh ext apollolake-7.0.1-42218 auto 
+			 
+- download:  Download redpill sources only
+			 
+- clean:     Removes all cached files and starts over
+			 
+- update:    Checks github repo for latest version of rploader 
+			 
+- listmods:  Tries to figure out required extensions
+			 
+- serialgen: Generates a serial number and mac address for the following platforms 
+             
+             DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221
 
 Available platform versions:
 ----------------------------------------------------------------------------------------
@@ -882,7 +886,15 @@ case $1 in
         listmodules
         echo "$extensionslist"
         ;;
-
+	serialgen)
+	    if [ "$2" = "DS3615xs" ] || [ "$2" = "DS3617xs" ] || [ "$2" = "DS916+" ] || [ "$2" = "DS918+" ] || [ "$2" = "DS920+" ] || [ "$2" = "DVA3219" ] || [ "$2" = "DVA3221" ] ; then
+        echo "Serial Number for Model : $(generateSerial $2)"
+		echo "Mac Address for Model $2 : $(generateMacAddress $2)" 
+		else
+		echo "Error : $2 is not an available model for serial number generation. "
+		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221"
+		fi
+        ;;
     *)
         showhelp
         exit 99

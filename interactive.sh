@@ -41,17 +41,11 @@ return "Return to main menu" 2>"${INPUT}"
 menuitem=$(<"${INPUT}")
 # make decsion 
 case $menuitem in
-	auto) dialog --msgbox "$(listmodules)" 40 60 ;;
+	auto) dialog --msgbox "$(listmodules)" 80 60 ;;
     add ) ;;
     remove) ;;
-    update) 
-	/home/tc/redpill-load/ext-manager.sh update 2>&1 > $OUTPUT
-	dialog --msgbox "`cat $OUTPUT`" 40 60 
-	;;
-    info)
-	/home/tc/redpill-load/ext-manager.sh info 2>&1 > $OUTPUT
-	dialog --msgbox "`cat $OUTPUT`" 20 50 
-	;;
+    update) dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh update`" 80 60  	;;
+    info) 	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh info`" 80 60 	;;
 	return) echo "mainmenu"; return ;;
 esac
 
@@ -82,25 +76,25 @@ menuitem=$(<"${INPUT}")
 # make decsion 
 case $menuitem in
     DS3615xs) 
-	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\n Mac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
+	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\nMac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
 	;;                                                     
     DS3617xs)                                              
-	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\n Mac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
+	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\nMac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
 	;;                                                    
     DS916+)                                               
-	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\n Mac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
+	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\nMac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
 	;;                                                    
     DS918+)                                               
-	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\n Mac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
+	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\nMac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
 	;;                                                    
     DS920+)                                               
-	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\n Mac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
+	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\nMac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
 	;;                                                    
     DVA3219)                                              
-	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\n Mac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
+	msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\nMac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
 	;;                                                    
     DVA3221)                                              
-    msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\n Mac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
+    msgbox "Serial Number for Model $menuitem : $(generateSerial $menuitem)\nMac Address for Model $menuitem : $(generateMacAddress $menuitem)"  10 70
 	;;
     info) dialog --msgbox "`ls . `" 20 50 ;;
 	return) echo "mainmenu"; return ;;

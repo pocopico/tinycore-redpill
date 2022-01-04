@@ -36,8 +36,8 @@ echo "Vendor ID : $vendorid Product ID : $productid"
 echo "Should i update the user_config.json with these values ? [Yy/Nn]"
 read answer
        if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-       sed -i '/"pid": "/c\    "pid": "$productid"' user_config.json
-       sed -i '/"vid": "/c\    "vid": "$vendorid"' user_config.json
+       sed -i "/\"pid\": \"/c\    \"pid\": \"$productid\"" user_config.json
+       sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"" user_config.json
        else
        echo "OK remember to update manually by editing user_config.json file"
        fi 
@@ -922,17 +922,17 @@ case $1 in
         ;;
 	serialgen)
 	    if [ "$2" = "DS3615xs" ] || [ "$2" = "DS3617xs" ] || [ "$2" = "DS916+" ] || [ "$2" = "DS918+" ] || [ "$2" = "DS920+" ] || [ "$2" = "DVA3219" ] || [ "$2" = "DVA3221" ] ; then
-        serialnum="$(generateSerial $2)"
+        serial="$(generateSerial $2)"
 		mac="$(generateMacAddress $2)"
-		echo "Serial Number for Model : $serialnum"
+		echo "Serial Number for Model : $serial"
 		echo "Mac Address for Model $2 : $mac " 
 		
         echo "Should i update the user_config.json with these values ? [Yy/Nn]"
         read answer
         if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-        sed -i '/"sn": "/c\    "sn": "$serialnum"' user_config.json
+        sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"" user_config.json
 		macaddress=`echo $mac | sed -s 's/://g'`
-        sed -i '/"mac1": "/c\    "mac1": "$macaddress"' user_config.json
+        sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"" user_config.json
         else
         echo "OK remember to update manually by editing user_config.json file"
         fi 

@@ -17,6 +17,77 @@ modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 ######################################################################################################
 
 
+
+
+function satamap(){
+
+let controller=0
+let diskidxmap=0
+
+if [ `lsscsi |grep -i vmware|wc -l` -gt 1 ] ; then
+echo "Running on VMware"
+echo "Possible working solution"
+echo "SataPortMap=1"
+echo "DiskIdxMap=00"
+else 
+     for hba in `lsscsi -Hv |grep pci |grep -v usb | cut -c 44-50 | uniq`
+     do
+	     if [ `lsscsi -Hv |grep "$hba" | grep ata | wc -l` -gt 0 ] ; then 
+         echo "HBA: $hba Disks : `lsscsi -Hv |grep "$hba" | wc -l`"
+         lsscsi -Hv |grep "$hba" | wc -l >> satamap.$$
+		 
+		    if [ $controller = 0 ] ; then 
+		    printf "%02X" $diskidxmap >> diskmap.$$
+		    else 
+		    let diskidxmap=$diskidxmap+`lsscsi -Hv |grep "$hba" | wc -l` ; printf "%02X" $diskidxmap >> diskmap.$$
+		    fi 
+			
+		 else
+		 
+		      if [ `lsscsi -Hv | grep -B 2 $hba | head -1 | awk '{print $2}' |grep vmw |wc -l` -gt 0 ] ; then 
+			  pcidev=`lsscsi -Hv | grep $hba | awk '{print $3}'`
+		      echo "HBA: $hba Disks : `ls -ltrd ${pcidev}/target* | wc -l`"
+		      ls -ltrd ${pcidev}/target* | wc -l >> satamap.$$
+		         if [ $controller = 0 ] ; then 
+		         printf "%02X" $diskidxmap >> diskmap.$$
+		         else 
+		         let diskidxmap=$diskidxmap+`lsscsi -Hv |grep "$hba" | wc -l` ; printf "%02X" $diskidxmap >> diskmap.$$
+		         fi 
+			  else 
+		      pcidev=`lsscsi -Hv | grep $hba | awk '{print $3}'`
+		      echo "HBA: $hba Disks : `ls -ltrd ${pcidev}/port* | wc -l`"
+		      ls -ltrd ${pcidev}/port* | wc -l >> satamap.$$
+		         if [ $controller = 0 ] ; then 
+		         printf "%02X" $diskidxmap >> diskmap.$$
+		         else 
+		         let diskidxmap=$diskidxmap+`lsscsi -Hv |grep "$hba" | wc -l` ; printf "%02X" $diskidxmap >> diskmap.$$
+		         fi 
+			  fi
+		 fi 
+		 let controller=$controller+1
+     done
+     
+     sataportmap=`cat satamap.$$ | tr -d '\n'`
+     diskidxmap=`cat diskmap.$$ | tr -d '\n'`
+     echo "SataPortMap=$sataportmap"
+     echo "DiskIdxMap=$diskidxmap"
+	 
+	 
+	echo "Should i update the user_config.json with these values ? [Yy/Nn]"
+	read answer
+       if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
+       sed -i "/\"SataPortMap\": \"/c\    \"SataPortMap\": \"$sataportmap\"" user_config.json
+       sed -i "/\"DiskIdxMap\": \"/c\    \"DiskIdxMap\": \"$diskidxmap\"" user_config.json
+       else
+       echo "OK remember to update manually by editing user_config.json file"
+       fi 
+     
+     rm satamap.$$
+	 rm diskmap.$$
+fi
+
+}
+
 function usbidentify(){
 
 loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
@@ -45,6 +116,31 @@ else
 echo "Sorry, no usb disk could be identified"
 rm /tmp/lsusb.out
 fi
+
+}
+
+function serialgen(){
+
+	    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
+        serial="$(generateSerial $1)"
+		mac="$(generateMacAddress $1)"
+		echo "Serial Number for Model : $serial"
+		echo "Mac Address for Model $1 : $mac " 
+		
+        echo "Should i update the user_config.json with these values ? [Yy/Nn]"
+        read answer
+        if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
+        sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"" user_config.json
+		macaddress=`echo $mac | sed -s 's/://g'`
+        sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"" user_config.json
+        else
+        echo "OK remember to update manually by editing user_config.json file"
+        fi 
+		
+		else
+		echo "Error : $2 is not an available model for serial number generation. "
+		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221"
+		fi
 
 }
 
@@ -376,6 +472,8 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb
              DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221
 			 
 - identifyusb: Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
+
+- satamap: Tries to identify your SataPortMap and DiskIdxMap values and updates the user_config.json file 
 
 Available platform versions:
 ----------------------------------------------------------------------------------------
@@ -921,26 +1019,7 @@ case $1 in
         echo "$extensionslist"
         ;;
 	serialgen)
-	    if [ "$2" = "DS3615xs" ] || [ "$2" = "DS3617xs" ] || [ "$2" = "DS916+" ] || [ "$2" = "DS918+" ] || [ "$2" = "DS920+" ] || [ "$2" = "DVA3219" ] || [ "$2" = "DVA3221" ] ; then
-        serial="$(generateSerial $2)"
-		mac="$(generateMacAddress $2)"
-		echo "Serial Number for Model : $serial"
-		echo "Mac Address for Model $2 : $mac " 
-		
-        echo "Should i update the user_config.json with these values ? [Yy/Nn]"
-        read answer
-        if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-        sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"" user_config.json
-		macaddress=`echo $mac | sed -s 's/://g'`
-        sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"" user_config.json
-        else
-        echo "OK remember to update manually by editing user_config.json file"
-        fi 
-		
-		else
-		echo "Error : $2 is not an available model for serial number generation. "
-		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221"
-		fi
+        serialgen $2
         ;;
 	interactive)
 	    if [ -f interactive.sh ] ; then 
@@ -953,6 +1032,9 @@ case $1 in
 		;;
     identifyusb)
         usbidentify
+		;;
+	satamap)
+	    satamap
 		;;
 	
     *)

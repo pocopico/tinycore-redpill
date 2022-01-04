@@ -41,11 +41,11 @@ return "Return to main menu" 2>"${INPUT}"
 menuitem=$(<"${INPUT}")
 # make decsion 
 case $menuitem in
-	auto) dialog --msgbox "$(listmodules)" 30 70 ;;
-    add ) dialog --form "Please enter download URL" 60 40 2 "URL:" 1 1 "" 1 12 15 0 ;;
-    remove) dialog --form "Please enter download URL" 60 40 2 "URL:" 1 1 "" 1 12 15 0  ;;
-    update) dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh update 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 70  ;;
-    info) 	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh info 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 70 	;;
+	auto) dialog --msgbox "$(listmodules)" 20 70 ;;
+    add ) dialog --form "Please enter download URL" 20 40 2 "URL:" 1 1 "" 1 12 15 0 ;;
+    remove) dialog --form "Please enter download URL" 20 40 2 "URL:" 1 1 "" 1 12 15 0  ;;
+    update) dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh update 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 20 70  ;;
+    info) 	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh info 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 20 70 	;;
 	return) echo "mainmenu"; return ;;
 esac
 

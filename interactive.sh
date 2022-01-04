@@ -44,8 +44,8 @@ case $menuitem in
 	auto) dialog --msgbox "$(listmodules)" 60 70 ;;
     add ) ;;
     remove) ;;
-    update) dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh update 2>&1`" 60 70  ;;
-    info) 	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh info 2>&1`" 60 70 	;;
+    update) dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh update 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 60 70  ;;
+    info) 	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh info 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 60 70 	;;
 	return) echo "mainmenu"; return ;;
 esac
 

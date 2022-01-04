@@ -48,9 +48,18 @@ case $menuitem in
 	;;
     remove) 
     (let num=0 ; for item in `find /home/tc/redpill-load/custom/extensions/* -type d  | awk -F\/ '{print $7}'` ; do  let num=$num+1 ; echo "$item $num off" ; done) >$OUTPUT
-	dialog --radiolist "Remove" 20 90 10 `cat $OUTPUT` 2>$OUTPUT
-	ext=$(<$OUTPUT)
-	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh remove $ext 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90
+	      if [ `wc -l $OUTPUT` -gt 0 ] ; then
+	         dialog --radiolist "Remove" 20 90 10 `cat $OUTPUT` 2>$OUTPUT
+	         ext=$(<$OUTPUT)
+			      if [ `wc -l $OUTPUT` -gt 0 ] ; then 
+	              dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh remove $ext 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90
+	              rm $OUTPUT
+			      else 
+			      return
+			      fi
+		  else
+		  return	
+		  fi 
 	;;
     update) dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh update 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90  ;;
     info) 	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh info 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90 	;;

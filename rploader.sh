@@ -76,7 +76,7 @@ else
 	echo "Should i update the user_config.json with these values ? [Yy/Nn]"
 	read answer
        if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-       sed -i "/\"SataPortMap\": \"/c\    \"SataPortMap\": \"$sataportmap\"" user_config.json
+       sed -i "/\"SataPortMap\": \"/c\    \"SataPortMap\": \"$sataportmap\"," user_config.json
        sed -i "/\"DiskIdxMap\": \"/c\    \"DiskIdxMap\": \"$diskidxmap\"" user_config.json
        else
        echo "OK remember to update manually by editing user_config.json file"
@@ -107,8 +107,8 @@ echo "Vendor ID : $vendorid Product ID : $productid"
 echo "Should i update the user_config.json with these values ? [Yy/Nn]"
 read answer
        if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-       sed -i "/\"pid\": \"/c\    \"pid\": \"$productid\"" user_config.json
-       sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"" user_config.json
+       sed -i "/\"pid\": \"/c\    \"pid\": \"$productid\"," user_config.json
+       sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"," user_config.json
        else
        echo "OK remember to update manually by editing user_config.json file"
        fi 
@@ -130,9 +130,9 @@ function serialgen(){
         echo "Should i update the user_config.json with these values ? [Yy/Nn]"
         read answer
         if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-        sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"" user_config.json
+        sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"," user_config.json
 		macaddress=`echo $mac | sed -s 's/://g'`
-        sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"" user_config.json
+        sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"," user_config.json
         else
         echo "OK remember to update manually by editing user_config.json file"
         fi 

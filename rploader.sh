@@ -922,16 +922,16 @@ case $1 in
         ;;
 	serialgen)
 	    if [ "$2" = "DS3615xs" ] || [ "$2" = "DS3617xs" ] || [ "$2" = "DS916+" ] || [ "$2" = "DS918+" ] || [ "$2" = "DS920+" ] || [ "$2" = "DVA3219" ] || [ "$2" = "DVA3221" ] ; then
-        serial="$(generateSerial $2)"
+        serialnum="$(generateSerial $2)"
 		mac="$(generateMacAddress $2)"
-		echo "Serial Number for Model : $serial"
+		echo "Serial Number for Model : $serialnum"
 		echo "Mac Address for Model $2 : $mac " 
 		
         echo "Should i update the user_config.json with these values ? [Yy/Nn]"
         read answer
         if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-        sed -i '/"sn": "/c\    "sn": "$serial"' user_config.json
-        sed -i '/"mac": "/c\    "mac1": "$mac"' user_config.json
+        sed -i '/"sn": "/c\    "sn": "$serialnum"' user_config.json
+        sed -i '/"mac1": "/c\    "mac1": "$mac"' user_config.json
         else
         echo "OK remember to update manually by editing user_config.json file"
         fi 

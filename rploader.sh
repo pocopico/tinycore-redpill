@@ -17,6 +17,38 @@ modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 ######################################################################################################
 
 
+function usbidentify(){
+
+loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
+
+sudo lsusb -v  2>&1|grep -B 33 -A 52 SCSI > /tmp/lsusb.out
+
+usblist=`grep -B 33 -A 52 SCSI   /tmp/lsusb.out` 
+vendorid=`grep -B 33 -A 52 SCSI  /tmp/lsusb.out |grep -i idVendor  | awk '{print $2}'`
+productid=`grep -B 33 -A 52 SCSI /tmp/lsusb.out |grep -i idProduct | awk '{print $2}'`
+usbdevice="`grep iManufacturer /tmp/lsusb.out | awk '{print $3}'` `grep iProduct /tmp/lsusb.out | awk '{print $3}' ` SerialNumber: `grep iSerial /tmp/lsusb.out | awk '{print $3}'`"
+
+
+if [ -n "$usbdevice" ] && [ -n "$vendorid" ] && [ -n "$productid" ] ; then 
+echo "Found $usbdevice"
+echo "Vendor ID : $vendorid Product ID : $productid"
+
+echo "Should i update the user_config.json with these values ? [Yy/Nn]"
+read answer
+       if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
+       sed -i '/"pid": "/c\    "pid": "$productid"' user_config.json
+       sed -i '/"vid": "/c\    "vid": "vendorid"' user_config.json
+       else
+       echo "OK remember to update manually by editing user_config.json file"
+       fi 
+else
+echo "Sorry, no usb disk could be identified"
+rm /tmp/lsusb.out
+fi
+
+}
+
+
 function beginArray() {
 
 case $1 in 
@@ -316,7 +348,7 @@ Version : $rploaderver
 ----------------------------------------------------------------------------------------
 Usage: ${0} <action> <platform version> <static or compile module> [extension manager arguments]
 
-Actions: build, ext, download, clean, update, listmod, serialgen
+Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb
 
 - build:     Build the 💊 RedPill LKM and update the loader image for the specified 
              platform version and update current loader.
@@ -342,6 +374,8 @@ Actions: build, ext, download, clean, update, listmod, serialgen
 - serialgen: Generates a serial number and mac address for the following platforms 
              
              DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221
+			 
+- identifyusb: Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
 
 Available platform versions:
 ----------------------------------------------------------------------------------------
@@ -899,12 +933,15 @@ case $1 in
 	    if [ -f interactive.sh ] ; then 
 	    . ./interactive.sh
 		else
-		#curl --location --progress "https://github.com/pocopico/tinycore-redpill/raw/main/interactive.sh" --output interactive.sh
+		#curl --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/main/interactive.sh" --output interactive.sh
 		#. ./interactive.sh
 		exit 99
 	    fi 
 		;;
-		
+    identifyusb)
+        usbidentify
+		;;
+	
     *)
         showhelp
         exit 99

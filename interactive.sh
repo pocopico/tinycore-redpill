@@ -4,6 +4,9 @@ OUTPUT=/tmp/output.sh.$$
 
 BACKTITLE="RedPill Loader : $TARGET_PLATFORM $TARGET_VERSION $TARGET_REVISION"
 
+[[ "$(which dialog)_" == "_" ]] &&  tce-load -wi dialog
+ 
+
 function buildmenu(){
 
 dialog --clear --help-button \

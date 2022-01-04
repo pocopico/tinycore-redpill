@@ -41,9 +41,9 @@ return "Return to main menu" 2>"${INPUT}"
 menuitem=$(<"${INPUT}")
 # make decsion 
 case $menuitem in
-	auto) dialog --msgbox "$(listmodules)" 60 70 ;;
-    add ) ;;
-    remove) ;;
+	auto) dialog --msgbox "$(listmodules)" 60 30 ;;
+    add ) dialog --form "Please enter download URL" 60 40 2 "URL:" 1 1 "" 1 12 15 0 ;;
+    remove) dialog --form "Please enter download URL" 60 40 2 "URL:" 1 1 "" 1 12 15 0  ;;
     update) dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh update 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 60 70  ;;
     info) 	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh info 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 60 70 	;;
 	return) echo "mainmenu"; return ;;

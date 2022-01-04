@@ -41,11 +41,11 @@ return "Return to main menu" 2>"${INPUT}"
 menuitem=$(<"${INPUT}")
 # make decsion 
 case $menuitem in
-	auto) echo "Build" ;;
+	auto) dialog --msgbox "$(listmodules)" 20 50 ;;
     add ) ;;
     remove) ;;
-    update) ;;
-    info) dialog --msgbox "`ls . `" 20 50 ;;
+    update) dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh update `" 20 50 ;;
+    info) dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh info `" 20 50 ;;
 	return) echo "mainmenu"; return ;;
 esac
 

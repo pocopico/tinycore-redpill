@@ -931,7 +931,8 @@ case $1 in
         read answer
         if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
         sed -i '/"sn": "/c\    "sn": "$serialnum"' user_config.json
-        sed -i '/"mac1": "/c\    "mac1": "$mac"' user_config.json
+		macaddress=`echo $mac | sed -s 's/://g'`
+        sed -i '/"mac1": "/c\    "mac1": "$macaddress"' user_config.json
         else
         echo "OK remember to update manually by editing user_config.json file"
         fi 

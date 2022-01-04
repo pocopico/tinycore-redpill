@@ -43,10 +43,15 @@ menuitem=$(<"${INPUT}")
 case $menuitem in
 	auto) dialog --msgbox "$(listmodules)" 30 90 ;;
     add ) 
-	dialog --inputbox "Please enter download URL" 10 90 "URL:" 2>$OUTPUT 
+	dialog --inputbox "Please enter download URL" 10 90 "http://" 2>$OUTPUT 
 	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh add $(<$OUTPUT) 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90
 	;;
-    remove) dialog --form "Please enter download URL" 10 90 2 "URL:" 1 1 "" 1 99 999 0  ;;
+    remove) 
+    (let num=0 ; for item in `find /home/tc/redpill-load/custom/extensions/* -type d  | awk -F\/ '{print $7}'` ; do  let num=$num+1 ; echo "$item $num off" ; done) >$OUTPUT
+	dialog --radiolist "Remove" 20 90 10 `cat $OUTPUT` 2>$OUTPUT
+	ext=$(<$OUTPUT)
+	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh remove $ext 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90
+	;;
     update) dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh update 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90  ;;
     info) 	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh info 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90 	;;
 	return) echo "mainmenu"; return ;;

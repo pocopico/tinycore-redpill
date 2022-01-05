@@ -565,6 +565,15 @@ function getstaticmodule() {
 function buildloader() {
 
     cd /home/tc 
+	
+    echo -n "Checking user_config.json : "
+    if jq -s . user_config.json > /dev/null ; then
+    echo "Done"
+    else
+    echo "Error : Problem found in user_config.json"
+    exit 99
+    fi
+	
 
     curl -s --progress-bar --location https://packages.slackonly.com/pub/packages/14.1-x86_64/development/bsdiff/bsdiff-4.3-x86_64-1_slack.txz --output bsdiff.txz
     cd /

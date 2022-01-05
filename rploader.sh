@@ -112,17 +112,34 @@ fi
 
 function usbidentify(){
 
+
 loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
 
-lsusb -v  2>&1|grep -B 33 -A 52 SCSI > /tmp/lsusb.out
+lsusb -v  2>&1|grep -B 33 -A 1 SCSI > /tmp/lsusb.out
 
-usblist=`grep -B 33 -A 52 SCSI   /tmp/lsusb.out` 
-vendorid=`grep -B 33 -A 52 SCSI  /tmp/lsusb.out |grep -i idVendor  | awk '{print $2}'`
-productid=`grep -B 33 -A 52 SCSI /tmp/lsusb.out |grep -i idProduct | awk '{print $2}'`
+
+usblist=`grep -B 33 -A 1 SCSI   /tmp/lsusb.out`
+vendorid=`grep -B 33 -A 1 SCSI  /tmp/lsusb.out |grep -i idVendor  | awk '{print $2}'`
+productid=`grep -B 33 -A 1 SCSI /tmp/lsusb.out |grep -i idProduct | awk '{print $2}'`
+
+if [ `echo $vendorid | wc -w` -gt 1 ] ; then
+echo "Found more than one USB disk devices, please select which one is your loader on"
+usbvendor=$(for item in $vendorid  ; do grep $item /tmp/lsusb.out |awk '{print $3}';done)
+select usbdev in $usbvendor
+do
+vendorid=`grep -B 10 -A 10 $usbdev /tmp/lsusb.out |grep idVendor | grep $usbdev |awk '{print $2}'`
+productid=`grep -B 10 -A 10 $usbdev /tmp/lsusb.out | grep -A 1 idVendor  | grep idProduct |  awk '{print $2}'`
+echo "Selected Device : $usbdev , with VendorID: $vendorid and ProductID: $productid"
+break
+done
+else
 usbdevice="`grep iManufacturer /tmp/lsusb.out | awk '{print $3}'` `grep iProduct /tmp/lsusb.out | awk '{print $3}' ` SerialNumber: `grep iSerial /tmp/lsusb.out | awk '{print $3}'`"
+fi
+
+usbdevice="$usbdev  `grep -B 10 -A 10 $usbdev /tmp/lsusb.out | grep iProduct | awk '{print $3}'` Serial Number : `grep -B 10 -A 10 $usbdev /tmp/lsusb.out | grep iSerial | awk '{print $3}'`"
 
 
-if [ -n "$usbdevice" ] && [ -n "$vendorid" ] && [ -n "$productid" ] ; then 
+if [ -n "$usbdevice" ] && [ -n "$vendorid" ] && [ -n "$productid" ] ; then
 echo "Found $usbdevice"
 echo "Vendor ID : $vendorid Product ID : $productid"
 
@@ -133,7 +150,7 @@ read answer
        sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"," user_config.json
        else
        echo "OK remember to update manually by editing user_config.json file"
-       fi 
+       fi
 else
 echo "Sorry, no usb disk could be identified"
 rm /tmp/lsusb.out

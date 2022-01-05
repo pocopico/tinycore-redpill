@@ -2,8 +2,6 @@
 INPUT=/tmp/menu.sh.$$
 OUTPUT=/tmp/output.sh.$$
 
-BACKTITLE="RedPill Loader : $TARGET_PLATFORM $TARGET_VERSION $TARGET_REVISION"
-
 [[ "$(which dialog)_" == "_" ]] &&  tce-load -wi dialog
  
 
@@ -18,7 +16,15 @@ return "Return to main menu" 2>"${INPUT}"
 menuitem=$(<"${INPUT}")
 # make decsion 
 case $menuitem in
-	build)   getvars $TARGET_PLATFORM-$TARGET_VERSION-$TARGET_REVISION ;  checkinternet ; getlatestrploader ; gitdownload ;;
+	build)   
+	        getvars $TARGET_PLATFORM-$TARGET_VERSION-$TARGET_REVISION ;  checkinternet ; getlatestrploader ; gitdownload    
+        	echo "Using static compiled redpill extension"
+            getstaticmodule
+            echo "Got $REDPILL_MOD_NAME "
+            listmodules
+            echo "Starting loader creation "
+            buildloader
+ ;;
 	return) echo "mainmenu"; return ;;
 
 esac
@@ -26,13 +32,21 @@ esac
 
 }
 
-function extmenu(){
+function extmenu(){ 
+
+if [ ! -d /home/tc/redpill-load ] || [ ! -d /home/tc/redpill-lkm ] ; then 
+	dialog --msgbox "No loader directoy exists, please download first " 30 90
+	return
+	else 
+	continue
+	fi
 
 dialog --clear --help-button \
 --backtitle "$BACKTITLE" \
 --menu "Choose the option" 18 45 45 \
 auto "Auto add extensions" \
 add "Auto add extensions" \
+addlist "Select extensions from a list" \
 remove "Auto add extensions" \
 update "Update extensions" \
 info "Get information about installed extensions" \
@@ -46,13 +60,25 @@ case $menuitem in
 	dialog --inputbox "Please enter download URL" 10 90 "http://" 2>$OUTPUT 
 	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh add $(<$OUTPUT) 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90
 	;;
+	addlist)
+	LIST=`jq  ". | select(.id )  .info.name, .info.description" rpext-index.json | sed -s 's/ /_/g' | sed -s 's/"/ /g' | awk '{printf (NR%2==0) ? $0 "\n" : $0}' |  sed -s 's/""/" "/g' |sed -s 's/$/ "off" /'`
+    dialog --checklist "Select extensions from the list" 25 120 20 $LIST 2>$OUTPUT
+	for ext in `cat $OUTPUT` 
+	do
+	dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh add https://raw.githubusercontent.com/pocopico/rp-ext/master/$ext/rpext-index.json 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90 ; sleep 1
+	done
+    ;;
+	
     remove) 
-    (let num=0 ; for item in `find /home/tc/redpill-load/custom/extensions/* -type d  | awk -F\/ '{print $7}'` ; do  let num=$num+1 ; echo "$item $num off" ; done) >$OUTPUT
-	      if [ `wc -l $OUTPUT` -gt 0 ] ; then
-	         dialog --radiolist "Remove" 20 90 10 `cat $OUTPUT` 2>$OUTPUT
-	         ext=$(<$OUTPUT)
-			      if [ `wc -l $OUTPUT` -gt 0 ] ; then 
+	LIST=$(let num=0 ; for item in `find /home/tc/redpill-load/custom/extensions/* -type d  | awk -F\/ '{print $7}'` ; do let num=$num+1 ; echo "$item $num off" ; done)
+             if [ `echo $LIST |wc -w` -gt 1 ] ; then
+	         dialog --checklist "Remove" 20 90 10 $LIST 2>$OUTPUT
+	         #ext=$(<$OUTPUT)
+			      if [ `cat $OUTPUT |wc -w` -gt 0 ] ; then 
+				  for ext in $(<$OUTPUT) 
+				  do
 	              dialog --msgbox "`/home/tc/redpill-load/ext-manager.sh remove $ext 2>&1 | sed "s,\x1B\[[0-9;]*[a-zA-Z],,g"`" 30 90
+				  done
 	              rm $OUTPUT
 			      else 
 			      return
@@ -141,24 +167,26 @@ Exit "Exit to shell" 2>"${INPUT}"
 
 menuitem=$(<"${INPUT}")
 
-# make decsion 
 case $menuitem in
 	build) buildmenu ;;
 	ext) extmenu ;;
-	download)    getvars $TARGET_PLATFORM-$TARGET_VERSION-$TARGET_REVISION ;  checkinternet ; gitdownload  ;;
-	listmods) msgbox $(listmodules) 20 50 ; echo "$extensionslist" ;;
+	download)  dialog --msgbox "`getvars $TARGET_PLATFORM-$TARGET_VERSION-$TARGET_REVISION ;  checkinternet ; gitdownload`" 30 90  ;;
+	listmods) msgbox "$(listmodules) 2>&1" 30 90 ; echo "$extensionslist" ;;
 	serialgen) serialgenmenu ;;
 	update) checkinternet ; getlatestrploader ;;
 	clean) cleanloader ; break ;;
 	Exit) echo "Bye"; break;;
-	Cancel) echo "Bye"; break;;
 esac
 
 done
 
 }
 
-dialog --backtitle "RedPill Loader 💊" --infobox "Welcome to RedPill 💊 Loader Interactive" 3 45 ; sleep 2
+dialog --backtitle "RedPill Loader" --infobox "Welcome to Tinycore RedPill Loader Interactive" 3 45 ; sleep 1
+
+getvars $2
+
+BACKTITLE="RedPill Loader : $TARGET_PLATFORM $TARGET_VERSION $TARGET_REVISION"
 
 mainmenu
 

@@ -25,7 +25,7 @@
             },
             "redpill_load": {
                 "source_url": "https://github.com/jumkey/redpill-load.git",
-                "branch": "master"
+                "branch": "develop"
             },
             "add_extensions": [
             ]

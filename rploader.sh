@@ -2,12 +2,12 @@
 #
 # Author : 
 # Date : 22010502
-# Version : 0.4.1
+# Version : 0.4.2
 #
 #
 # User Variables :
 
-rploaderver="0.4.1"
+rploaderver="0.4.2"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
@@ -17,6 +17,28 @@ modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 ######################################################################################################
 
 
+function backup(){
+
+loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
+homesize=`du -sh /home/tc | awk '{print $1}'`
+
+echo "Please make sure you are using the latest 1GB img before using backup option"
+echo "Current /home/tc size is $homesize , try to keep it less than 1GB as it might not fit into your image"
+
+echo "Should i update the $loaderdisk with your current files [Yy/Nn]"
+	read answer
+       if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
+       echo -n "Backing up home files to $loaderdisk : "
+	        if filetool.sh -b ${loaderdisk}3 ; then 
+	        echo ""
+			else 
+			echo "Error: Couldn't backup files"
+			fi
+       else
+       echo "OK, keeping last status"
+       fi 
+
+}
 
 
 function satamap(){
@@ -475,6 +497,8 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb
 
 - satamap: Tries to identify your SataPortMap and DiskIdxMap values and updates the user_config.json file 
 
+- backup:   Backup and make changes /home/tc changed permanent to your loader disk
+
 Available platform versions:
 ----------------------------------------------------------------------------------------
 $(getPlatforms)
@@ -731,7 +755,7 @@ function getlatestrploader() {
             cp -f /home/tc/latestrploader.sh /home/tc/rploader.sh
             loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
             echo "Updating tinycore loader with latest updates"
-            cleanloader 
+            #cleanloader 
             filetool.sh -b ${loaderdisk}3
             exit
         else
@@ -1045,7 +1069,9 @@ case $1 in
 	satamap)
 	    satamap
 		;;
-	
+	backup)
+	    backup
+		;;	
     *)
         showhelp
         exit 99

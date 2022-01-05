@@ -753,12 +753,14 @@ function getlatestrploader() {
         if [ "$confirmation" = "y" ] || [ "$confirmation" = "Y" ] ; then
             echo "OK, updating, please re-run after updating"
             cp -f /home/tc/latestrploader.sh /home/tc/rploader.sh
+			rm -f /home/tc/latestrploader.sh
             loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
             echo "Updating tinycore loader with latest updates"
             #cleanloader 
             filetool.sh -b ${loaderdisk}3
             exit
         else
+		    rm -f /home/tc/latestrploader.sh
             return
         fi
     else 

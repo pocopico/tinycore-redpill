@@ -114,7 +114,7 @@ function usbidentify(){
 
 loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
 
-lsusb -v  2>&1|grep -B 33 -A 52 SCSI > /tmp/lsusb.out
+sudo lsusb -v  2>&1|grep -B 33 -A 52 SCSI > /tmp/lsusb.out
 
 usblist=`grep -B 33 -A 52 SCSI   /tmp/lsusb.out` 
 vendorid=`grep -B 33 -A 52 SCSI  /tmp/lsusb.out |grep -i idVendor  | awk '{print $2}'`

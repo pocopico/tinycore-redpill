@@ -773,6 +773,13 @@ function getlatestrploader() {
 
 function getvars() { 
 
+	if grep -q ^flags.*\ hypervisor\  /proc/cpuinfo ; then
+    MACHINE="VIRTUAL"
+    HYPERVISOR=`dmesg |grep -i "Hypervisor detected" | awk '{print $5}'`
+    echo "Machine is $MACHINE Hypervisor=$HYPERVISOR"
+    fi
+
+	
     CONFIG=$(readConfig) ; selectPlatform $1
 
     LD_SOURCE_URL="`echo $platform_selected  |jq -r -e '.redpill_load .source_url'`"

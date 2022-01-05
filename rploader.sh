@@ -765,6 +765,7 @@ function getlatestrploader() {
         fi
     else 
         echo "Version is current"
+		rm -f /home/tc/latestrploader.sh
     fi
 
 }

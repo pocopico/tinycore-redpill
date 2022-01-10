@@ -549,7 +549,7 @@ Version : $rploaderver
 ----------------------------------------------------------------------------------------
 Usage: ${0} <action> <platform version> <static or compile module> [extension manager arguments]
 
-Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb
+Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, satamap, mountshare
 
 - build:     Build the 💊 RedPill LKM and update the loader image for the specified 
              platform version and update current loader.
@@ -581,6 +581,8 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb
 - satamap: Tries to identify your SataPortMap and DiskIdxMap values and updates the user_config.json file 
 
 - backup:   Backup and make changes /home/tc changed permanent to your loader disk
+
+- mountshare: Mounts a remote CIFS working directory
 
 Available platform versions:
 ----------------------------------------------------------------------------------------
@@ -1165,6 +1167,9 @@ case $1 in
 	backup)
 	    backup
 		;;	
+	mountshare)
+		mountshare	
+		;;
     *)
         showhelp
         exit 99

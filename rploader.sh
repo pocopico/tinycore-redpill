@@ -102,10 +102,7 @@ let controller=0
 let diskidxmap=0
 
 if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ] ; then
-echo "Running on VMware"
-echo "Possible working solution"
-echo "SataPortMap=1"
-echo "DiskIdxMap=00"
+echo "Running on VMware, Possible working solution, SataPortMap=1 DiskIdxMap=00"
 else 
      for hba in `lsscsi -Hv |grep pci |grep -v usb | cut -c 44-50 | uniq`
      do

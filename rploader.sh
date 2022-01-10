@@ -723,6 +723,8 @@ function buildloader() {
         SYNOMODEL="DS918+"
     elif [ "${TARGET_PLATFORM}" = "bromolow" ] ; then
         SYNOMODEL="DS3615xs"
+	elif [ "${TARGET_PLATFORM}" = "broadwell" ] ; then
+        SYNOMODEL="DS3617xs"
     fi
 
 

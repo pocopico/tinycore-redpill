@@ -976,7 +976,7 @@ function listextension() {
         matchingextension=(`jq ". | select(.id | contains(\"${1}\")) .url  " rpext-index.json`)
 
 
-        if [ -n $matchingextension ] ; then
+        if [ ! -z $matchingextension ] ; then
             echo "Found matching extension : "
             echo $matchingextension
             ./redpill-load/ext-manager.sh add "${matchingextension//\"}"

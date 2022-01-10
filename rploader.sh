@@ -157,8 +157,8 @@ fi
 function usbidentify(){
 
 if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ] ; then
-echo "Running on VMware, You should SATA shim instead"
-return
+echo "Running on VMware, no need to set USB VID and PID, you should SATA shim instead"
+exit 0
 fi 
 
 if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "QEMU" ] ; then
@@ -175,7 +175,7 @@ read answer
        else
        echo "OK remember to update manually by editing user_config.json file"
        fi
-return
+exit 0
 fi 
 
 

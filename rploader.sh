@@ -17,6 +17,48 @@ modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 ######################################################################################################
 
 
+function mountshare(){
+
+    echo "smb user of the share, leave empty when you do not want to use one"
+    read -r user
+
+    echo "smb password of the share, leave empty when you do not want to use one"
+    read -r password
+
+    if [ -n "$user" ] && [ -z "$password" ]; then
+        echo "u used a username, so we need a password too"
+        echo "smb password of the share"
+        read -r password
+    fi
+
+    echo "smb host ip or hostname"
+    read -r server
+
+    echo "smb shared folder. Start always with /"
+    read -r share
+
+    echo "local mount folder. Use foldername for the mount. This folder is created in /home/tc (default:/home/tc/mount)"
+    read -r mountpoint
+
+    if [ -z "$mountpoint" ] ; then
+        echo "use /home/tc/mount folder, nothing was entered to use so we use the default folder"
+        mountpoint="/home/tc/mount"
+
+        if [ ! -d "$mountpoint" ]; then
+            sudo mkdir -p "$mountpoint"
+        fi
+    else 
+        sudo mkdir -p "$mountpoint"
+    fi
+
+    if [ -n "$user" ] && [ -n "$password" ]; then
+        sudo mount.cifs "//$server$share" "$mountpoint" -o user="$user",pass="$password"
+    else
+        echo "No user/password given, mount without. Press enter"
+        sudo mount.cifs "//$server$share" "$mountpoint"
+    fi
+}
+
 
 
 function backup(){

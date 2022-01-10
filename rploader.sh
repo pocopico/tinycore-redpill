@@ -59,6 +59,16 @@ function mountshare(){
     fi
 }
 
+function checkmachine() {
+
+if grep -q ^flags.*\ hypervisor\  /proc/cpuinfo ; then
+    MACHINE="VIRTUAL"
+    HYPERVISOR=`dmesg |grep -i "Hypervisor detected" | awk '{print $5}'`
+    echo "Machine is $MACHINE Hypervisor=$HYPERVISOR"
+    fi
+
+}
+
 
 
 function backup(){
@@ -85,6 +95,8 @@ echo "Should i update the $loaderdisk with your current files [Yy/Nn]"
 }
 
 function satamap(){
+
+checkmachine
 
 let controller=0
 let diskidxmap=0
@@ -154,6 +166,8 @@ fi
 }
 
 function usbidentify(){
+
+checkmachine
 
 if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ] ; then
 echo "Running on VMware, no need to set USB VID and PID, you should SATA shim instead"
@@ -858,12 +872,7 @@ function getlatestrploader() {
 
 function getvars() { 
 
-	if grep -q ^flags.*\ hypervisor\  /proc/cpuinfo ; then
-    MACHINE="VIRTUAL"
-    HYPERVISOR=`dmesg |grep -i "Hypervisor detected" | awk '{print $5}'`
-    echo "Machine is $MACHINE Hypervisor=$HYPERVISOR"
-    fi
-
+	
 	
     CONFIG=$(readConfig) ; selectPlatform $1
 
@@ -1158,11 +1167,9 @@ case $1 in
 	    fi 
 		;;
     identifyusb)
-	    getvars $2
         usbidentify
 		;;
 	satamap)
-	    getvars $2
 	    satamap
 		;;
 	backup)

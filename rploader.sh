@@ -2,12 +2,12 @@
 #
 # Author : 
 # Date : 22011002
-# Version : 0.4.3
+# Version : 0.4.4
 #
 #
 # User Variables :
 
-rploaderver="0.4.3"
+rploaderver="0.4.4"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
@@ -623,14 +623,14 @@ function gitdownload() {
         echo "Redpill sources already downloaded, pulling latest"
         cd redpill-lkm ; git pull ; cd /home/tc
     else
-        git clone "$LKM_SOURCE_URL"
+        git clone -b $LKM_BRANCH "$LKM_SOURCE_URL"
     fi
     
     if [ -d redpill-load ] ; then
         echo "Loader sources already downloaded, pulling latest"
         cd redpill-load ; git pull ; cd /home/tc
     else
-        git clone "$LD_SOURCE_URL"
+        git clone -b $LD_BRANCH "$LD_SOURCE_URL"
     fi
 
 }
@@ -873,7 +873,9 @@ function getvars() {
     CONFIG=$(readConfig) ; selectPlatform $1
 
     LD_SOURCE_URL="`echo $platform_selected  |jq -r -e '.redpill_load .source_url'`"
+	LD_BRANCH="`echo $platform_selected |jq -r -e '.redpill_load .branch'`"
     LKM_SOURCE_URL="`echo $platform_selected |jq -r -e '.redpill_lkm .source_url'`"
+	LKM_BRANCH="`echo $platform_selected |jq -r -e '.redpill_lkm .branch'`"
     EXTENSIONS="`echo $platform_selected |jq -r -e '.add_extensions[] .id'`"
     EXTENSIONS_SOURCE_URL="`echo $platform_selected |jq '.add_extensions[] .url'`"
     TOOLKIT_URL="`echo $platform_selected |jq -r -e '.downloads .toolkit_dev .url'`"
@@ -894,8 +896,8 @@ function getvars() {
     fi
 
     #echo "Platform : $platform_selected"
-    echo "Loader source : $LD_SOURCE_URL"
-    echo "Redpill module source : $LKM_SOURCE_URL"
+    echo "Loader source : $LD_SOURCE_URL Loader Branch : $LD_BRANCH "
+    echo "Redpill module source : $LKM_SOURCE_URL : Redpill module branch : $LKM_BRANCH "
     echo "Extensions : $EXTENSIONS "
     echo "Extensions URL : $EXTENSIONS_SOURCE_URL"
     echo "TOOLKIT_URL : $TOOLKIT_URL"

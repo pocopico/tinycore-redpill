@@ -17,6 +17,50 @@ modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 ######################################################################################################
 
 
+function mountshare(){
+
+    echo "smb user of the share, leave empty when you do not want to use one"
+    read -r user
+
+    echo "smb password of the share, leave empty when you do not want to use one"
+    read -r password
+
+    if [ -n "$user" ] && [ -z "$password" ]; then
+        echo "u used a username, so we need a password too"
+        echo "smb password of the share"
+        read -r password
+    fi
+
+    echo "smb host ip or hostname"
+    read -r server
+
+    echo "smb shared folder. Start always with /"
+    read -r share
+
+    echo "local mount folder. Use foldername for the mount. This folder is created in /home/tc (default:/home/tc/mount)"
+    read -r mountpoint
+
+    if [ -z "$mountpoint" ] ; then
+        echo "use /home/tc/mount folder, nothing was entered to use so we use the default folder"
+        mountpoint="/home/tc/mount"
+
+        if [ ! -d "$mountpoint" ]; then
+            sudo mkdir -p "$mountpoint"
+        fi
+    else 
+        sudo mkdir -p "$mountpoint"
+    fi
+
+    if [ -n "$user" ] && [ -n "$password" ]; then
+        sudo mount.cifs "//$server$share" "$mountpoint" -o user="$user",pass="$password"
+    else
+        echo "No user/password given, mount without. Press enter"
+        sudo mount.cifs "//$server$share" "$mountpoint"
+    fi
+}
+
+
+
 function backup(){
 
 loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
@@ -46,7 +90,7 @@ function satamap(){
 let controller=0
 let diskidxmap=0
 
-if [ `lsscsi |grep -i vmware|wc -l` -gt 1 ] ; then
+if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ] ; then
 echo "Running on VMware"
 echo "Possible working solution"
 echo "SataPortMap=1"
@@ -111,6 +155,28 @@ fi
 }
 
 function usbidentify(){
+
+if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ] ; then
+echo "Running on VMware, You should SATA shim instead"
+return
+fi 
+
+if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "QEMU" ] ; then
+echo "Running on QEMU, If you are using USB shim, VID 0x46f4 and PID 0x0001 should work for you"
+vendorid="0x46f4"
+productid="0x0001"
+echo "Vendor ID : $vendorid Product ID : $productid"
+
+echo "Should i update the user_config.json with these values ? [Yy/Nn]"
+read answer
+       if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
+       sed -i "/\"pid\": \"/c\    \"pid\": \"$productid\"," user_config.json
+       sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"," user_config.json
+       else
+       echo "OK remember to update manually by editing user_config.json file"
+       fi
+return
+fi 
 
 
 loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`

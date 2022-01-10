@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author : 
-# Date : 22010502
-# Version : 0.4.2
+# Date : 22011002
+# Version : 0.4.3
 #
 #
 # User Variables :
 
-rploaderver="0.4.2"
+rploaderver="0.4.3"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
@@ -83,7 +83,6 @@ echo "Should i update the $loaderdisk with your current files [Yy/Nn]"
        fi 
 
 }
-
 
 function satamap(){
 
@@ -1159,9 +1158,11 @@ case $1 in
 	    fi 
 		;;
     identifyusb)
+	    getvars $2
         usbidentify
 		;;
 	satamap)
+	    getvars $2
 	    satamap
 		;;
 	backup)

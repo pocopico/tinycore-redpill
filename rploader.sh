@@ -212,9 +212,6 @@ else
 usbdevice="`grep iManufacturer /tmp/lsusb.out | awk '{print $3}'` `grep iProduct /tmp/lsusb.out | awk '{print $3}' ` SerialNumber: `grep iSerial /tmp/lsusb.out | awk '{print $3}'`"
 fi
 
-usbdevice="$usbdev  `grep -B 10 -A 10 $usbdev /tmp/lsusb.out | grep iProduct | awk '{print $3}'` Serial Number : `grep -B 10 -A 10 $usbdev /tmp/lsusb.out | grep iSerial | awk '{print $3}'`"
-
-
 if [ -n "$usbdevice" ] && [ -n "$vendorid" ] && [ -n "$productid" ] ; then
 echo "Found $usbdevice"
 echo "Vendor ID : $vendorid Product ID : $productid"

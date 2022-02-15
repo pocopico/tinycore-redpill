@@ -233,7 +233,7 @@ fi
 
 function serialgen(){
 
-	    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
+	    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
         serial="$(generateSerial $1)"
 		mac="$(generateMacAddress $1)"
 		echo "Serial Number for Model : $serial"

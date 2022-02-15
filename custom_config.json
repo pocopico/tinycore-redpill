@@ -87,7 +87,7 @@
                     }
             },
 	      {
-                    "id": "broadwellink-7.0.1-42218",
+                    "id": "broadwellnk-7.0.1-42218",
                     "platform_version": "broadwellnk-7.0.1-42218",
                     "user_config_json": "broadwellnk_user_config-test.json",
                     "docker_base_image": "debian:8-slim",
@@ -105,11 +105,11 @@
                             }
                     },
                     "redpill_lkm": {
-                            "source_url": "https://github.com/jumkey/redpill-lkm.git",
+                            "source_url": "https://github.com/dogodefi/redpill-lkm.git",
                             "branch": "develop"
                     },
                     "redpill_load": {
-                            "source_url": "https://github.com/jumkey/redpill-load.git",
+                            "source_url": "https://github.com/dogodefi/redpill-load.git",
                             "branch": "develop"
                     }
             },

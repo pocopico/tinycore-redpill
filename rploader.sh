@@ -662,7 +662,7 @@ function getstaticmodule() {
 	elif [ "${TARGET_PLATFORM}" = "broadwell" ] ; then
 	    SYNOMODEL="ds3617xs_$TARGET_REVISION"
 	elif [ "${TARGET_PLATFORM}" = "broadwellnk" ] ; then
-	    SYNOMODEL="ds3622xs+_$TARGET_REVISION"
+	    SYNOMODEL="ds3622xsp_$TARGET_REVISION"
     fi
 
     echo "Looking for redpill for : $SYNOMODEL "

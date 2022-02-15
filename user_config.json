@@ -10,7 +10,8 @@
   "synoinfo": {
 
           "internalportcfg" : "0xffff",
-          "maxdisks" : "16"
+          "maxdisks" : "16",
+	  "support_bde_internal_10g" : "no"
 
 },
   "ramdisk_copy": {

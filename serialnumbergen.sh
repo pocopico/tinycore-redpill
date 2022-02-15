@@ -26,6 +26,10 @@ DS920+)
 permanent="SBR"
 serialstart="2030 2040 20C0 2150"
 ;;
+DS3622xsp)
+permanent="SQR"
+serialstart="2030 2040 20C0 2150"
+;;
 DVA3219)
 permanent="RFR"
 serialstart="1930 1940"
@@ -96,6 +100,9 @@ serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(
 DS920+)
 serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 ;;
+DS3622xsp)
+serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+;;
 DVA3219)
 serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 ;;
@@ -120,7 +127,7 @@ Usage: ${0} <platform>
 
 Available platforms :
 ----------------------------------------------------------------------------------------
-DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221
+DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xsp DVA3219 DVA3221
 
 e.g. $(basename ${0}) DS3615xs
 ----------------------------------------------------------------------------------------
@@ -131,11 +138,11 @@ EOF
 if [ -z "$1" ] ; then 
 showhelp
 else
-     if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
+     if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xsp" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
      echo "Generating a random mac address : " $(generateMacAddress)
      echo "Generating a Serial Number for Model $1: " $(generateSerial $1)
 	 else 
 	 echo "Error : $1 is not an available model for serial number generation. "
-	 echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221"
+	 echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xsp DVA3219 DVA3221"
 	 fi
 fi

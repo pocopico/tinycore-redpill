@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author : 
-# Date : 22011002
-# Version : 0.4.4
+# Date : 22020215
+# Version : 0.4.5
 #
 #
 # User Variables :
 
-rploaderver="0.4.4"
+rploaderver="0.4.5"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
@@ -233,7 +233,7 @@ fi
 
 function serialgen(){
 
-	    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
+	    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
         serial="$(generateSerial $1)"
 		mac="$(generateMacAddress $1)"
 		echo "Serial Number for Model : $serial"
@@ -251,7 +251,7 @@ function serialgen(){
 		
 		else
 		echo "Error : $2 is not an available model for serial number generation. "
-		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221"
+		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ DVA3219 DVA3221"
 		fi
 
 }
@@ -280,6 +280,10 @@ serialstart="1780 1790 1860 1980"
 ;;
 DS920+)
 permanent="SBR"
+serialstart="2030 2040 20C0 2150"
+;;
+DS3622xs+)
+permanent="SQR"
 serialstart="2030 2040 20C0 2150"
 ;;
 DVA3219)
@@ -350,6 +354,9 @@ DS918+)
 serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
 ;;
 DS920+)
+serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+;;
+DS3622xs+)
 serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 ;;
 DVA3219)
@@ -581,7 +588,7 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, s
 			 
 - serialgen: Generates a serial number and mac address for the following platforms 
              
-             DS3615xs DS3617xs DS916+ DS918+ DS920+ DVA3219 DVA3221
+             DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ DVA3219 DVA3221
 			 
 - identifyusb: Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
 
@@ -654,6 +661,8 @@ function getstaticmodule() {
         SYNOMODEL="ds3615xs_$TARGET_REVISION"
 	elif [ "${TARGET_PLATFORM}" = "broadwell" ] ; then
 	    SYNOMODEL="ds3617xs_$TARGET_REVISION"
+	elif [ "${TARGET_PLATFORM}" = "broadwellnk" ] ; then
+	    SYNOMODEL="ds3622xs+_$TARGET_REVISION"
     fi
 
     echo "Looking for redpill for : $SYNOMODEL "
@@ -725,6 +734,8 @@ function buildloader() {
         SYNOMODEL="DS3615xs"
 	elif [ "${TARGET_PLATFORM}" = "broadwell" ] ; then
         SYNOMODEL="DS3617xs"
+	elif [ "${TARGET_PLATFORM}" = "broadwellnk" ] ; then
+        SYNOMODEL="DS3622xs+"
     fi
 
 
@@ -896,6 +907,21 @@ function getvars() {
         showhelp
         exit 99
     fi
+	
+	case $TARGET_PLATFORM in
+	
+	bromolow)
+	KERNEL_MAJOR="3"
+	MODULE_ALIAS_FILE="modules.alias.3.json"
+	;;
+	apollolake | broadwell | broadwellnk )
+	KERNEL_MAJOR="4"
+	MODULE_ALIAS_FILE="modules.alias.4.json"
+	;;
+	
+	esac 
+	
+	
 
     #echo "Platform : $platform_selected"
     echo "Loader source : $LD_SOURCE_URL Loader Branch : $LD_BRANCH "
@@ -911,7 +937,8 @@ function getvars() {
     echo "TARGET_VERSION    : $TARGET_VERSION"
     echo "TARGET_REVISION : $TARGET_REVISION"
     echo "REDPILL_LKM_MAKE_TARGET : $REDPILL_LKM_MAKE_TARGET"
-
+	echo "KERNEL_MAJOR : $KERNEL_MAJOR"
+	echo "MODULE_ALIAS_FILE= $MODULE_ALIAS_FILE"
 }
 
 function matchpciidmodule() {
@@ -923,7 +950,7 @@ function matchpciidmodule() {
 
     #jq -e -r ".modules[] | select(.alias | test(\"(?i)${1}\")?) |   .name " modules.alias.json
     # Correction to work with tinycore jq
-    matchedmodule=`jq -e -r ".modules[] | select(.alias | contains(\"${pciid}\")?) | .name " modules.alias.json`
+    matchedmodule=`jq -e -r ".modules[] | select(.alias | contains(\"${pciid}\")?) | .name " $MODULE_ALIAS_FILE `
 
     # Call listextensions for extention matching
 
@@ -1023,20 +1050,20 @@ function getmodaliasfile() {
 
 function listmodules() {
 
-    if [ ! -f modules.alias.json  ] ; then 
+    if [ ! -f $MODULE_ALIAS_FILE  ] ; then 
         echo "Creating module alias json file"
-        getmodaliasfile > modules.alias.json
+        getmodaliasfile > modules.alias.4.json
     fi
 
-    echo -n "Testing modules.alias.json -> "
-    if  `jq '.' modules.alias.json > /dev/null`  ; then
+    echo -n "Testing $MODULE_ALIAS_FILE -> "
+    if  `jq '.' $MODULE_ALIAS_FILE > /dev/null`  ; then
         echo "File OK"	
         echo "------------------------------------------------------------------------------------------------"
         echo -e "It looks that you will need the following modules : \n\n" 
         listpci
         echo "------------------------------------------------------------------------------------------------"
     else 
-        echo "Error : File modules.alias.json could not be parsed"	
+        echo "Error : File $MODULE_ALIAS_FILE could not be parsed"	
     fi 
 
 }
@@ -1154,6 +1181,9 @@ case $1 in
         ;;
 
     listmods)
+		getvars $2
+		checkinternet
+		gitdownload
         listmodules
         echo "$extensionslist"
         ;;

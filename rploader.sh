@@ -12,6 +12,8 @@ rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
 modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
+modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modules.alias.4.json.gz"
+modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modules.alias.3.json.gz"
 
 # END Do not modify after this line
 ######################################################################################################
@@ -850,6 +852,9 @@ function getlatestrploader() {
     echo -n "Checking if a newer version exists on the repo -> "
 
     curl -s --location "$rploaderepo" --output latestrploader.sh 
+    curl -s --location "$modalias3" --output modules.alias.3.json.gz ; gunzip  modules.alias.3.json.gz
+    curl -s --location "$modalias4" --output modules.alias.4.json.gz ; gunzip  modules.alias.4.json.gz
+			
 
     CURRENTSHA="`sha256sum rploader.sh | awk '{print $1}'`"
     REPOSHA="`sha256sum latestrploader.sh | awk '{print $1}'`"

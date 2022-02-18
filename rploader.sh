@@ -852,8 +852,8 @@ function getlatestrploader() {
     echo -n "Checking if a newer version exists on the repo -> "
 
     curl -s --location "$rploaderepo" --output latestrploader.sh 
-    curl -s --location "$modalias3" --output modules.alias.3.json.gz ; gunzip  modules.alias.3.json.gz
-    curl -s --location "$modalias4" --output modules.alias.4.json.gz ; gunzip  modules.alias.4.json.gz
+    curl -s --location "$modalias3" --output modules.alias.3.json.gz ; gunzip -f  modules.alias.3.json.gz
+    curl -s --location "$modalias4" --output modules.alias.4.json.gz ; gunzip -f modules.alias.4.json.gz
 			
 
     CURRENTSHA="`sha256sum rploader.sh | awk '{print $1}'`"

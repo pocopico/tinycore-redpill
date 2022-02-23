@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author : 
-# Date : 22020216
-# Version : 0.4.5.1
+# Date : 22020223
+# Version : 0.4.5.2
 #
 #
 # User Variables :
 
-rploaderver="0.4.5.1"
+rploaderver="0.4.5.2"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
@@ -235,7 +235,7 @@ fi
 
 function serialgen(){
 
-	    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
+	    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
         serial="$(generateSerial $1)"
 		mac="$(generateMacAddress $1)"
 		echo "Serial Number for Model : $serial"
@@ -253,7 +253,7 @@ function serialgen(){
 		
 		else
 		echo "Error : $2 is not an available model for serial number generation. "
-		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ DVA3219 DVA3221"
+		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221"
 		fi
 
 }
@@ -287,6 +287,10 @@ serialstart="2030 2040 20C0 2150"
 DS3622xs+)
 permanent="SQR"
 serialstart="2030 2040 20C0 2150"
+;;
+FS6400)
+permanent="PSN"
+serialstart="1960"
 ;;
 DVA3219)
 permanent="RFR"
@@ -353,6 +357,9 @@ DS916+)
 serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
 ;;
 DS918+)
+serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
+;;
+FS6400)
 serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
 ;;
 DS920+)
@@ -590,7 +597,7 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, s
 			 
 - serialgen: Generates a serial number and mac address for the following platforms 
              
-             DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ DVA3219 DVA3221
+             DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221
 			 
 - identifyusb: Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
 

@@ -113,7 +113,33 @@
                             "branch": "develop"
                     }
             },
+			       {
+                    "id": "ds1621p-7.0.1-42218",
+                    "platform_version": "ds1621p-7.0.1-42218",
+                    "user_config_json": "ds1621p_user_config-test.json",
+                    "docker_base_image": "debian:8-slim",
+                    "redpill_lkm_make_target": "dev-v7",
+                    "compile_with": "toolkit_dev",
+                    "downloads": {
+                            "kernel": {
+          "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/v1000-source/linux-4.4.x.txz/download",
+                    "sha256": "d3e85eb80f16a83244fcae6016ab6783cd8ac55e3af2b4240455261396e1e1be"
 
+                            },
+                            "toolkit_dev": {
+                                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.v1000-7.0.dev.txz/download",
+                                    "sha256": "6108f9f7b7f0a13ee985314aef9419303375ab7ded4112be991590339b66ecd1"
+                            }
+                    },
+                    "redpill_lkm": {
+                            "source_url": "https://github.com/jumkey/redpill-lkm.git",
+                            "branch": "develop"
+                    },
+                    "redpill_load": {
+                            "source_url": "https://github.com/jumkey/redpill-load.git",
+                            "branch": "develop"
+                    }
+            },
         {
             "id": "apollolake-7.0-41890",
             "platform_version": "apollolake-7.0-41890",

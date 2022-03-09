@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author : 
-# Date : 22020223
-# Version : 0.4.5.2
+# Date : 22030911
+# Version : 0.4.6.0
 #
 #
 # User Variables :
 
-rploaderver="0.4.5.2"
+rploaderver="0.4.6.0"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
@@ -235,7 +235,7 @@ fi
 
 function serialgen(){
 
-	    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] ; then
+	    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] ; then
         serial="$(generateSerial $1)"
 		mac="$(generateMacAddress $1)"
 		echo "Serial Number for Model : $serial"
@@ -253,7 +253,7 @@ function serialgen(){
 		
 		else
 		echo "Error : $2 is not an available model for serial number generation. "
-		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221"
+		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+"
 		fi
 
 }
@@ -287,6 +287,10 @@ serialstart="2030 2040 20C0 2150"
 DS3622xs+)
 permanent="SQR"
 serialstart="2030 2040 20C0 2150"
+;;
+DS1621+)
+permanent="S7R"
+serialstart="2080"
 ;;
 FS6400)
 permanent="PSN"
@@ -366,6 +370,9 @@ DS920+)
 serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 ;;
 DS3622xs+)
+serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+;;
+DS1621+)
 serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 ;;
 DVA3219)
@@ -597,7 +604,7 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, s
 			 
 - serialgen: Generates a serial number and mac address for the following platforms 
              
-             DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221
+             DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+
 			 
 - identifyusb: Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
 
@@ -672,6 +679,8 @@ function getstaticmodule() {
 	    SYNOMODEL="ds3617xs_$TARGET_REVISION"
 	elif [ "${TARGET_PLATFORM}" = "broadwellnk" ] ; then
 	    SYNOMODEL="ds3622xsp_$TARGET_REVISION"
+	elif [ "${TARGET_PLATFORM}" = "v1000" ] ; then
+	    SYNOMODEL="ds1621p_$TARGET_REVISION"
     fi
 
     echo "Looking for redpill for : $SYNOMODEL "
@@ -745,6 +754,8 @@ function buildloader() {
         SYNOMODEL="DS3617xs"
 	elif [ "${TARGET_PLATFORM}" = "broadwellnk" ] ; then
         SYNOMODEL="DS3622xs+"
+	elif [ "${TARGET_PLATFORM}" = "v1000" ] ; then
+        SYNOMODEL="DS1621+"
     fi
 
 

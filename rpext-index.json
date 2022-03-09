@@ -19,6 +19,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/3w-sas/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/3w-sas/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/3w-sas/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/3w-sas/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/3w-sas/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/3w-sas/releases/ds3617xs_42218.json"
   }
@@ -44,6 +45,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139cp/releases/ds3617xs_42218.json"
   }
@@ -69,6 +71,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/8139too/releases/ds3617xs_42218.json"
   }
@@ -94,6 +97,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/aacraid/releases/ds3617xs_42218.json"
   }
@@ -138,6 +142,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/alx/releases/ds3617xs_42218.json"
   }
@@ -183,6 +188,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1c/releases/ds3617xs_42218.json"
   }
@@ -208,6 +214,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1e/releases/ds3617xs_42218.json"
   }
@@ -233,6 +240,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl1/releases/ds3617xs_42218.json"
   }
@@ -258,6 +266,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/atl2/releases/ds3617xs_42218.json"
   }
@@ -323,6 +332,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/be2net/releases/ds3617xs_42218.json"
   }
@@ -348,6 +358,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bna/releases/ds3617xs_42218.json"
   }
@@ -373,6 +384,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2/releases/ds3617xs_42218.json"
   }
@@ -398,8 +410,97 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/bnx2x/releases/ds3617xs_42218.json"
+  }
+}
+{
+  "id": "pocopico.cxgb3",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb3/rpext-index.json",
+  "info": {
+    "name": "cxgb3",
+    "description": "Adds Chelsio T3 Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/cxgb3",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb3/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb3/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb3/releases/ds3615xs_42218.json",
+    "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb3/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb3/releases/ds1621p_42218.json",
+    "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb3/releases/ds3622xsp_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb3/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb3/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb3/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.cxgb4",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4/rpext-index.json",
+  "info": {
+    "name": "cxgb4",
+    "description": "Adds Chelsio T4/T5/T6 Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/cxgb4",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4/releases/ds3615xs_42218.json",
+    "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4/releases/ds1621p_42218.json",
+    "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4/releases/ds3622xsp_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.cxgb4vf",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4vf/rpext-index.json",
+  "info": {
+    "name": "cxgb4vf",
+    "description": "Adds Chelsio T4/T5/T6 Virtual Function (VF) Network Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/cxgb4vf",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4vf/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4vf/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4vf/releases/ds3615xs_42218.json",
+    "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4vf/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4vf/releases/ds1621p_42218.json",
+    "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4vf/releases/ds3622xsp_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4vf/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4vf/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb4vf/releases/ds918p_42218.json"
+  }
+}
+{
+  "id": "pocopico.cxgb",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb/rpext-index.json",
+  "info": {
+    "name": "cxgb",
+    "description": "Adds Chelsio 10Gb Ethernet Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/cxgb",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb/releases/ds3615xs_42218.json",
+    "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb/releases/ds1621p_42218.json",
+    "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb/releases/ds3622xsp_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/cxgb/releases/ds918p_42218.json"
   }
 }
 {
@@ -443,7 +544,9 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds1621p_42218.json",
     "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds3622xsp_42218.json",
+    "ds3622xsp_42550": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000e/releases/ds3617xs_42218.json"
   }
 }
@@ -464,12 +567,14 @@
     "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds918p_25556.json",
     "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds918p_41890.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3617xs_42218.json",
-"ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3622xsp_42218.json",
+    "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3622xsp_42218.json",
     "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds918p_42218.json",
     "ds3615xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3615xs_25556.json",
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3615xs_25556.json",
-    "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3617xs_42218.json"
+    "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds3617xs_42218.json",
+    "ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/releases/ds1621p_42218.json"
+
   }
 }
 {
@@ -505,6 +610,7 @@
     "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/forcedeth/releases/ds3615xs_41222.json",
     "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/forcedeth/releases/ds3615xs_42218.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/forcedeth/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/forcedeth/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/forcedeth/releases/ds3622xsp_42218.json",
     "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/forcedeth/releases/ds918p_25556.json",
     "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/forcedeth/releases/ds918p_41890.json",
@@ -532,6 +638,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds1621p_42218.json",
     "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/hpsa/releases/ds3617xs_42218.json"
   }
@@ -557,6 +664,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/i40e/releases/ds3617xs_42218.json"
   }
@@ -576,6 +684,7 @@
     "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/iavf/releases/ds3615xs_41222.json",
     "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/iavf/releases/ds3615xs_42218.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/iavf/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/iavf/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/iavf/releases/ds3622xsp_42218.json",
     "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/iavf/releases/ds918p_25556.json",
     "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/iavf/releases/ds918p_41890.json",
@@ -603,6 +712,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igb/releases/ds3617xs_42218.json"
   }
@@ -628,6 +738,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/igbvf/releases/ds3617xs_42218.json"
   }
@@ -674,6 +785,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbevf/releases/ds3617xs_42218.json"
   }
@@ -699,6 +811,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/megaraid_sas/releases/ds3617xs_42218.json"
   }
@@ -769,6 +882,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/mpt3sas/releases/ds3617xs_42218.json"
   }
@@ -860,6 +974,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/qlcnic/releases/ds3617xs_42218.json"
   }
@@ -885,6 +1000,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8101/releases/ds3617xs_42218.json"
   }
@@ -910,6 +1026,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8125/releases/ds3617xs_42218.json"
   }
@@ -955,6 +1072,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8168/releases/ds3617xs_42218.json"
   }
@@ -980,6 +1098,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/r8169/releases/ds3617xs_42218.json"
   }
@@ -1124,6 +1243,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/skge/releases/ds3617xs_42218.json"
   }
@@ -1149,7 +1269,10 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3617xs_42218.json",
-"ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3622xsp_42218.json",
+    "ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds1621p_42218.json",
+    "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3622xsp_42218.json",
+    "ds3622xsp_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3622xsp_42218.json",
+    "ds3622xsp_42550": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/sky2/releases/ds3617xs_42218.json"
   }
 }
@@ -1240,6 +1363,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-rhine/releases/ds3617xs_42218.json"
   }
@@ -1265,6 +1389,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/via-velocity/releases/ds3617xs_42218.json"
   }
@@ -1290,6 +1415,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmw_pvscsi/releases/ds3617xs_42218.json"
   }
@@ -1315,6 +1441,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/releases/ds3617xs_42218.json"
   }
@@ -1340,6 +1467,7 @@
     "ds3617xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds3615xs_25556.json",
     "ds3617xs_25556u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds3615xs_25556.json",
     "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds3617xs_42218.json",
+"ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds1621p_42218.json",
 "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds3622xsp_42218.json",
     "ds3617xs_42218u2": "https://raw.githubusercontent.com/pocopico/rp-ext/master/vxge/releases/ds3617xs_42218.json"
   }

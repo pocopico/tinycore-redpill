@@ -114,9 +114,9 @@
                     }
             },
 			       {
-                    "id": "ds1621p-7.0.1-42218",
-                    "platform_version": "ds1621p-7.0.1-42218",
-                    "user_config_json": "ds1621p_user_config-test.json",
+                    "id": "v1000-7.0.1-42218",
+                    "platform_version": "v1000-7.0.1-42218",
+                    "user_config_json": "v1000_user_config-test.json",
                     "docker_base_image": "debian:8-slim",
                     "redpill_lkm_make_target": "dev-v7",
                     "compile_with": "toolkit_dev",

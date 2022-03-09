@@ -2,12 +2,12 @@
 #
 # Author : 
 # Date : 22030911
-# Version : 0.4.6.0
+# Version : 0.4.7.0
 #
 #
 # User Variables :
 
-rploaderver="0.4.6.0"
+rploaderver="0.4.7.0"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
@@ -681,6 +681,8 @@ function getstaticmodule() {
 	    SYNOMODEL="ds3622xsp_$TARGET_REVISION"
 	elif [ "${TARGET_PLATFORM}" = "v1000" ] ; then
 	    SYNOMODEL="ds1621p_$TARGET_REVISION"
+	elif [ "${TARGET_PLATFORM}" = "denverton" ] ; then
+	    SYNOMODEL="dva3221_$TARGET_REVISION"
     fi
 
     echo "Looking for redpill for : $SYNOMODEL "
@@ -756,6 +758,8 @@ function buildloader() {
         SYNOMODEL="DS3622xs+"
 	elif [ "${TARGET_PLATFORM}" = "v1000" ] ; then
         SYNOMODEL="DS1621+"
+	elif [ "${TARGET_PLATFORM}" = "denverton" ] ; then
+        SYNOMODEL="DVA3221"
     fi
 
 
@@ -937,7 +941,7 @@ function getvars() {
 	KERNEL_MAJOR="3"
 	MODULE_ALIAS_FILE="modules.alias.3.json"
 	;;
-	apollolake | broadwell | broadwellnk | v1000 )
+	apollolake | broadwell | broadwellnk | v1000 | denverton )
 	KERNEL_MAJOR="4"
 	MODULE_ALIAS_FILE="modules.alias.4.json"
 	;;

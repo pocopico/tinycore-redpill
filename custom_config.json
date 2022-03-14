@@ -84,7 +84,10 @@
                     "redpill_load": {
                             "source_url": "https://github.com/jimmyGALLAND/redpill-load.git",
                             "branch": "develop"
-                    }
+                    },
+					 "add_extensions": [
+            ]
+					
             },
 	      {
                     "id": "broadwellnk-7.0.1-42218",
@@ -111,7 +114,9 @@
                     "redpill_load": {
                             "source_url": "https://github.com/dogodefi/redpill-load.git",
                             "branch": "develop"
-                    }
+                    },
+            "add_extensions": [
+            ]
             },
 			       {
                     "id": "v1000-7.0.1-42218",
@@ -138,7 +143,9 @@
                     "redpill_load": {
                             "source_url": "https://github.com/jumkey/redpill-load.git",
                             "branch": "develop"
-                    }
+                    },
+            "add_extensions": [
+            ]
             },
 			 {
                     "id": "denverton-7.0.1-42218",
@@ -165,7 +172,9 @@
                     "redpill_load": {
                             "source_url": "https://github.com/dogodefi/redpill-load.git",
                             "branch": "develop"
-                    }
+                    },
+            "add_extensions": [
+            ]
             },
         {
             "id": "apollolake-7.0-41890",

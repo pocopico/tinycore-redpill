@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author : 
-# Date : 22030911
-# Version : 0.4.7.0
+# Date : 22141311
+# Version : 0.4.7.1
 #
 #
 # User Variables :
 
-rploaderver="0.4.7.0"
+rploaderver="0.4.7.1"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
@@ -1159,30 +1159,58 @@ case $1 in
         gitdownload
 
 
-        if [ "$3" = "compile" ] ; then
-            prepareforcompile
-            if [ "$COMPILE_METHOD" = "toolkit_dev" ] ; then 
-                gettoolchain
-                compileredpill
-                echo "Starting loader creation "
-                buildloader
-            else
-                getsynokernel
-                kernelprepare
-                compileredpill
-                echo "Starting loader creation "
-                buildloader
-            fi 
-        else 
-            echo "Using static compiled redpill extension"
-            getstaticmodule
-            echo "Got $REDPILL_MOD_NAME "
-            listmodules
-            echo "Starting loader creation "
-            buildloader
-        fi 
-        ;;
-
+                 case $3 in 
+                 
+                 compile)
+				 
+                              prepareforcompile
+                           if [ "$COMPILE_METHOD" = "toolkit_dev" ] ; then 
+                               gettoolchain
+                               compileredpill
+                               echo "Starting loader creation "
+                               buildloader
+                           else
+                               getsynokernel
+                               kernelprepare
+                               compileredpill
+                               echo "Starting loader creation "
+                               buildloader
+                           fi 
+                   ;;
+				            
+				 static)
+                       				   
+                           echo "Using static compiled redpill extension"
+                           getstaticmodule
+                           echo "Got $REDPILL_MOD_NAME "
+                           listmodules
+                           echo "Starting loader creation "
+                           buildloader
+                       
+                   ;;
+				 manual)
+				 
+				           echo "Using static compiled redpill extension"
+                           getstaticmodule
+                           echo "Got $REDPILL_MOD_NAME "
+						   echo "Manual extension handling,skipping extension auto detection "
+                           echo "Starting loader creation "
+                           buildloader
+			       ;;
+				  
+                 *)
+				           echo "No extra build option specified, using default <static> "
+				           echo "Using static compiled redpill extension"
+                           getstaticmodule
+                           echo "Got $REDPILL_MOD_NAME "
+                           listmodules
+                           echo "Starting loader creation "
+                           buildloader
+			       ;;
+				   
+				 esac 
+				 
+				 ;;
     ext)
 
         getvars $2

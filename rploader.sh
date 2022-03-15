@@ -1,22 +1,99 @@
 #!/bin/bash
 #
 # Author : 
-# Date : 22141312
-# Version : 0.4.7.1
+# Date : 22150320
+# Version : 0.4.8.0
 #
 #
 # User Variables :
 
-rploaderver="0.4.7.1"
+rploaderver="0.4.8.0"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
 modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modules.alias.4.json.gz"
 modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modules.alias.3.json.gz"
+dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/dtc"
 
 # END Do not modify after this line
 ######################################################################################################
+
+
+function patchdtc(){
+
+loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
+localdisks=`lsblk |grep -i disk |grep -i sd | awk '{print $1}' |grep -v $loaderdisk`
+localnvme=`lsblk |grep -i nvme |awk '{print $1}' `
+
+
+    if [ "${TARGET_PLATFORM}" = "v1000" ] ; then
+	    SYNOMODEL="ds1621p"
+	else 
+		echo "${TARGET_PLATFORM} does not require model.dtc patching "
+		return 
+	fi
+
+    if [ ! -d /lib64 ] ; then 
+        sudo ln -s /lib /lib64
+    fi
+    
+	echo "Downloading dtc binary"
+	curl --location --progress-bar "$dtcbin" -O 
+
+    if [ -!f ${SYNOMODEL}.dts ] ; then
+	
+	echo "dts file for ${SYNOMODEL} not found, trying to download"
+	curl --location --progress-bar  -O "https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/${SYNOMODEL}.dts"
+	
+	fi
+
+    echo "Found `echo $localdisks|wc -w` disks and `echo $localnvme |wc -w` nvme"
+	let diskslot=1
+	echo "Collecting disk paths"
+	
+        	for disk in $localdisks
+        	do
+        	diskpath=`udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}'`
+        	
+        	echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot"
+        
+            sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${SYNOMODEL}.dts
+        
+        	
+        	let diskslot=$diskslot+1	
+        	done 
+	
+	if [ `echo $localnvme | wc -w` -gt 0 ] ; then 
+	let nvmeslot=1
+	echo "Collecting nvme paths"
+	
+	      for nvme in $localnvme
+	      do
+	      nvmepath=`udevadm info --query path --name $nvme | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}'`
+	      
+	      echo "Found local nvme $nvme with path $nvmepath, adding into m2_card $nvmeslot"
+	      
+          sed -i "/m2_card\@${nvmeslot} {/!b;n;n;n;cpcie_root = \"$nvmepath\";" ${SYNOMODEL}.dts
+	      
+	      
+	      let nvmeslot=$diskslot+1	
+	      done 
+		
+	else 
+	
+	echo "NO NVME disks found, returning"
+		
+	fi
+	
+	echo "Converting dts to dtb"
+	./dtc -I dts -O dtb ${SYNOMODEL}.dts > ${SYNOMODEL}.dtb 2>&1 > /dev/null
+
+	echo "Remember to replace extension model file ..."
+	
+}
+
+
 
 
 function mountshare(){
@@ -607,6 +684,8 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, s
              DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+
 			 
 - identifyusb: Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
+
+- patchdtc: Tries to identify and patch your dtc model for your disk and nvme devices
 
 - satamap: Tries to identify your SataPortMap and DiskIdxMap values and updates the user_config.json file 
 
@@ -1256,6 +1335,11 @@ case $1 in
 		;;
     identifyusb)
         usbidentify
+		;;
+	patchdtc)
+	    getvars $2
+		checkinternet
+        patchdtc
 		;;
 	satamap)
 	    satamap

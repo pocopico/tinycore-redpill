@@ -41,6 +41,7 @@ localnvme=`lsblk |grep -i nvme |awk '{print $1}' `
     
 	echo "Downloading dtc binary"
 	curl --location --progress-bar "$dtcbin" -O 
+	chmod 700 dtc 
 
     if [ ! -f ${SYNOMODEL}.dts ] ; then
 	

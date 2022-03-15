@@ -15,6 +15,7 @@ modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modules.alias.4.json.gz"
 modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modules.alias.3.json.gz"
 dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/dtc"
+dtsfiles="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main"
 
 # END Do not modify after this line
 ######################################################################################################
@@ -44,7 +45,7 @@ localnvme=`lsblk |grep -i nvme |awk '{print $1}' `
     if [ -!f ${SYNOMODEL}.dts ] ; then
 	
 	echo "dts file for ${SYNOMODEL} not found, trying to download"
-	curl --location --progress-bar  -O "https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/${SYNOMODEL}.dts"
+	curl --location --progress-bar  -O "${dtsfiles}/${SYNOMODEL}.dts"
 	
 	fi
 
@@ -685,7 +686,7 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, s
 			 
 - identifyusb: Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
 
-- patchdtc: Tries to identify and patch your dtc model for your disk and nvme devices
+- patchdtc: Tries to identify and patch your dtc model for your disk and nvme devices.
 
 - satamap: Tries to identify your SataPortMap and DiskIdxMap values and updates the user_config.json file 
 

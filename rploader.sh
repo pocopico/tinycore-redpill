@@ -42,7 +42,7 @@ localnvme=`lsblk |grep -i nvme |awk '{print $1}' `
 	echo "Downloading dtc binary"
 	curl --location --progress-bar "$dtcbin" -O 
 
-    if [ -!f ${SYNOMODEL}.dts ] ; then
+    if [ ! -f ${SYNOMODEL}.dts ] ; then
 	
 	echo "dts file for ${SYNOMODEL} not found, trying to download"
 	curl --location --progress-bar  -O "${dtsfiles}/${SYNOMODEL}.dts"

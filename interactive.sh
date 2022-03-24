@@ -182,11 +182,19 @@ done
 
 }
 
+
+#
+#
+#
+#
+
+myip="`ifconfig |grep -i "inet " | grep -v "127.0.0.1" | awk '{print $2}' `"
+
 dialog --backtitle "RedPill Loader" --infobox "Welcome to Tinycore RedPill Loader Interactive" 3 45 ; sleep 1
 
 getvars $2
 
-BACKTITLE="RedPill Loader : $TARGET_PLATFORM $TARGET_VERSION $TARGET_REVISION"
+BACKTITLE="RedPill Loader : $TARGET_PLATFORM $TARGET_VERSION $TARGET_REVISION   Local IP Address : $myip"
 
 mainmenu
 

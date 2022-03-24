@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author : 
-# Date : 22150320
-# Version : 0.4.8.0
+# Date : 22240314
+# Version : 0.5.0.1
 #
 #
 # User Variables :
 
-rploaderver="0.4.8.0"
+rploaderver="0.5.0.1"
 rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
@@ -20,6 +20,206 @@ dtsfiles="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main"
 # END Do not modify after this line
 ######################################################################################################
 
+
+function backuploader(){
+
+
+loaderdisk="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`"
+tcrppart="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`3"
+homesize=`du -sh /home/tc | awk '{print $1}'`
+backupdate="`date +%Y-%b-%H-%M`"
+
+
+if [ ! -n "$loaderdisk" ] || [ ! -n "$tcrppart" ] ; then
+echo "No Loader disk or no TCRP partition found, return"
+return 
+fi 
+
+if [ `df -h /mnt/${tcrppart} | grep mnt | awk '{print $4}' | cut -c 1-3` -le 50 ] ; then 
+echo "No adequate space on TCRP loader partition  /mnt/${tcrppart} "
+return 
+fi
+
+echo "Backing up current loader"
+echo "Checking backup folder existence" ; [ ! -d /mnt/${tcrppart}/backup ] && mkdir /mnt/${tcrppart}/backup
+echo "The backup folder holds the following backups" 
+ls -ltr /mnt/${tcrppart}/backup
+echo "Creating backup folder $backupdate" ;  [ ! -d /mnt/${tcrppart}/backup/${backupdate} ] && mkdir /mnt/${tcrppart}/backup/${backupdate}
+echo "Mounting partition 1"
+mount /dev/${loaderdisk}1
+cd /mnt/${loaderdisk}1 ; tar cfz /mnt/${tcrppart}/backup/${backupdate}/partition1.tgz *
+
+echo "Mounting partition 2"
+mount /dev/${loaderdisk}2
+cd /mnt/${loaderdisk}2 ; tar cfz /mnt/${tcrppart}/backup/${backupdate}/partition2.tgz *
+
+cd 
+echo "Listing backup files : "
+
+ls -ltr /mnt/${tcrppart}/backup/${backupdate}/
+
+echo "Partition 1 : `tar tfz /mnt/${tcrppart}/backup/${backupdate}/partition1.tgz |wc -l` files and directories "
+echo "Partition 2 : `tar tfz /mnt/${tcrppart}/backup/${backupdate}/partition2.tgz |wc -l` files and directories "
+
+echo "DONE"
+
+
+}
+
+
+function restoreloader(){
+
+
+loaderdisk="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`"
+tcrppart="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`3"
+homesize=`du -sh /home/tc | awk '{print $1}'`
+PS3="Select backup folder to restore : "
+options=""
+
+
+if [ ! -n "$loaderdisk" ] || [ ! -n "$tcrppart" ] ; then
+echo "No Loader disk or no TCRP partition found, return"
+return 
+fi 
+
+echo "Restoring loader from backup"
+echo "The backup folder holds the following backups" 
+
+for folder in `ls /mnt/${tcrppart}/backup | sed -e 's/\///g'`
+do
+options=" $options ${folder}"
+echo -n $folder 
+echo -n "Partition 1 : `tar tfz /mnt/${tcrppart}/backup/${folder}/partition1.tgz |wc -l` files and directories "
+echo "Partition 2 : `tar tfz /mnt/${tcrppart}/backup/${folder}/partition2.tgz |wc -l` files and directories "
+done 
+
+
+select restorefolder in ${options[@]}
+do
+
+
+        if [ "$REPLY" == "quit" ] ; then return ; fi 
+		
+		
+        if [ -f "/mnt/${tcrppart}/backup/$restorefolder/partition1.tgz" ]; then
+		        echo " Restore folder : $restorefolder" 
+                echo -n "You have chosen ${restorefolder} : "
+				echo "Folder contains : "
+				ls -ltr /mnt/${tcrppart}/backup/$restorefolder
+				
+				echo -n "Do you want to restore [yY/nN] : "
+				read answer
+				
+				    if [ "$answer" == "y" ] || [ "$answer" == "Y" ] ; then
+				    echo restoring $restorefolder 
+					
+                         echo "Mounting partition 1"
+                         mount /dev/${loaderdisk}1
+						 echo "Restoring partition1 "
+                         cd /mnt/${loaderdisk}1 ; tar xfz /mnt/${tcrppart}/backup/${backupdate}/partition1.tgz *
+                         ls -ltr /mnt/${loaderdisk}1 
+                         echo "Mounting partition 2"
+                         mount /dev/${loaderdisk}2
+						 echo "Restoring partition2 "
+                         cd /mnt/${loaderdisk}2 ; tar xfz /mnt/${tcrppart}/backup/${backupdate}/partition2.tgz *
+                         ls -ltr /mnt/${loaderdisk}2
+
+					return
+				    else 
+				    echo "OK, retry "
+					return
+				    fi
+		
+                
+        fi
+
+        echo "Invalid choice : $REPLY"
+
+done
+
+}
+
+
+function mountdsmroot(){
+
+
+# DSM Disks will be linux_raid_member and will  have the 
+# same DSM PARTUUID with the addition of the partition number e.g : 
+#/dev/sdb1: UUID="629ae3df-7eef-54e3-05d9-49f7b0bbaec7" TYPE="linux_raid_member" PARTUUID="d5ff7cea-01"
+#/dev/sdb2: UUID="260b3a01-ff65-a527-05d9-49f7b0bbaec7" TYPE="linux_raid_member" PARTUUID="d5ff7cea-02"
+# So a command like the below will list the first partition of a DSM disk
+#blkid /dev/sd* |grep -i raid  | awk '{print $1 " " $4}' |grep UUID | grep "\-01" | awk -F ":" '{print $1}'
+
+
+dsmrootdisk="`blkid /dev/sd* |grep -i raid  | awk '{print $1 " " $4}' |grep UUID | grep "\-01" | awk -F ":" '{print $1}' | head -1`"
+
+[[ ! -d /mnt/dsmroot ]] && mkdir /mnt/dsmroot
+
+[ ! `mount |grep -i dsmroot | wc -l` -gt 0 ] && sudo mount -t ext4 $dsmrootdisk /mnt/dsmroot 
+
+if [ `mount |grep -i dsmroot | wc -l` -gt 0 ] ; then 
+echo "Succesfully mounted under /mnt/dsmroot"
+else
+echo "Failed to mount"
+return 
+fi
+
+echo "Checking if patch version exists" 
+
+if [ -d /mnt/dsmroot/.syno/patch ] ; then
+echo "Patch directory exists"
+sudo cp /mnt/dsmroot/.syno/patch/VERSION /tmp/VERSION ; sudo chmod 666 /tmp/VERSION
+. /tmp/VERSION
+echo "DSM Root holds a patch version $productversion-$base-$nano "
+else 
+echo "No DSM patch directory exists"
+return 
+fi
+
+
+}
+
+function mountdatadisk(){
+
+
+echo "Assembling MD ..."
+sudo mdadm -Asf
+
+for mdarray in "`ls /dev/md* | awk -F "\/" '{print $3}'`"
+do
+echo "Mounting $mdarray"
+echo "Getting md devices for array $mdarray"
+
+# Keep for LVM root disks recovery in future release 
+ if [ "$(fstype /dev/${mdarray})" == "LVM2_member" ] ; then 
+ echo "Found LVM array, downloading LVM" 
+ tce-load -iw lvm2
+ sudo vgchange -a y 
+ 
+      for volume in `sudo lvs |grep -i vol | awk '{print $2"-"$1}'`
+      do
+	  
+	       if [ "$(fstype /dev/mapper/$volume)" == "btrfs" ] ; then
+	       echo "BTRFS Mounting is not supported in tinycore"
+	       return
+	       fi
+	  
+      mkdir /mnt/$volume
+      sudo mount /dev/mapper/$volume
+      done 
+	  
+	  
+ else
+ echo "Mounting $mdarray "
+ sudo mkdir /mnt/$mdarray
+ sudo mount /dev/$mdarray /mnt/$mdarray
+ 
+ fi
+
+done 
+
+
+}
 
 function patchdtc(){
 
@@ -693,6 +893,10 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, s
 
 - backup:   Backup and make changes /home/tc changed permanent to your loader disk
 
+- backuploader/restoreloader:   Backup/Restore current loader partitions to/from your TCRP partition
+
+- mountdsmroot:   Mount DSM root for manual intervention on DSM root partition
+
 - mountshare: Mounts a remote CIFS working directory
 
 Available platform versions:
@@ -1348,6 +1552,15 @@ case $1 in
 		;;
 	backup)
 	    backup
+		;;
+    backuploader)
+	    backuploader
+		;;	
+	restoreloader)
+	    restoreloader
+		;;	
+	mountdsmroot)
+	    mountdsmroot
 		;;	
 	mountshare)
 		mountshare	

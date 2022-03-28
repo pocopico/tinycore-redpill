@@ -2,13 +2,14 @@
 #
 # Author : 
 # Date : 22240314
-# Version : 0.5.0.1
+# Version : 0.5.0.2
 #
 #
 # User Variables :
 
-rploaderver="0.5.0.1"
-rploaderepo="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
+rploaderver="0.5.0.2"
+rploaderfile="https://github.com/pocopico/tinycore-redpill/raw/main/rploader.sh"
+rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
 modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
@@ -17,286 +18,272 @@ modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modu
 dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/dtc"
 dtsfiles="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main"
 
+fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz modules.alias.4.json.gz rpext-index.json user_config.json dtc rploader.sh ds1621p.dts"
+
 # END Do not modify after this line
 ######################################################################################################
 
 
-function backuploader(){
+function fullupgrade(){
 
-
-loaderdisk="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`"
-tcrppart="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`3"
-homesize=`du -sh /home/tc | awk '{print $1}'`
 backupdate="`date +%Y-%b-%H-%M`"
 
+echo "Performing a full TCRP upgrade"
+echo "Warning some of your local files will be moved to /home/tc/old/xxxx.${backupdate}"
 
-if [ ! -n "$loaderdisk" ] || [ ! -n "$tcrppart" ] ; then
-echo "No Loader disk or no TCRP partition found, return"
-return 
-fi 
+[ ! -d /home/tc/old ] && mkdir /home/tc/old
 
-if [ `df -h /mnt/${tcrppart} | grep mnt | awk '{print $4}' | cut -c 1-3` -le 50 ] ; then 
-echo "No adequate space on TCRP loader partition  /mnt/${tcrppart} "
-return 
-fi
+for updatefile in ${fullupdatefiles}
+do
 
-echo "Backing up current loader"
-echo "Checking backup folder existence" ; [ ! -d /mnt/${tcrppart}/backup ] && mkdir /mnt/${tcrppart}/backup
-echo "The backup folder holds the following backups" 
-ls -ltr /mnt/${tcrppart}/backup
-echo "Creating backup folder $backupdate" ;  [ ! -d /mnt/${tcrppart}/backup/${backupdate} ] && mkdir /mnt/${tcrppart}/backup/${backupdate}
-echo "Mounting partition 1"
-mount /dev/${loaderdisk}1
-cd /mnt/${loaderdisk}1 ; tar cfz /mnt/${tcrppart}/backup/${backupdate}/partition1.tgz *
+echo "Updating ${updatefile}"
 
-echo "Mounting partition 2"
-mount /dev/${loaderdisk}2
-cd /mnt/${loaderdisk}2 ; tar cfz /mnt/${tcrppart}/backup/${backupdate}/partition2.tgz *
+sudo mv $updatefile old/${updatefile}.${backupdate} 
+sudo curl --location "${rploaderrepo}/${updatefile}" -O 
 
-cd 
-echo "Listing backup files : "
+done 
 
-ls -ltr /mnt/${tcrppart}/backup/${backupdate}/
+sudo chown tc:staff $fullupdatefiles
+gunzip -f modules.alias.*.gz
+sudo chmod 700 rploader.sh 
 
-echo "Partition 1 : `tar tfz /mnt/${tcrppart}/backup/${backupdate}/partition1.tgz |wc -l` files and directories "
-echo "Partition 2 : `tar tfz /mnt/${tcrppart}/backup/${backupdate}/partition2.tgz |wc -l` files and directories "
 
-echo "DONE"
+}
 
+
+function backuploader(){
+
+    loaderdisk="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`"
+    tcrppart="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`3"
+    homesize=`du -sh /home/tc | awk '{print $1}'`
+    backupdate="`date +%Y-%b-%H-%M`"
+
+
+    if [ ! -n "$loaderdisk" ] || [ ! -n "$tcrppart" ] ; then
+        echo "No Loader disk or no TCRP partition found, return"
+        return 
+    fi 
+
+    if [ `df -h /mnt/${tcrppart} | grep mnt | awk '{print $4}' | cut -c 1-3` -le 50 ] ; then 
+        echo "No adequate space on TCRP loader partition  /mnt/${tcrppart} "
+        return 
+    fi
+
+    echo "Backing up current loader"
+    echo "Checking backup folder existence" ; [ ! -d /mnt/${tcrppart}/backup ] && mkdir /mnt/${tcrppart}/backup
+    echo "The backup folder holds the following backups" 
+    ls -ltr /mnt/${tcrppart}/backup
+    echo "Creating backup folder $backupdate" ;  [ ! -d /mnt/${tcrppart}/backup/${backupdate} ] && mkdir /mnt/${tcrppart}/backup/${backupdate}
+    echo "Mounting partition 1"
+    mount /dev/${loaderdisk}1
+    cd /mnt/${loaderdisk}1 ; tar cfz /mnt/${tcrppart}/backup/${backupdate}/partition1.tgz *
+
+    echo "Mounting partition 2"
+    mount /dev/${loaderdisk}2
+    cd /mnt/${loaderdisk}2 ; tar cfz /mnt/${tcrppart}/backup/${backupdate}/partition2.tgz *
+
+    cd 
+    echo "Listing backup files : "
+
+    ls -ltr /mnt/${tcrppart}/backup/${backupdate}/
+
+    echo "Partition 1 : `tar tfz /mnt/${tcrppart}/backup/${backupdate}/partition1.tgz |wc -l` files and directories "
+    echo "Partition 2 : `tar tfz /mnt/${tcrppart}/backup/${backupdate}/partition2.tgz |wc -l` files and directories "
+
+    echo "DONE"
 
 }
 
 
 function restoreloader(){
 
-
-loaderdisk="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`"
-tcrppart="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`3"
-homesize=`du -sh /home/tc | awk '{print $1}'`
-PS3="Select backup folder to restore : "
-options=""
-
-
-if [ ! -n "$loaderdisk" ] || [ ! -n "$tcrppart" ] ; then
-echo "No Loader disk or no TCRP partition found, return"
-return 
-fi 
-
-echo "Restoring loader from backup"
-echo "The backup folder holds the following backups" 
-
-for folder in `ls /mnt/${tcrppart}/backup | sed -e 's/\///g'`
-do
-options=" $options ${folder}"
-echo -n $folder 
-echo -n "Partition 1 : `tar tfz /mnt/${tcrppart}/backup/${folder}/partition1.tgz |wc -l` files and directories "
-echo "Partition 2 : `tar tfz /mnt/${tcrppart}/backup/${folder}/partition2.tgz |wc -l` files and directories "
-done 
+    loaderdisk="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`"
+    tcrppart="`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`3"
+    homesize=`du -sh /home/tc | awk '{print $1}'`
+    PS3="Select backup folder to restore : "
+    options=""
 
 
-select restorefolder in ${options[@]}
-do
+    if [ ! -n "$loaderdisk" ] || [ ! -n "$tcrppart" ] ; then
+        echo "No Loader disk or no TCRP partition found, return"
+        return 
+    fi 
 
+    echo "Restoring loader from backup"
+    echo "The backup folder holds the following backups" 
 
-        if [ "$REPLY" == "quit" ] ; then return ; fi 
-		
-		
+    for folder in `ls /mnt/${tcrppart}/backup | sed -e 's/\///g'` ; do
+        options=" $options ${folder}"
+        echo -n $folder 
+        echo -n "Partition 1 : `tar tfz /mnt/${tcrppart}/backup/${folder}/partition1.tgz |wc -l` files and directories "
+        echo "Partition 2 : `tar tfz /mnt/${tcrppart}/backup/${folder}/partition2.tgz |wc -l` files and directories "
+    done 
+
+    select restorefolder in ${options[@]} ; do
+        if [ "$REPLY" == "quit" ] ; then
+            return
+        fi 
         if [ -f "/mnt/${tcrppart}/backup/$restorefolder/partition1.tgz" ]; then
-		        echo " Restore folder : $restorefolder" 
-                echo -n "You have chosen ${restorefolder} : "
-				echo "Folder contains : "
-				ls -ltr /mnt/${tcrppart}/backup/$restorefolder
-				
-				echo -n "Do you want to restore [yY/nN] : "
-				read answer
-				
-				    if [ "$answer" == "y" ] || [ "$answer" == "Y" ] ; then
-				    echo restoring $restorefolder 
-					
-                         echo "Mounting partition 1"
-                         mount /dev/${loaderdisk}1
-						 echo "Restoring partition1 "
-                         cd /mnt/${loaderdisk}1 ; tar xfz /mnt/${tcrppart}/backup/${backupdate}/partition1.tgz *
-                         ls -ltr /mnt/${loaderdisk}1 
-                         echo "Mounting partition 2"
-                         mount /dev/${loaderdisk}2
-						 echo "Restoring partition2 "
-                         cd /mnt/${loaderdisk}2 ; tar xfz /mnt/${tcrppart}/backup/${backupdate}/partition2.tgz *
-                         ls -ltr /mnt/${loaderdisk}2
-
-					return
-				    else 
-				    echo "OK, retry "
-					return
-				    fi
-		
-                
+            echo " Restore folder : $restorefolder" 
+            echo -n "You have chosen ${restorefolder} : "
+            echo "Folder contains : "
+            ls -ltr /mnt/${tcrppart}/backup/$restorefolder
+            
+            echo -n "Do you want to restore [yY/nN] : "
+            read answer
+            
+            if [ "$answer" == "y" ] || [ "$answer" == "Y" ] ; then
+                echo restoring $restorefolder 
+                echo "Mounting partition 1"
+                mount /dev/${loaderdisk}1
+                echo "Restoring partition1 "
+                cd /mnt/${loaderdisk}1 ; tar xfz /mnt/${tcrppart}/backup/${backupdate}/partition1.tgz *
+                ls -ltr /mnt/${loaderdisk}1 
+                echo "Mounting partition 2"
+                mount /dev/${loaderdisk}2
+                echo "Restoring partition2 "
+                cd /mnt/${loaderdisk}2 ; tar xfz /mnt/${tcrppart}/backup/${backupdate}/partition2.tgz *
+                ls -ltr /mnt/${loaderdisk}2
+                return
+            else 
+                echo "OK, retry "
+                return
+            fi
         fi
-
         echo "Invalid choice : $REPLY"
-
-done
+    done
 
 }
 
 
 function mountdsmroot(){
 
+    # DSM Disks will be linux_raid_member and will  have the 
+    # same DSM PARTUUID with the addition of the partition number e.g : 
+    #/dev/sdb1: UUID="629ae3df-7eef-54e3-05d9-49f7b0bbaec7" TYPE="linux_raid_member" PARTUUID="d5ff7cea-01"
+    #/dev/sdb2: UUID="260b3a01-ff65-a527-05d9-49f7b0bbaec7" TYPE="linux_raid_member" PARTUUID="d5ff7cea-02"
+    # So a command like the below will list the first partition of a DSM disk
+    #blkid /dev/sd* |grep -i raid  | awk '{print $1 " " $4}' |grep UUID | grep "\-01" | awk -F ":" '{print $1}'
 
-# DSM Disks will be linux_raid_member and will  have the 
-# same DSM PARTUUID with the addition of the partition number e.g : 
-#/dev/sdb1: UUID="629ae3df-7eef-54e3-05d9-49f7b0bbaec7" TYPE="linux_raid_member" PARTUUID="d5ff7cea-01"
-#/dev/sdb2: UUID="260b3a01-ff65-a527-05d9-49f7b0bbaec7" TYPE="linux_raid_member" PARTUUID="d5ff7cea-02"
-# So a command like the below will list the first partition of a DSM disk
-#blkid /dev/sd* |grep -i raid  | awk '{print $1 " " $4}' |grep UUID | grep "\-01" | awk -F ":" '{print $1}'
+    dsmrootdisk="`blkid /dev/sd* |grep -i raid  | awk '{print $1 " " $4}' |grep UUID | grep "\-01" | awk -F ":" '{print $1}' | head -1`"
 
+    [[ ! -d /mnt/dsmroot ]] && mkdir /mnt/dsmroot
 
-dsmrootdisk="`blkid /dev/sd* |grep -i raid  | awk '{print $1 " " $4}' |grep UUID | grep "\-01" | awk -F ":" '{print $1}' | head -1`"
+    [ ! `mount |grep -i dsmroot | wc -l` -gt 0 ] && sudo mount -t ext4 $dsmrootdisk /mnt/dsmroot 
 
-[[ ! -d /mnt/dsmroot ]] && mkdir /mnt/dsmroot
+    if [ `mount |grep -i dsmroot | wc -l` -gt 0 ] ; then 
+        echo "Succesfully mounted under /mnt/dsmroot"
+    else
+        echo "Failed to mount"
+        return 
+    fi
 
-[ ! `mount |grep -i dsmroot | wc -l` -gt 0 ] && sudo mount -t ext4 $dsmrootdisk /mnt/dsmroot 
+    echo "Checking if patch version exists" 
 
-if [ `mount |grep -i dsmroot | wc -l` -gt 0 ] ; then 
-echo "Succesfully mounted under /mnt/dsmroot"
-else
-echo "Failed to mount"
-return 
-fi
-
-echo "Checking if patch version exists" 
-
-if [ -d /mnt/dsmroot/.syno/patch ] ; then
-echo "Patch directory exists"
-sudo cp /mnt/dsmroot/.syno/patch/VERSION /tmp/VERSION ; sudo chmod 666 /tmp/VERSION
-. /tmp/VERSION
-echo "DSM Root holds a patch version $productversion-$base-$nano "
-else 
-echo "No DSM patch directory exists"
-return 
-fi
-
+    if [ -d /mnt/dsmroot/.syno/patch ] ; then
+        echo "Patch directory exists"
+        sudo cp /mnt/dsmroot/.syno/patch/VERSION /tmp/VERSION ; sudo chmod 666 /tmp/VERSION
+        . /tmp/VERSION
+        echo "DSM Root holds a patch version $productversion-$base-$nano "
+    else 
+        echo "No DSM patch directory exists"
+        return 
+    fi
 
 }
 
 function mountdatadisk(){
 
+    echo "Assembling MD ..."
+    sudo mdadm -Asf
 
-echo "Assembling MD ..."
-sudo mdadm -Asf
+    for mdarray in "`ls /dev/md* | awk -F "\/" '{print $3}'`" ; do
+        echo "Mounting $mdarray"
+        echo "Getting md devices for array $mdarray"
 
-for mdarray in "`ls /dev/md* | awk -F "\/" '{print $3}'`"
-do
-echo "Mounting $mdarray"
-echo "Getting md devices for array $mdarray"
-
-# Keep for LVM root disks recovery in future release 
- if [ "$(fstype /dev/${mdarray})" == "LVM2_member" ] ; then 
- echo "Found LVM array, downloading LVM" 
- tce-load -iw lvm2
- sudo vgchange -a y 
- 
-      for volume in `sudo lvs |grep -i vol | awk '{print $2"-"$1}'`
-      do
-	  
-	       if [ "$(fstype /dev/mapper/$volume)" == "btrfs" ] ; then
-	       echo "BTRFS Mounting is not supported in tinycore"
-	       return
-	       fi
-	  
-      mkdir /mnt/$volume
-      sudo mount /dev/mapper/$volume
-      done 
-	  
-	  
- else
- echo "Mounting $mdarray "
- sudo mkdir /mnt/$mdarray
- sudo mount /dev/$mdarray /mnt/$mdarray
- 
- fi
-
-done 
-
+        # Keep for LVM root disks recovery in future release 
+        if [ "$(fstype /dev/${mdarray})" == "LVM2_member" ] ; then 
+            echo "Found LVM array, downloading LVM" 
+            tce-load -iw lvm2
+            sudo vgchange -a y 
+            for volume in `sudo lvs |grep -i vol | awk '{print $2"-"$1}'`
+            do
+            
+                if [ "$(fstype /dev/mapper/$volume)" == "btrfs" ] ; then
+                    echo "BTRFS Mounting is not supported in tinycore"
+                    return
+                fi
+                mkdir /mnt/$volume
+                sudo mount /dev/mapper/$volume
+            done 
+        else
+            echo "Mounting $mdarray "
+            sudo mkdir /mnt/$mdarray
+            sudo mount /dev/$mdarray /mnt/$mdarray        
+        fi
+    done 
 
 }
 
 function patchdtc(){
 
-loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
-localdisks=`lsblk |grep -i disk |grep -i sd | awk '{print $1}' |grep -v $loaderdisk`
-localnvme=`lsblk |grep -i nvme |awk '{print $1}' `
+    loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
+    localdisks=`lsblk |grep -i disk |grep -i sd | awk '{print $1}' |grep -v $loaderdisk`
+    localnvme=`lsblk |grep -i nvme |awk '{print $1}' `
 
 
     if [ "${TARGET_PLATFORM}" = "v1000" ] ; then
-	    SYNOMODEL="ds1621p"
-	else 
-		echo "${TARGET_PLATFORM} does not require model.dtc patching "
-		return 
-	fi
+        SYNOMODEL="ds1621p"
+    else 
+        echo "${TARGET_PLATFORM} does not require model.dtc patching "
+        return 
+    fi
 
     if [ ! -d /lib64 ] ; then 
         sudo ln -s /lib /lib64
     fi
-    
-	echo "Downloading dtc binary"
-	curl --location --progress-bar "$dtcbin" -O 
-	chmod 700 dtc 
+
+    echo "Downloading dtc binary"
+    curl --location --progress-bar "$dtcbin" -O 
+    chmod 700 dtc 
 
     if [ ! -f ${SYNOMODEL}.dts ] ; then
-	
-	echo "dts file for ${SYNOMODEL} not found, trying to download"
-	curl --location --progress-bar  -O "${dtsfiles}/${SYNOMODEL}.dts"
-	
-	fi
+        echo "dts file for ${SYNOMODEL} not found, trying to download"
+        curl --location --progress-bar  -O "${dtsfiles}/${SYNOMODEL}.dts"
+    fi
 
     echo "Found `echo $localdisks|wc -w` disks and `echo $localnvme |wc -w` nvme"
-	let diskslot=1
-	echo "Collecting disk paths"
-	
-        	for disk in $localdisks
-        	do
-        	diskpath=`udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}'`
-        	
-        	echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot"
+    let diskslot=1
+    echo "Collecting disk paths"
+    
+    for disk in $localdisks; do
+        diskpath=`udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}'`
+        echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot"
+        sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${SYNOMODEL}.dts
+        let diskslot=$diskslot+1	
+    done 
+    
+    if [ `echo $localnvme | wc -w` -gt 0 ] ; then 
+        let nvmeslot=1
+        echo "Collecting nvme paths"
         
-            sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${SYNOMODEL}.dts
-        
-        	
-        	let diskslot=$diskslot+1	
-        	done 
-	
-	if [ `echo $localnvme | wc -w` -gt 0 ] ; then 
-	let nvmeslot=1
-	echo "Collecting nvme paths"
-	
-	      for nvme in $localnvme
-	      do
-	      nvmepath=`udevadm info --query path --name $nvme | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}'`
-	      
-	      echo "Found local nvme $nvme with path $nvmepath, adding into m2_card $nvmeslot"
-	      
-          sed -i "/m2_card\@${nvmeslot} {/!b;n;n;n;cpcie_root = \"$nvmepath\";" ${SYNOMODEL}.dts
-	      
-	      
-	      let nvmeslot=$diskslot+1	
-	      done 
-		
-	else 
-	
-	echo "NO NVME disks found, returning"
-		
-	fi
-	
-	echo "Converting dts to dtb"
-	./dtc -I dts -O dtb ${SYNOMODEL}.dts > ${SYNOMODEL}.dtb 2>&1 > /dev/null
+        for nvme in $localnvme ; do
+            nvmepath=`udevadm info --query path --name $nvme | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}'`
+            echo "Found local nvme $nvme with path $nvmepath, adding into m2_card $nvmeslot"
+            sed -i "/m2_card\@${nvmeslot} {/!b;n;n;n;cpcie_root = \"$nvmepath\";" ${SYNOMODEL}.dts
+            let nvmeslot=$diskslot+1	
+        done 
+            
+    else 
+        echo "NO NVME disks found, returning"
+    fi
+    
+    echo "Converting dts to dtb"
+    ./dtc -I dts -O dtb ${SYNOMODEL}.dts > ${SYNOMODEL}.dtb 2>&1 > /dev/null
 
-	echo "Remember to replace extension model file ..."
-	
+    echo "Remember to replace extension model file ..."
+
 }
-
-
-
 
 function mountshare(){
 
@@ -342,10 +329,10 @@ function mountshare(){
 
 function checkmachine() {
 
-if grep -q ^flags.*\ hypervisor\  /proc/cpuinfo ; then
-    MACHINE="VIRTUAL"
-    HYPERVISOR=`dmesg |grep -i "Hypervisor detected" | awk '{print $5}'`
-    echo "Machine is $MACHINE Hypervisor=$HYPERVISOR"
+    if grep -q ^flags.*\ hypervisor\  /proc/cpuinfo ; then
+        MACHINE="VIRTUAL"
+        HYPERVISOR=`dmesg |grep -i "Hypervisor detected" | awk '{print $5}'`
+        echo "Machine is $MACHINE Hypervisor=$HYPERVISOR"
     fi
 
 }
@@ -354,316 +341,302 @@ if grep -q ^flags.*\ hypervisor\  /proc/cpuinfo ; then
 
 function backup(){
 
-loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
-homesize=`du -sh /home/tc | awk '{print $1}'`
+    loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
+    homesize=`du -sh /home/tc | awk '{print $1}'`
 
-echo "Please make sure you are using the latest 1GB img before using backup option"
-echo "Current /home/tc size is $homesize , try to keep it less than 1GB as it might not fit into your image"
+    echo "Please make sure you are using the latest 1GB img before using backup option"
+    echo "Current /home/tc size is $homesize , try to keep it less than 1GB as it might not fit into your image"
 
-echo "Should i update the $loaderdisk with your current files [Yy/Nn]"
-	read answer
-       if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-       echo -n "Backing up home files to $loaderdisk : "
-	        if filetool.sh -b ${loaderdisk}3 ; then 
-	        echo ""
-			else 
-			echo "Error: Couldn't backup files"
-			fi
-       else
-       echo "OK, keeping last status"
-       fi 
+    echo "Should i update the $loaderdisk with your current files [Yy/Nn]"
+    read answer
+    if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
+        echo -n "Backing up home files to $loaderdisk : "
+        if filetool.sh -b ${loaderdisk}3 ; then 
+            echo ""
+        else 
+            echo "Error: Couldn't backup files"
+        fi
+    else
+        echo "OK, keeping last status"
+    fi 
 
 }
 
 function satamap(){
 
-checkmachine
+    checkmachine
 
-let controller=0
-let diskidxmap=0
+    let controller=0
+    let diskidxmap=0
 
-if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ] ; then
-echo "Running on VMware, Possible working solution, SataPortMap=1 DiskIdxMap=00"
-else 
-     for hba in `lsscsi -Hv |grep pci |grep -v usb | cut -c 44-50 | uniq`
-     do
-	     if [ `lsscsi -Hv |grep "$hba" | grep ata | wc -l` -gt 0 ] ; then 
-         echo "HBA: $hba Disks : `lsscsi -Hv |grep "$hba" | wc -l`"
-         lsscsi -Hv |grep "$hba" | wc -l >> satamap.$$
-		 
-		    if [ $controller = 0 ] ; then 
-		    printf "%02X" $diskidxmap >> diskmap.$$
-		    else 
-		    let diskidxmap=$diskidxmap+`lsscsi -Hv |grep "$hba" | wc -l` ; printf "%02X" $diskidxmap >> diskmap.$$
-		    fi 
-			
-		 else
-		 
-		      if [ `lsscsi -Hv | grep -B 2 $hba | head -1 | awk '{print $2}' |grep vmw |wc -l` -gt 0 ] ; then 
-			  pcidev=`lsscsi -Hv | grep $hba | awk '{print $3}'`
-		      echo "HBA: $hba Disks : `ls -ltrd ${pcidev}/target* | wc -l`"
-		      ls -ltrd ${pcidev}/target* | wc -l >> satamap.$$
-		         if [ $controller = 0 ] ; then 
-		         printf "%02X" $diskidxmap >> diskmap.$$
-		         else 
-		         let diskidxmap=$diskidxmap+`lsscsi -Hv |grep "$hba" | wc -l` ; printf "%02X" $diskidxmap >> diskmap.$$
-		         fi 
-			  else 
-		      pcidev=`lsscsi -Hv | grep $hba | awk '{print $3}'`
-		      echo "HBA: $hba Disks : `ls -ltrd ${pcidev}/port* | wc -l`"
-		      ls -ltrd ${pcidev}/port* | wc -l >> satamap.$$
-		         if [ $controller = 0 ] ; then 
-		         printf "%02X" $diskidxmap >> diskmap.$$
-		         else 
-		         let diskidxmap=$diskidxmap+`lsscsi -Hv |grep "$hba" | wc -l` ; printf "%02X" $diskidxmap >> diskmap.$$
-		         fi 
-			  fi
-		 fi 
-		 let controller=$controller+1
-     done
-     
-     sataportmap=`cat satamap.$$ | tr -d '\n'`
-     diskidxmap=`cat diskmap.$$ | tr -d '\n'`
-     echo "SataPortMap=$sataportmap"
-     echo "DiskIdxMap=$diskidxmap"
-	 
-	 
-	echo "Should i update the user_config.json with these values ? [Yy/Nn]"
-	read answer
-       if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-       sed -i "/\"SataPortMap\": \"/c\    \"SataPortMap\": \"$sataportmap\"," user_config.json
-       sed -i "/\"DiskIdxMap\": \"/c\    \"DiskIdxMap\": \"$diskidxmap\"" user_config.json
-       else
-       echo "OK remember to update manually by editing user_config.json file"
-       fi 
-     
-     rm satamap.$$
-	 rm diskmap.$$
-fi
+    if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ] ; then
+        echo "Running on VMware, Possible working solution, SataPortMap=1 DiskIdxMap=00"
+    else 
+        for hba in `lsscsi -Hv |grep pci |grep -v usb | cut -c 44-50 | uniq` ; do
+            if [ `lsscsi -Hv |grep "$hba" | grep ata | wc -l` -gt 0 ] ; then 
+                echo "HBA: $hba Disks : `lsscsi -Hv |grep "$hba" | wc -l`"
+                lsscsi -Hv |grep "$hba" | wc -l >> satamap.$$
+                if [ $controller = 0 ] ; then 
+                    printf "%02X" $diskidxmap >> diskmap.$$
+                else 
+                    let diskidxmap=$diskidxmap+`lsscsi -Hv |grep "$hba" | wc -l` ; printf "%02X" $diskidxmap >> diskmap.$$
+                fi 
+            else
+                if [ `lsscsi -Hv | grep -B 2 $hba | head -1 | awk '{print $2}' |grep vmw |wc -l` -gt 0 ] ; then 
+                    pcidev=`lsscsi -Hv | grep $hba | awk '{print $3}'`
+                    echo "HBA: $hba Disks : `ls -ltrd ${pcidev}/target* | wc -l`"
+                    ls -ltrd ${pcidev}/target* | wc -l >> satamap.$$
+                    if [ $controller = 0 ] ; then 
+                        printf "%02X" $diskidxmap >> diskmap.$$
+                    else 
+                        let diskidxmap=$diskidxmap+`lsscsi -Hv |grep "$hba" | wc -l` ; printf "%02X" $diskidxmap >> diskmap.$$
+                    fi 
+                else 
+                    pcidev=`lsscsi -Hv | grep $hba | awk '{print $3}'`
+                    echo "HBA: $hba Disks : `ls -ltrd ${pcidev}/port* | wc -l`"
+                    ls -ltrd ${pcidev}/port* | wc -l >> satamap.$$
+                    if [ $controller = 0 ] ; then 
+                        printf "%02X" $diskidxmap >> diskmap.$$
+                    else 
+                        let diskidxmap=$diskidxmap+`lsscsi -Hv |grep "$hba" | wc -l` ; printf "%02X" $diskidxmap >> diskmap.$$
+                    fi 
+                fi
+            fi 
+            let controller=$controller+1
+        done
+        
+        sataportmap=`cat satamap.$$ | tr -d '\n'`
+        diskidxmap=`cat diskmap.$$ | tr -d '\n'`
+        echo "SataPortMap=$sataportmap"
+        echo "DiskIdxMap=$diskidxmap"
+        
+        
+        echo "Should i update the user_config.json with these values ? [Yy/Nn]"
+        read answer
+        if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
+            sed -i "/\"SataPortMap\": \"/c\    \"SataPortMap\": \"$sataportmap\"," user_config.json
+            sed -i "/\"DiskIdxMap\": \"/c\    \"DiskIdxMap\": \"$diskidxmap\"" user_config.json
+        else
+            echo "OK remember to update manually by editing user_config.json file"
+        fi 
+        
+        rm satamap.$$
+        rm diskmap.$$
+    fi
 
 }
 
 function usbidentify(){
 
-checkmachine
+    checkmachine
 
-if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ] ; then
-echo "Running on VMware, no need to set USB VID and PID, you should SATA shim instead"
-exit 0
-fi 
+    if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ] ; then
+        echo "Running on VMware, no need to set USB VID and PID, you should SATA shim instead"
+        exit 0
+    fi 
 
-if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "QEMU" ] ; then
-echo "Running on QEMU, If you are using USB shim, VID 0x46f4 and PID 0x0001 should work for you"
-vendorid="0x46f4"
-productid="0x0001"
-echo "Vendor ID : $vendorid Product ID : $productid"
+    if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "QEMU" ] ; then
+        echo "Running on QEMU, If you are using USB shim, VID 0x46f4 and PID 0x0001 should work for you"
+        vendorid="0x46f4"
+        productid="0x0001"
+        echo "Vendor ID : $vendorid Product ID : $productid"
 
-echo "Should i update the user_config.json with these values ? [Yy/Nn]"
-read answer
-       if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-       sed -i "/\"pid\": \"/c\    \"pid\": \"$productid\"," user_config.json
-       sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"," user_config.json
-       else
-       echo "OK remember to update manually by editing user_config.json file"
-       fi
-exit 0
-fi 
+        echo "Should i update the user_config.json with these values ? [Yy/Nn]"
+        read answer
+        if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
+            sed -i "/\"pid\": \"/c\    \"pid\": \"$productid\"," user_config.json
+            sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"," user_config.json
+        else
+            echo "OK remember to update manually by editing user_config.json file"
+        fi
+        exit 0
+    fi 
 
+    loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
 
-loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
+    lsusb -v  2>&1|grep -B 33 -A 1 SCSI > /tmp/lsusb.out
 
-lsusb -v  2>&1|grep -B 33 -A 1 SCSI > /tmp/lsusb.out
+    usblist=`grep -B 33 -A 1 SCSI   /tmp/lsusb.out`
+    vendorid=`grep -B 33 -A 1 SCSI  /tmp/lsusb.out |grep -i idVendor  | awk '{print $2}'`
+    productid=`grep -B 33 -A 1 SCSI /tmp/lsusb.out |grep -i idProduct | awk '{print $2}'`
 
+    if [ `echo $vendorid | wc -w` -gt 1 ] ; then
+        echo "Found more than one USB disk devices, please select which one is your loader on"
+        usbvendor=$(for item in $vendorid  ; do grep $item /tmp/lsusb.out |awk '{print $3}';done)
+        select usbdev in $usbvendor ; do
+            vendorid=`grep -B 10 -A 10 $usbdev /tmp/lsusb.out |grep idVendor | grep $usbdev |awk '{print $2}'`
+            productid=`grep -B 10 -A 10 $usbdev /tmp/lsusb.out | grep -A 1 idVendor  | grep idProduct |  awk '{print $2}'`
+            echo "Selected Device : $usbdev , with VendorID: $vendorid and ProductID: $productid"
+            break
+        done
+    else
+        usbdevice="`grep iManufacturer /tmp/lsusb.out | awk '{print $3}'` `grep iProduct /tmp/lsusb.out | awk '{print $3}' ` SerialNumber: `grep iSerial /tmp/lsusb.out | awk '{print $3}'`"
+    fi
 
-usblist=`grep -B 33 -A 1 SCSI   /tmp/lsusb.out`
-vendorid=`grep -B 33 -A 1 SCSI  /tmp/lsusb.out |grep -i idVendor  | awk '{print $2}'`
-productid=`grep -B 33 -A 1 SCSI /tmp/lsusb.out |grep -i idProduct | awk '{print $2}'`
+    if [ -n "$usbdevice" ] && [ -n "$vendorid" ] && [ -n "$productid" ] ; then
+        echo "Found $usbdevice"
+        echo "Vendor ID : $vendorid Product ID : $productid"
 
-if [ `echo $vendorid | wc -w` -gt 1 ] ; then
-echo "Found more than one USB disk devices, please select which one is your loader on"
-usbvendor=$(for item in $vendorid  ; do grep $item /tmp/lsusb.out |awk '{print $3}';done)
-select usbdev in $usbvendor
-do
-vendorid=`grep -B 10 -A 10 $usbdev /tmp/lsusb.out |grep idVendor | grep $usbdev |awk '{print $2}'`
-productid=`grep -B 10 -A 10 $usbdev /tmp/lsusb.out | grep -A 1 idVendor  | grep idProduct |  awk '{print $2}'`
-echo "Selected Device : $usbdev , with VendorID: $vendorid and ProductID: $productid"
-break
-done
-else
-usbdevice="`grep iManufacturer /tmp/lsusb.out | awk '{print $3}'` `grep iProduct /tmp/lsusb.out | awk '{print $3}' ` SerialNumber: `grep iSerial /tmp/lsusb.out | awk '{print $3}'`"
-fi
-
-if [ -n "$usbdevice" ] && [ -n "$vendorid" ] && [ -n "$productid" ] ; then
-echo "Found $usbdevice"
-echo "Vendor ID : $vendorid Product ID : $productid"
-
-echo "Should i update the user_config.json with these values ? [Yy/Nn]"
-read answer
-       if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-       sed -i "/\"pid\": \"/c\    \"pid\": \"$productid\"," user_config.json
-       sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"," user_config.json
-       else
-       echo "OK remember to update manually by editing user_config.json file"
-       fi
-else
-echo "Sorry, no usb disk could be identified"
-rm /tmp/lsusb.out
-fi
-
+        echo "Should i update the user_config.json with these values ? [Yy/Nn]"
+        read answer
+        if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
+            sed -i "/\"pid\": \"/c\    \"pid\": \"$productid\"," user_config.json
+            sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"," user_config.json
+        else
+            echo "OK remember to update manually by editing user_config.json file"
+        fi
+    else
+        echo "Sorry, no usb disk could be identified"
+        rm /tmp/lsusb.out
+    fi
 }
 
 function serialgen(){
 
-	    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] ; then
+    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] ; then
         serial="$(generateSerial $1)"
-		mac="$(generateMacAddress $1)"
-		echo "Serial Number for Model : $serial"
-		echo "Mac Address for Model $1 : $mac " 
-		
+        mac="$(generateMacAddress $1)"
+        echo "Serial Number for Model : $serial"
+        echo "Mac Address for Model $1 : $mac " 
+        
         echo "Should i update the user_config.json with these values ? [Yy/Nn]"
         read answer
         if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ] ; then
-        sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"," user_config.json
-		macaddress=`echo $mac | sed -s 's/://g'`
-        sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"," user_config.json
+            sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"," user_config.json
+            macaddress=`echo $mac | sed -s 's/://g'`
+            sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"," user_config.json
         else
-        echo "OK remember to update manually by editing user_config.json file"
+            echo "OK remember to update manually by editing user_config.json file"
         fi 
-		
-		else
-		echo "Error : $2 is not an available model for serial number generation. "
-		echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+"
-		fi
+    else
+        echo "Error : $2 is not an available model for serial number generation. "
+        echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+"
+    fi
 
 }
 
 
 function beginArray() {
 
-case $1 in 
-
-
-DS3615xs)
-permanent="LWN"
-serialstart="1130 1230 1330 1430"
-;;
-DS3617xs)
-permanent="ODN"
-serialstart="1130 1230 1330 1430"
-;;
-DS916+)
-permanent="NZN"
-serialstart="1130 1230 1330 1430"
-;;
-DS918+)
-permanent="PDN"
-serialstart="1780 1790 1860 1980"
-;;
-DS920+)
-permanent="SBR"
-serialstart="2030 2040 20C0 2150"
-;;
-DS3622xs+)
-permanent="SQR"
-serialstart="2030 2040 20C0 2150"
-;;
-DS1621+)
-permanent="S7R"
-serialstart="2080"
-;;
-FS6400)
-permanent="PSN"
-serialstart="1960"
-;;
-DVA3219)
-permanent="RFR"
-serialstart="1930 1940"
-;;
-DVA3221)
-permanent="SJR"
-serialstart="2030 2040 20C0 2150"
-;;
-
-esac
+    case $1 in 
+        DS3615xs)
+                    permanent="LWN"
+                    serialstart="1130 1230 1330 1430"
+                    ;;
+        DS3617xs)
+                    permanent="ODN"
+                    serialstart="1130 1230 1330 1430"
+                    ;;
+        DS916+)
+                    permanent="NZN"
+                    serialstart="1130 1230 1330 1430"
+                    ;;
+        DS918+)
+                    permanent="PDN"
+                    serialstart="1780 1790 1860 1980"
+                    ;;
+        DS920+)
+                    permanent="SBR"
+                    serialstart="2030 2040 20C0 2150"
+                    ;;
+        DS3622xs+)
+                    permanent="SQR"
+                    serialstart="2030 2040 20C0 2150"
+                    ;;
+        DS1621+)
+                    permanent="S7R"
+                    serialstart="2080"
+                    ;;
+        FS6400)
+                    permanent="PSN"
+                    serialstart="1960"
+                    ;;
+        DVA3219)
+                    permanent="RFR"
+                    serialstart="1930 1940"
+                    ;;
+        DVA3221)
+                    permanent="SJR"
+                    serialstart="2030 2040 20C0 2150"
+                    ;;
+    esac
 
 }
 
 
 function random() {
-     	 printf "%06d" $(($RANDOM %30000 +1 ))
+
+    printf "%06d" $(($RANDOM %30000 +1 ))
+
 }
 function randomhex() {
-     val=$(( $RANDOM %255 +1)) 
-     echo "obase=16; $val" | bc
+    val=$(( $RANDOM %255 +1)) 
+    echo "obase=16; $val" | bc
 }
 
 function generateRandomLetter() {
-	 for i in a b c d e f g h j k l m n p q r s t v w x y z
-	 do echo $i
-	 done | sort -R|tail -1
+    for i in a b c d e f g h j k l m n p q r s t v w x y z ; do
+        echo $i
+    done | sort -R|tail -1
 }
 
 
 function generateRandomValue() {
-	 for i in 0 1 2 3 4 5 6 7 8 9 a b c d e f g h j k l m n p q r s t v w x y z
-	 do echo $i
-	 done | sort -R|tail -1
+    for i in 0 1 2 3 4 5 6 7 8 9 a b c d e f g h j k l m n p q r s t v w x y z ; do
+        echo $i
+    done | sort -R|tail -1
 }
 
 function toupper() {
-
-echo $1 | tr '[:lower:]' '[:upper:]'
-
+    echo $1 | tr '[:lower:]' '[:upper:]'
 }
 
 
 function generateMacAddress() {
-
-#toupper "Mac Address: 00:11:32:$(randomhex):$(randomhex):$(randomhex)"
-printf '00:11:32:%02X:%02X:%02X' $[RANDOM%256]  $[RANDOM%256]  $[RANDOM%256]
+    #toupper "Mac Address: 00:11:32:$(randomhex):$(randomhex):$(randomhex)"
+    printf '00:11:32:%02X:%02X:%02X' $[RANDOM%256]  $[RANDOM%256]  $[RANDOM%256]
 
 }
 
 function generateSerial(){
 
-	beginArray $1
+    beginArray $1
 
-	case $1 in 
+    case $1 in 
 
-DS3615xs)
-serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
-;;
-DS3617xs)
-serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
-;;
-DS916+)
-serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
-;;
-DS918+)
-serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
-;;
-FS6400)
-serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
-;;
-DS920+)
-serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
-;;
-DS3622xs+)
-serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
-;;
-DS1621+)
-serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
-;;
-DVA3219)
-serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
-;;
-DVA3221)
-serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
-;;
+        DS3615xs)
+                    serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
+                    ;;
+        DS3617xs)
+                    serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
+                    ;;
+        DS916+)
+                    serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
+                    ;;
+        DS918+)
+                    serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
+                    ;;
+        FS6400)
+                    serialnum="`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(random)	
+                    ;;
+        DS920+)
+                    serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+                    ;;
+        DS3622xs+)
+                    serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+                    ;;
+        DS1621+)
+                    serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+                    ;;
+        DVA3219)
+                    serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+                    ;;
+        DVA3221)
+                    serialnum=$(toupper "`echo "$serialstart" |  tr ' ' '\n' | sort -R | tail -1`$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+                    ;;
+    esac
 
-esac
-
-	echo $serialnum
+    echo $serialnum
 
 }
 
@@ -860,44 +833,46 @@ Usage: ${0} <action> <platform version> <static or compile module> [extension ma
 
 Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, satamap, mountshare
 
-- build:     Build the 💊 RedPill LKM and update the loader image for the specified 
-             platform version and update current loader.
-			 
-- ext:       Manage extensions, options go after platform (add/force_add/info/remove/update/cleanup/auto)
-			 
-             example: 
-             
-             rploader.sh ext apollolake-7.0.1-42218 add https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/rpext-index.json
-             
-             or for auto detect use 
-             
-             rploader.sh ext apollolake-7.0.1-42218 auto 
-			 
-- download:  Download redpill sources only
-			 
-- clean:     Removes all cached files and starts over
-			 
-- update:    Checks github repo for latest version of rploader 
-			 
-- listmods:  Tries to figure out required extensions
-			 
-- serialgen: Generates a serial number and mac address for the following platforms 
-             
-             DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+
-			 
-- identifyusb: Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
+- build:        Build the 💊 RedPill LKM and update the loader image for the specified 
+                platform version and update current loader.
 
-- patchdtc: Tries to identify and patch your dtc model for your disk and nvme devices.
+- ext:          Manage extensions, options go after platform (add/force_add/info/remove/update/cleanup/auto)
 
-- satamap: Tries to identify your SataPortMap and DiskIdxMap values and updates the user_config.json file 
+                example: 
 
-- backup:   Backup and make changes /home/tc changed permanent to your loader disk
+                rploader.sh ext apollolake-7.0.1-42218 add https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/rpext-index.json
 
-- backuploader/restoreloader:   Backup/Restore current loader partitions to/from your TCRP partition
+                or for auto detect use 
 
-- mountdsmroot:   Mount DSM root for manual intervention on DSM root partition
+                rploader.sh ext apollolake-7.0.1-42218 auto 
 
-- mountshare: Mounts a remote CIFS working directory
+- download:     Download redpill sources only
+
+- clean:        Removes all cached files and starts over
+
+- update:       Checks github repo for latest version of rploader 
+
+- listmods:     Tries to figure out required extensions
+
+- serialgen:    Generates a serial number and mac address for the following platforms 
+
+                DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+
+
+- identifyusb:  Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
+
+- patchdtc:     Tries to identify and patch your dtc model for your disk and nvme devices.
+
+- satamap:      Tries to identify your SataPortMap and DiskIdxMap values and updates the user_config.json file 
+
+- backup:       Backup and make changes /home/tc changed permanent to your loader disk
+
+- backuploader: Backup current loader partitions to your TCRP partition
+
+- restoreloader:Restore current loader partitions from your TCRP partition
+
+- mountdsmroot: Mount DSM root for manual intervention on DSM root partition
+
+- mountshare:   Mounts a remote CIFS working directory
 
 Available platform versions:
 ----------------------------------------------------------------------------------------
@@ -943,13 +918,6 @@ function gitdownload() {
 
 }
 
-
-#platform_versions=`jq -s '.[0].docker=(.[0].docker * .[1].docker) |.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' global_config.json custom_config.json  | jq '.build_configs[].id' `
-#echo "Available versions : $platform_versions"
-
-
-
-
 function getstaticmodule() {
 
     cd /home/tc
@@ -960,14 +928,14 @@ function getstaticmodule() {
         SYNOMODEL="ds918p_$TARGET_REVISION"
     elif [ "${TARGET_PLATFORM}" = "bromolow" ] ; then
         SYNOMODEL="ds3615xs_$TARGET_REVISION"
-	elif [ "${TARGET_PLATFORM}" = "broadwell" ] ; then
-	    SYNOMODEL="ds3617xs_$TARGET_REVISION"
-	elif [ "${TARGET_PLATFORM}" = "broadwellnk" ] ; then
-	    SYNOMODEL="ds3622xsp_$TARGET_REVISION"
-	elif [ "${TARGET_PLATFORM}" = "v1000" ] ; then
-	    SYNOMODEL="ds1621p_$TARGET_REVISION"
-	elif [ "${TARGET_PLATFORM}" = "denverton" ] ; then
-	    SYNOMODEL="dva3221_$TARGET_REVISION"
+    elif [ "${TARGET_PLATFORM}" = "broadwell" ] ; then
+        SYNOMODEL="ds3617xs_$TARGET_REVISION"
+    elif [ "${TARGET_PLATFORM}" = "broadwellnk" ] ; then
+        SYNOMODEL="ds3622xsp_$TARGET_REVISION"
+    elif [ "${TARGET_PLATFORM}" = "v1000" ] ; then
+        SYNOMODEL="ds1621p_$TARGET_REVISION"
+    elif [ "${TARGET_PLATFORM}" = "denverton" ] ; then
+        SYNOMODEL="dva3221_$TARGET_REVISION"
     fi
 
     echo "Looking for redpill for : $SYNOMODEL "
@@ -997,15 +965,15 @@ function getstaticmodule() {
 function buildloader() {
 
     cd /home/tc 
-	
+
     echo -n "Checking user_config.json : "
     if jq -s . user_config.json > /dev/null ; then
-    echo "Done"
+        echo "Done"
     else
-    echo "Error : Problem found in user_config.json"
-    exit 99
+        echo "Error : Problem found in user_config.json"
+        exit 99
     fi
-	
+
 
     curl -s --progress-bar --location https://packages.slackonly.com/pub/packages/14.1-x86_64/development/bsdiff/bsdiff-4.3-x86_64-1_slack.txz --output bsdiff.txz
     cd /
@@ -1037,13 +1005,13 @@ function buildloader() {
         SYNOMODEL="DS918+"
     elif [ "${TARGET_PLATFORM}" = "bromolow" ] ; then
         SYNOMODEL="DS3615xs"
-	elif [ "${TARGET_PLATFORM}" = "broadwell" ] ; then
+    elif [ "${TARGET_PLATFORM}" = "broadwell" ] ; then
         SYNOMODEL="DS3617xs"
-	elif [ "${TARGET_PLATFORM}" = "broadwellnk" ] ; then
+    elif [ "${TARGET_PLATFORM}" = "broadwellnk" ] ; then
         SYNOMODEL="DS3622xs+"
-	elif [ "${TARGET_PLATFORM}" = "v1000" ] ; then
+    elif [ "${TARGET_PLATFORM}" = "v1000" ] ; then
         SYNOMODEL="DS1621+"
-	elif [ "${TARGET_PLATFORM}" = "denverton" ] ; then
+    elif [ "${TARGET_PLATFORM}" = "denverton" ] ; then
         SYNOMODEL="DVA3221"
     fi
 
@@ -1161,7 +1129,6 @@ function getlatestrploader() {
     curl -s --location "$rploaderepo" --output latestrploader.sh 
     curl -s --location "$modalias3" --output modules.alias.3.json.gz ; gunzip -f  modules.alias.3.json.gz
     curl -s --location "$modalias4" --output modules.alias.4.json.gz ; gunzip -f modules.alias.4.json.gz
-			
 
     CURRENTSHA="`sha256sum rploader.sh | awk '{print $1}'`"
     REPOSHA="`sha256sum latestrploader.sh | awk '{print $1}'`"
@@ -1172,19 +1139,19 @@ function getlatestrploader() {
         if [ "$confirmation" = "y" ] || [ "$confirmation" = "Y" ] ; then
             echo "OK, updating, please re-run after updating"
             cp -f /home/tc/latestrploader.sh /home/tc/rploader.sh
-			rm -f /home/tc/latestrploader.sh
+            rm -f /home/tc/latestrploader.sh
             loaderdisk=`mount |grep -i optional | grep cde | awk -F / '{print $3}' |uniq | cut -c 1-3`
             echo "Updating tinycore loader with latest updates"
             #cleanloader 
             filetool.sh -b ${loaderdisk}3
             exit
         else
-		    rm -f /home/tc/latestrploader.sh
+            rm -f /home/tc/latestrploader.sh
             return
         fi
     else 
         echo "Version is current"
-		rm -f /home/tc/latestrploader.sh
+        rm -f /home/tc/latestrploader.sh
     fi
 
 }
@@ -1193,14 +1160,12 @@ function getlatestrploader() {
 
 function getvars() { 
 
-	
-	
     CONFIG=$(readConfig) ; selectPlatform $1
 
     LD_SOURCE_URL="`echo $platform_selected  |jq -r -e '.redpill_load .source_url'`"
-	LD_BRANCH="`echo $platform_selected |jq -r -e '.redpill_load .branch'`"
+    LD_BRANCH="`echo $platform_selected |jq -r -e '.redpill_load .branch'`"
     LKM_SOURCE_URL="`echo $platform_selected |jq -r -e '.redpill_lkm .source_url'`"
-	LKM_BRANCH="`echo $platform_selected |jq -r -e '.redpill_lkm .branch'`"
+    LKM_BRANCH="`echo $platform_selected |jq -r -e '.redpill_lkm .branch'`"
     EXTENSIONS="`echo $platform_selected |jq -r -e '.add_extensions[] .id'`"
     EXTENSIONS_SOURCE_URL="`echo $platform_selected |jq '.add_extensions[] .url'`"
     TOOLKIT_URL="`echo $platform_selected |jq -r -e '.downloads .toolkit_dev .url'`"
@@ -1219,21 +1184,18 @@ function getvars() {
         showhelp
         exit 99
     fi
-	
-	case $TARGET_PLATFORM in
-	
-	bromolow)
-	KERNEL_MAJOR="3"
-	MODULE_ALIAS_FILE="modules.alias.3.json"
-	;;
-	apollolake | broadwell | broadwellnk | v1000 | denverton )
-	KERNEL_MAJOR="4"
-	MODULE_ALIAS_FILE="modules.alias.4.json"
-	;;
-	
-	esac 
-	
-	
+
+    case $TARGET_PLATFORM in
+
+        bromolow)
+                    KERNEL_MAJOR="3"
+                    MODULE_ALIAS_FILE="modules.alias.3.json"
+                    ;;
+        apollolake | broadwell | broadwellnk | v1000 | denverton )
+                    KERNEL_MAJOR="4"
+                    MODULE_ALIAS_FILE="modules.alias.4.json"
+                    ;;
+    esac 
 
     #echo "Platform : $platform_selected"
     echo "Loader source : $LD_SOURCE_URL Loader Branch : $LD_BRANCH "
@@ -1249,8 +1211,8 @@ function getvars() {
     echo "TARGET_VERSION    : $TARGET_VERSION"
     echo "TARGET_REVISION : $TARGET_REVISION"
     echo "REDPILL_LKM_MAKE_TARGET : $REDPILL_LKM_MAKE_TARGET"
-	echo "KERNEL_MAJOR : $KERNEL_MAJOR"
-	echo "MODULE_ALIAS_FILE= $MODULE_ALIAS_FILE"
+    echo "KERNEL_MAJOR : $KERNEL_MAJOR"
+    echo "MODULE_ALIAS_FILE= $MODULE_ALIAS_FILE"
 }
 
 function matchpciidmodule() {
@@ -1286,26 +1248,26 @@ function listpci( ){
         #echo "PCI : $bus Class : $class Vendor: $vendor Device: $device"
         case $class in
             0100)
-            echo "Found SCSI Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
-            ;;
+                    echo "Found SCSI Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+                    ;;
             0106)
-            echo "Found SATA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
-            ;;
+                    echo "Found SATA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+                    ;;
             0101)
-            echo "Found IDE Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
-            ;;
+                echo "Found IDE Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+                ;;
             0107)
-            echo "Found SAS Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
-            ;;
+                echo "Found SAS Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+                ;;
             0200)
-            echo "Found Ethernet Interface : pciid ${vendor}d0000${device} Required Extension : $(matchpciidmodule ${vendor} ${device} )"
-            ;;
+                echo "Found Ethernet Interface : pciid ${vendor}d0000${device} Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+                ;;
             0300)
-            echo "Found VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
-            ;;
-			0c04)
-            echo "Found Fibre Channel Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
-            ;;
+                echo "Found VGA Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+                ;;
+            0c04)
+                echo "Found Fibre Channel Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device} )"
+                ;;
         esac
     done
 
@@ -1444,72 +1406,67 @@ case $1 in
         gitdownload
 
 
-                 case $3 in 
-                 
-                 compile)
-				 
-                              prepareforcompile
-                           if [ "$COMPILE_METHOD" = "toolkit_dev" ] ; then 
-                               gettoolchain
-                               compileredpill
-                               echo "Starting loader creation "
-                               buildloader
-                           else
-                               getsynokernel
-                               kernelprepare
-                               compileredpill
-                               echo "Starting loader creation "
-                               buildloader
-                           fi 
-                   ;;
-				            
-				 static)
-                       				   
-                           echo "Using static compiled redpill extension"
-                           getstaticmodule
-                           echo "Got $REDPILL_MOD_NAME "
-                           listmodules
-                           echo "Starting loader creation "
-                           buildloader
-                       
-                   ;;
-				 manual)
-				 
-				           echo "Using static compiled redpill extension"
-                           getstaticmodule
-                           echo "Got $REDPILL_MOD_NAME "
-						   echo "Manual extension handling,skipping extension auto detection "
-                           echo "Starting loader creation "
-                           buildloader
-			       ;;
-				  
-                 *)
-				           echo "No extra build option specified, using default <static> "
-				           echo "Using static compiled redpill extension"
-                           getstaticmodule
-                           echo "Got $REDPILL_MOD_NAME "
-                           listmodules
-                           echo "Starting loader creation "
-                           buildloader
-			       ;;
-				   
-				 esac 
-				 
-				 ;;
-    ext)
+        case $3 in 
+        
+            compile)
+                        prepareforcompile
+                        if [ "$COMPILE_METHOD" = "toolkit_dev" ] ; then 
+                            gettoolchain
+                            compileredpill
+                            echo "Starting loader creation "
+                            buildloader
+                        else
+                            getsynokernel
+                            kernelprepare
+                            compileredpill
+                            echo "Starting loader creation "
+                            buildloader
+                        fi 
+                        ;;
 
+            static)
+                        echo "Using static compiled redpill extension"
+                        getstaticmodule
+                        echo "Got $REDPILL_MOD_NAME "
+                        listmodules
+                        echo "Starting loader creation "
+                        buildloader
+                        ;;
+
+            manual)
+                    
+                        echo "Using static compiled redpill extension"
+                        getstaticmodule
+                        echo "Got $REDPILL_MOD_NAME "
+                        echo "Manual extension handling,skipping extension auto detection "
+                        echo "Starting loader creation "
+                        buildloader
+                        ;;
+
+            *)
+                        echo "No extra build option specified, using default <static> "
+                        echo "Using static compiled redpill extension"
+                        getstaticmodule
+                        echo "Got $REDPILL_MOD_NAME "
+                        listmodules
+                        echo "Starting loader creation "
+                        buildloader
+                        ;;
+
+        esac 
+        ;;
+
+    ext)
         getvars $2
         checkinternet
         gitdownload
-		
-           if [ "$3" = "auto" ] ; then 
-           listmodules
-           else 
-           ext_manager $@ # instead of listmodules
-           fi 
-		
+        
+        if [ "$3" = "auto" ] ; then 
+            listmodules
+        else 
+            ext_manager $@ # instead of listmodules
+        fi 
         ;;
-
 
     clean)
         cleanloader
@@ -1521,50 +1478,60 @@ case $1 in
         ;;
 
     listmods)
-		getvars $2
-		checkinternet
-		gitdownload
+        getvars $2
+        checkinternet
+        gitdownload
         listmodules
         echo "$extensionslist"
         ;;
-	serialgen)
+
+    serialgen)
         serialgen $2
         ;;
-	interactive)
-	    if [ -f interactive.sh ] ; then 
-	    . ./interactive.sh
-		else
-		#curl --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/main/interactive.sh" --output interactive.sh
-		#. ./interactive.sh
-		exit 99
-	    fi 
-		;;
+
+    interactive)
+        if [ -f interactive.sh ] ; then 
+        . ./interactive.sh
+        else
+            #curl --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/main/interactive.sh" --output interactive.sh
+            #. ./interactive.sh
+            exit 99
+        fi 
+        ;;
+
     identifyusb)
         usbidentify
-		;;
-	patchdtc)
-	    getvars $2
-		checkinternet
+        ;;
+
+    patchdtc)
+        getvars $2
+        checkinternet
         patchdtc
-		;;
-	satamap)
-	    satamap
-		;;
-	backup)
-	    backup
-		;;
+        ;;
+
+    satamap)
+        satamap
+        ;;
+
+    backup)
+        backup
+        ;;
+
     backuploader)
-	    backuploader
-		;;	
-	restoreloader)
-	    restoreloader
-		;;	
-	mountdsmroot)
-	    mountdsmroot
-		;;	
-	mountshare)
-		mountshare	
-		;;
+        backuploader
+        ;;
+
+    restoreloader)
+        restoreloader
+        ;;
+
+    mountdsmroot)
+        mountdsmroot
+        ;;
+
+    mountshare)
+        mountshare
+        ;;
     *)
         showhelp
         exit 99

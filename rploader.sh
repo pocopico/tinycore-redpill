@@ -1137,6 +1137,8 @@ function getstaticmodule() {
 		 
 	fi
 	
+	echo "Removing any old redpill.ko modules"
+	if [ -f /home/tc/redpill.ko ] && rm -f  /home/tc/redpill.ko 
 
     extension=`curl -s --location "$redpillextension"`
 
@@ -1174,7 +1176,7 @@ function getstaticmodule() {
 
     REDPILL_MOD_NAME="redpill-linux-v`modinfo redpill.ko |grep vermagic | awk '{print $2}'`.ko"
 
-    cp /home/tc/redpill.ko /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
+    mv /home/tc/redpill.ko /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
 	
 	
 

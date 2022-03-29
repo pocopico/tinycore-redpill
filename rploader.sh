@@ -1707,6 +1707,9 @@ case $1 in
         restoreloader
         ;;
     postupdate)
+	    getvars $2
+        checkinternet
+		getstaticmodule
         postupdate
         ;;
 

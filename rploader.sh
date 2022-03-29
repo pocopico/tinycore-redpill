@@ -120,9 +120,11 @@ done
 
 echo "Creating loader ... "
 
-sudo ./build-loader.sh 'DS3622xs+' 7.1.0-42621
+sudo ./build-loader.sh '${MODEL}' '${major}.${minor}.${micro}-${buildnumber}'
 
-loaderimg=`ls -ltr images/redpill-DS3622xs\+_7.1.0-42621* | tail -1 | awk '{print $9}'`
+loadername="redpill-${MODEL}_${major}.${minor}.${micro}-${buildnumber} | tr '[:upper:]' '[:lower:]"
+loaderimg=`ls -ltr /home/tc/redpill-load/images/${loadername}* | tail -1 | awk '{print $9}'`
+
 echo "Moving loader ${loaderimg} to loader.img "
 mv -f $loaderimg loader.img
 

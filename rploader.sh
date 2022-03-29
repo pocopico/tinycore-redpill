@@ -2,12 +2,12 @@
 #
 # Author : 
 # Date : 22290318
-# Version : 0.6.0.0
+# Version : 0.6.0.1
 #
 #
 # User Variables :
 
-rploaderver="0.6.0.0"
+rploaderver="0.6.0.1"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -1108,6 +1108,20 @@ function gitdownload() {
 function getstaticmodule() {
 
     cd /home/tc
+	
+	
+    if [ -d /home/tc/custom-module ] && [ -f /home/tc/custom-module/redpill.ko ] ; then
+    echo "Found custom redpill module, do you want to use this instead ? [yY/nN] : "
+    read answer
+            
+       if [ "$answer" == "y" ] || [ "$answer" == "Y" ] ; then
+       REDPILL_MOD_NAME="redpill-linux-v`modinfo redpill.ko |grep vermagic | awk '{print $2}'`.ko"
+       cp /home/tc/custom-module/redpill.ko  /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
+       return
+       fi
+		 
+	fi
+	
 
     extension=`curl -s --location "$redpillextension"`
 
@@ -1142,9 +1156,12 @@ function getstaticmodule() {
         fi
     done
 
+
     REDPILL_MOD_NAME="redpill-linux-v`modinfo redpill.ko |grep vermagic | awk '{print $2}'`.ko"
 
     cp /home/tc/redpill.ko /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
+	
+	
 
 }
 

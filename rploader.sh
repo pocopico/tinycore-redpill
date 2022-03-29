@@ -197,6 +197,11 @@ sudo rm -rf /home/tc/redpill-load/loader.img
 [ ! -f /home/tc/redpill-load/loader.img ] && echo "OK !!!"
 fi 
 
+
+echo "Unmounting dsmroot -> "
+[ ! -z "`mount |grep -i dsmroot`" ] && sudo umount /mnt/dsmroot
+[ -z "`mount |grep -i dsmroot`" ] && echo "OK !!! "
+
 echo "Done, closing"
 
 

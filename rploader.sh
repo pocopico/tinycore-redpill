@@ -30,6 +30,11 @@ function postupdate() {
 
 echo "Mounting root to get the latest dsmroot patch in /.syno/patch "
 
+if [ ! -f /home/tc/redpill-load/user_config.json ] ; then 
+        ln -s /home/tc/user_config.json /home/tc/redpill-load/user_config.json
+    fi 
+	
+
 if [ `mount |grep -i dsmroot|wc -l` -le 0 ] ; then 
 mountdsmroot 
 else 

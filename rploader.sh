@@ -1746,6 +1746,7 @@ case $1 in
     postupdate)
 	    getvars $2
         checkinternet
+		gitdownload
 		getstaticmodule
         postupdate
         ;;

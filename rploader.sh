@@ -104,19 +104,9 @@ verifyid="`cat  ${configfile} | jq -r -e '.os .sha256'`"
     exit 99 
     fi 
 	
-echo "redpill-load directory"
+removebundledexts
+	
 cd /home/tc/redpill-load/
-
-echo "Removing bundled exts directories"
-for bundledext in "`grep ":" bundled-exts.json | awk '{print $2}' | sed -e 's/"//g'`"
-do
-bundledextdir=`curl -s "$bundledext" | jq -r -e '.id' `
-if [ -d /home/tc/redpill-load/custom/extensions/${bundledextdir} ] ; then 
-echo "Removing : ${bundledextdir}" 
-sudo rm -rf /home/tc/redpill-load/custom/extensions/${bundledextdir}
-fi 
-
-done
 
 echo "Creating loader ... "
 
@@ -209,6 +199,24 @@ echo "Done, closing"
 
 }
 
+function removebundledexts() {
+
+echo "Entering redpill-load directory"
+cd /home/tc/redpill-load/
+
+echo "Removing bundled exts directories"
+for bundledext in `grep ":" bundled-exts.json | awk '{print $2}' | sed -e 's/"//g' | sed -e 's/,/\n/g'`
+do
+bundledextdir=`curl --location -s "$bundledext" | jq -r -e '.id' `
+if [ -d /home/tc/redpill-load/custom/extensions/${bundledextdir} ] ; then 
+echo "Removing : ${bundledextdir}" 
+sudo rm -rf /home/tc/redpill-load/custom/extensions/${bundledextdir}
+fi 
+
+done
+
+
+}
 
 
 function fullupgrade(){
@@ -1180,6 +1188,7 @@ function buildloader() {
         exit 99
     fi
 
+    removebundledexts
 
     curl -s --progress-bar --location https://packages.slackonly.com/pub/packages/14.1-x86_64/development/bsdiff/bsdiff-4.3-x86_64-1_slack.txz --output bsdiff.txz
     cd /

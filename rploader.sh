@@ -1190,10 +1190,9 @@ function buildloader() {
 
     removebundledexts
 
-    curl -s --progress-bar --location https://packages.slackonly.com/pub/packages/14.1-x86_64/development/bsdiff/bsdiff-4.3-x86_64-1_slack.txz --output bsdiff.txz
-    cd /
-    sudo tar xf /home/tc/bsdiff.txz
-    rm -rf /home/tc/bsdiff.txz
+    curl -s --progress-bar --location "https://packages.slackonly.com/pub/packages/14.1-x86_64/development/bsdiff/bsdiff-4.3-x86_64-1_slack.txz" --output bsdiff.txz
+	[ ! -f /home/tc/bsdiff.txz ] && echo "bsdiff binary was not downloaded"
+    [ -f /home/tc/bsdiff.txz ] && 	cd / &&    sudo tar xf /home/tc/bsdiff.txz &&    rm -rf /home/tc/bsdiff.txz && cd /home/tc
 
     if [ ! -d /lib64 ] ; then
         sudo ln -s /lib /lib64 

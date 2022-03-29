@@ -1740,6 +1740,9 @@ case $1 in
     mountdsmroot)
         mountdsmroot
         ;;
+	fullupgrade)
+        fullupgrade
+        ;;
 
     mountshare)
         mountshare

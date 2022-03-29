@@ -120,7 +120,7 @@ done
 
 echo "Creating loader ... "
 
-sudo ./build-loader.sh '${MODEL}' '${major}.${minor}.${micro}-${buildnumber}'
+sudo ./build-loader.sh ${MODEL} ${major}.${minor}.${micro}-${buildnumber}
 
 loadername="redpill-${MODEL}_${major}.${minor}.${micro}-${buildnumber} | tr '[:upper:]' '[:lower:]"
 loaderimg=`ls -ltr /home/tc/redpill-load/images/${loadername}* | tail -1 | awk '{print $9}'`

@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 22290318
-# Version : 0.6.0.1
+# Date : 22300321
+# Version : 0.6.0.3
 #
 #
 # User Variables :
 
-rploaderver="0.6.0.1"
+rploaderver="0.6.0.3"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -33,7 +33,7 @@ function postupdate() {
 
     if [ $(mount | grep -i dsmroot | wc -l) -le 0 ]; then
         mountdsmroot
-        [ $(mount | grep -i dsmroot | wc -l) -le 0 ] && echo "Failed to mount DSM root" && return
+        [ $(mount | grep -i dsmroot | wc -l) -le 0 ] && echo "Failed to mount DSM root, cannot continue the postupdate process, returning" && return
     else
         echo "Already mounted"
     fi
@@ -363,6 +363,14 @@ function mountdsmroot() {
     #/dev/sdb2: UUID="260b3a01-ff65-a527-05d9-49f7b0bbaec7" TYPE="linux_raid_member" PARTUUID="d5ff7cea-02"
     # So a command like the below will list the first partition of a DSM disk
     #blkid /dev/sd* |grep -i raid  | awk '{print $1 " " $4}' |grep UUID | grep "\-01" | awk -F ":" '{print $1}'
+
+    # Make sure we load SCSI modules if SCSI/RAID/SAS HBAs exist on the system
+    #
+    if [ $(lspci -nn | grep -ie "\[0100\]" -ie "\[0104\]" -ie "\[0107\]" | wc -l) -gt 0 ]; then
+        echo "Found SCSI HBAs, We need to install the SCSI modules"
+        tce-load -iw scsi-5.10.3-tinycore64.tcz
+        [ $(losetup | grep -i "scsi-" | wc -l) -gt 0 ] && echo "Succesfully installed SCSI modules"
+    fi
 
     dsmrootdisk="$(blkid /dev/sd* | grep -i raid | awk '{print $1 " " $4}' | grep UUID | grep "\-01" | awk -F ":" '{print $1}' | head -1)"
 
@@ -1402,6 +1410,7 @@ function getvars() {
     esac
 
     #echo "Platform : $platform_selected"
+    echo "Rploader Version : ${rploaderver}"
     echo "Loader source : $LD_SOURCE_URL Loader Branch : $LD_BRANCH "
     echo "Redpill module source : $LKM_SOURCE_URL : Redpill module branch : $LKM_BRANCH "
     echo "Extensions : $EXTENSIONS "

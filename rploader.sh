@@ -33,6 +33,7 @@ function postupdate() {
 
     if [ $(mount | grep -i dsmroot | wc -l) -le 0 ]; then
         mountdsmroot
+        [ $(mount | grep -i dsmroot | wc -l) -le 0 ] && echo "Failed to mount DSM root" && return
     else
         echo "Already mounted"
     fi
@@ -58,9 +59,15 @@ function postupdate() {
 
     echo "Checking available patch"
 
-    cd /mnt/dsmroot/.syno/patch/
-    . ./VERSION
-    . ./GRUB_VER
+    if [ -d "/mnt/dsmroot/.syno/patch/" ]; then
+        cd /mnt/dsmroot/.syno/patch/
+        . ./VERSION
+        . ./GRUB_VER
+    else
+        echo "Patch directory not found, please remember that you have to run update usign DSM manual upgrade first"
+        echo "Postupdate is not possible, returning"
+        return
+    fi
 
     echo "Found Platform : ${PLATFORM}  Model : $MODEL Version : ${major}.${minor}.${micro}-${buildnumber} "
 

@@ -78,7 +78,7 @@ function postupdate() {
         patfile="$(echo ${MODEL}_${buildnumber} | sed -e 's/\+/p/' | tr '[:upper:]' '[:lower:]').pat"
         echo "Creating pat file ${patfile} using contents of : $(pwd) "
         [ ! -d "/home/tc/redpill-load/cache" ] && sudo mkdir /home/tc/redpill-load/cache/
-        tar cfz /home/tc/redpill-load/cache/${patfile} *
+        sudo tar cfz /home/tc/redpill-load/cache/${patfile} *
         os_sha256=$(sha256sum /home/tc/redpill-load/cache/${patfile} | awk '{print $1}')
         echo "Created pat file with sha256sum : $os_sha256"
         cd /home/tc

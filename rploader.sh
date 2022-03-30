@@ -1138,7 +1138,7 @@ function getstaticmodule() {
 	fi
 	
 	echo "Removing any old redpill.ko modules"
-	if [ -f /home/tc/redpill.ko ] && rm -f  /home/tc/redpill.ko 
+	[ -f /home/tc/redpill.ko ] && rm -f  /home/tc/redpill.ko 
 
     extension=`curl -s --location "$redpillextension"`
 

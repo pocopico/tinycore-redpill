@@ -77,7 +77,7 @@ function postupdate() {
     if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
         patfile="$(echo ${MODEL}_${buildnumber} | sed -e 's/\+/p/' | tr '[:upper:]' '[:lower:]').pat"
         echo "Creating pat file ${patfile} using contents of : $(pwd) "
-        [ ! -d "/home/tc/redpill-load/cache" ] && mkdir /home/tc/redpill-load/cache/
+        [ ! -d "/home/tc/redpill-load/cache" ] && sudo mkdir /home/tc/redpill-load/cache/
         tar cfz /home/tc/redpill-load/cache/${patfile} *
         os_sha256=$(sha256sum /home/tc/redpill-load/cache/${patfile} | awk '{print $1}')
         echo "Created pat file with sha256sum : $os_sha256"
@@ -120,7 +120,12 @@ function postupdate() {
     loaderimg=$(ls -ltr /home/tc/redpill-load/images/${loadername}* | tail -1 | awk '{print $9}')
 
     echo "Moving loader ${loaderimg} to loader.img "
-    mv -f $loaderimg loader.img
+    if [ -f "${loaderimg}" ]; then
+        mv -f $loaderimg loader.img
+    else
+        echo "Failed to find loader ${loaderimg}, exiting"
+        exit 99
+    fi
 
     if [ ! -n "$(losetup -j loader.img | awk '{print $1}' | sed -e 's/://')" ]; then
         echo -n "Setting up loader img loop -> "

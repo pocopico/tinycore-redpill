@@ -377,7 +377,9 @@ function mountdsmroot() {
         [ $(losetup | grep -i "scsi-" | wc -l) -gt 0 ] && echo "Succesfully installed SCSI modules"
     fi
 
-    dsmrootdisk="$(blkid /dev/sd* | grep -i raid | awk '{print $1 " " $4}' | grep UUID | grep "\-01" | awk -F ":" '{print $1}' | head -1)"
+    dsmrootdisk="$(blkid /dev/sd* | grep -i raid | awk '{print $1 " " $6}' | grep UUID | grep "\-01" | awk -F ":" '{print $1}' | head -1)"
+    # OLD DSM
+    #dsmrootdisk="$(blkid /dev/sd* | grep -i raid | awk '{print $1 " " $4}' | grep UUID | grep "\-01" | awk -F ":" '{print $1}' | head -1)"
 
     [[ ! -d /mnt/dsmroot ]] && mkdir /mnt/dsmroot
 

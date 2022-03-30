@@ -151,10 +151,16 @@ function postupdate() {
     cp -f /home/tc/redpill-load/localdiskp1/rd.gz /mnt/${loaderdisk}1/rd.gz
     cp -f /home/tc/redpill-load/localdiskp2/rd.gz /mnt/${loaderdisk}2/rd.gz
     [ "$(sha256sum /home/tc/redpill-load/localdiskp1/rd.gz | awk '{print $1}')" == "$(sha256sum /mnt/${loaderdisk}1/rd.gz | awk '{print $1}')" ] && [ "$(sha256sum /home/tc/redpill-load/localdiskp2/rd.gz | awk '{print $1}')" == "$(sha256sum /mnt/${loaderdisk}2/rd.gz | awk '{print $1}')" ] && echo -n "OK !!!"
-    echo -n "zImage : "
+    echo -n " zImage : "
     cp -f /home/tc/redpill-load/localdiskp1/zImage /mnt/${loaderdisk}1/zImage
     cp -f /home/tc/redpill-load/localdiskp2/zImage /mnt/${loaderdisk}2/zImage
-    [ "$(sha256sum /home/tc/redpill-load/localdiskp1/zImage | awk '{print $1}')" == "$(sha256sum /mnt/${loaderdisk}1/zImage | awk '{print $1}')" ] && [ "$(sha256sum /home/tc/redpill-load/localdiskp2/zImage | awk '{print $1}')" == "$(sha256sum /mnt/${loaderdisk}2/zImage | awk '{print $1}')" ] && echo "OK !!!"
+    [ "$(sha256sum /home/tc/redpill-load/localdiskp1/zImage | awk '{print $1}')" == "$(sha256sum /mnt/${loaderdisk}1/zImage | awk '{print $1}')" ] && [ "$(sha256sum /home/tc/redpill-load/localdiskp2/zImage | awk '{print $1}')" == "$(sha256sum /mnt/${loaderdisk}2/zImage | awk '{print $1}')" ] && echo -n "OK !!!"
+    echo -n " grub.cfg : "
+    cp -f /home/tc/redpill-load/localdiskp1/boot/grub/grub.cfg /mnt/${loaderdisk}1/boot/grub/grub.cfg
+    [ "$(sha256sum /home/tc/redpill-load/localdiskp1/boot/grub/grub.cfg | awk '{print $1}')" == "$(sha256sum /mnt/${loaderdisk}1/boot/grub/grub.cfg | awk '{print $1}')" ] && echo "OK !!!"
+    echo "Creating tinycore entry"
+    tinyentry | sudo tee --append /mnt/${loaderdisk}1/boot/grub/grub.cfg
+
     echo "Do you want to overwrite your custom.gz as well ? [yY/nN] : "
     read answer
 

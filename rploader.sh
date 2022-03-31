@@ -1770,6 +1770,9 @@ fullupgrade)
 mountshare)
     mountshare
     ;;
+installapache)
+    installapache
+    ;;
 *)
     showhelp
     exit 99

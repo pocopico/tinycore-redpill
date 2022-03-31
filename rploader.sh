@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 22310317
-# Version : 0.6.0.7
+# Date : 22310322
+# Version : 0.6.0.8
 #
 #
 # User Variables :
 
-rploaderver="0.6.0.7"
+rploaderver="0.6.0.8"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -374,6 +374,18 @@ function restoreloader() {
 
 }
 
+function checkforscsi() {
+
+    # Make sure we load SCSI modules if SCSI/RAID/SAS HBAs exist on the system
+    #
+    if [ $(lspci -nn | grep -ie "\[0100\]" -ie "\[0104\]" -ie "\[0107\]" | wc -l) -gt 0 ]; then
+        echo "Found SCSI HBAs, We need to install the SCSI modules"
+        tce-load -iw scsi-5.10.3-tinycore64.tcz
+        [ $(losetup | grep -i "scsi-" | wc -l) -gt 0 ] && echo "Succesfully installed SCSI modules"
+    fi
+
+}
+
 function mountdsmroot() {
 
     # DSM Disks will be linux_raid_member and will  have the
@@ -383,13 +395,7 @@ function mountdsmroot() {
     # So a command like the below will list the first partition of a DSM disk
     #blkid /dev/sd* |grep -i raid  | awk '{print $1 " " $4}' |grep UUID | grep "\-01" | awk -F ":" '{print $1}'
 
-    # Make sure we load SCSI modules if SCSI/RAID/SAS HBAs exist on the system
-    #
-    if [ $(lspci -nn | grep -ie "\[0100\]" -ie "\[0104\]" -ie "\[0107\]" | wc -l) -gt 0 ]; then
-        echo "Found SCSI HBAs, We need to install the SCSI modules"
-        tce-load -iw scsi-5.10.3-tinycore64.tcz
-        [ $(losetup | grep -i "scsi-" | wc -l) -gt 0 ] && echo "Succesfully installed SCSI modules"
-    fi
+    checkforscsi
 
     dsmrootdisk="$(blkid /dev/sd* | grep -i raid | awk '{print $1 " " $4}' | grep UUID | grep sd[a-z]1 | head -1 | awk -F ":" '{print $1}')"
     # OLD DSM
@@ -590,6 +596,8 @@ function backup() {
 function satamap() {
 
     checkmachine
+
+    checkforscsi
 
     let controller=0
     let diskidxmap=0
@@ -1296,8 +1304,8 @@ function buildloader() {
     fi
 
     if [ $(mount | grep -i part1 | wc -l) -eq 1 ] && [ $(mount | grep -i part2 | wc -l) -eq 1 ] && [ $(mount | grep -i localdiskp1 | wc -l) -eq 1 ] && [ $(mount | grep -i localdiskp2 | wc -l) -eq 1 ]; then
-        sudo cp -rp part1/* localdiskp1/
-        sudo cp -rp part2/* localdiskp2/
+        sudo cp -rf part1/* localdiskp1/
+        sudo cp -rf part2/* localdiskp2/
         echo "Creating tinycore entry"
         tinyentry | sudo tee --append localdiskp1/boot/grub/grub.cfg
     else

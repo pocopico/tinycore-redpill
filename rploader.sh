@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 22310317
-# Version : 0.6.0.5
+# Version : 0.6.0.6
 #
 #
 # User Variables :
 
-rploaderver="0.6.0.5"
+rploaderver="0.6.0.6"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -341,13 +341,13 @@ function restoreloader() {
                 mount /dev/${loaderdisk}1
                 echo "Restoring partition1 "
                 cd /mnt/${loaderdisk}1
-                tar xfz /mnt/${tcrppart}/backup/${backupdate}/partition1.tgz *
+                tar xfz /mnt/${tcrppart}/backup/${restorefolder}/partition1.tgz *
                 ls -ltr /mnt/${loaderdisk}1
                 echo "Mounting partition 2"
                 mount /dev/${loaderdisk}2
                 echo "Restoring partition2 "
                 cd /mnt/${loaderdisk}2
-                tar xfz /mnt/${tcrppart}/backup/${backupdate}/partition2.tgz *
+                tar xfz /mnt/${tcrppart}/backup/${restorefolder}/partition2.tgz *
                 ls -ltr /mnt/${loaderdisk}2
                 return
             else

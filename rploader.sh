@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 22310317
-# Version : 0.6.0.6
+# Version : 0.6.0.7
 #
 #
 # User Variables :
 
-rploaderver="0.6.0.6"
+rploaderver="0.6.0.7"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -22,6 +22,20 @@ fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz m
 
 # END Do not modify after this line
 ######################################################################################################
+
+function installapache() {
+
+    echo "Installing apache2 and php module"
+
+    tce-load -iw apache2.4.tcz
+    tce-load -iw apache2.4-doc.tcz
+    tce-load -iw php-8.0-mod.tcz
+    tce-load -iw libnghttp2.tcz
+    #cd /usr/local/
+    #sudo tar xvf /home/tc/tcrphtml/tc.apache.tar.gz etc/httpd/
+    #apachectl start
+
+}
 
 function postupdate() {
 

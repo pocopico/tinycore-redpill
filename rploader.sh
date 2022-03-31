@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 22300322
-# Version : 0.6.0.4
+# Date : 22310317
+# Version : 0.6.0.5
 #
 #
 # User Variables :
 
-rploaderver="0.6.0.4"
+rploaderver="0.6.0.5"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -229,7 +229,7 @@ function removebundledexts() {
 
 function fullupgrade() {
 
-    backupdate="$(date +%Y-%b-%H-%M)"
+    backupdate="$(date +%Y-%b-%d-%H-%M)"
 
     echo "Performing a full TCRP upgrade"
     echo "Warning some of your local files will be moved to /home/tc/old/xxxx.${backupdate}"
@@ -258,7 +258,7 @@ function backuploader() {
     loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
     tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
     homesize=$(du -sh /home/tc | awk '{print $1}')
-    backupdate="$(date +%Y-%b-%H-%M)"
+    backupdate="$(date +%Y-%b-%d-%H-%M)"
 
     if [ ! -n "$loaderdisk" ] || [ ! -n "$tcrppart" ]; then
         echo "No Loader disk or no TCRP partition found, return"

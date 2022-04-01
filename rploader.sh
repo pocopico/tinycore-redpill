@@ -1098,6 +1098,8 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, s
 
 - mountshare:   Mounts a remote CIFS working directory
 
+Version : $rploaderver
+----------------------------------------------------------------------------------------
 Available platform versions:
 ----------------------------------------------------------------------------------------
 $(getPlatforms)

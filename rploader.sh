@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 22310322
-# Version : 0.6.0.8
+# Date : 22010401
+# Version : 0.6.1.0
 #
 #
 # User Variables :
 
-rploaderver="0.6.0.8"
+rploaderver="0.6.1.0"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -1244,6 +1244,16 @@ function buildloader() {
     else
         mkdir cache
     fi
+
++    if [ -d /home/tc/custom-module ]; then
++        echo "Want to use firmware files from /home/tc/custom-module/*.pat ? [yY/nN] : "
++        read answer
++
++        if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
++            cp -adp /home/tc/custom-module/*.pat /home/tc/redpill-load/cache/
++        fi
++    fi
+
 
     if [ "${TARGET_PLATFORM}" = "apollolake" ]; then
         SYNOMODEL="DS918+"

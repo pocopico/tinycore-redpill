@@ -1245,15 +1245,14 @@ function buildloader() {
         mkdir cache
     fi
 
-+    if [ -d /home/tc/custom-module ]; then
-+        echo "Want to use firmware files from /home/tc/custom-module/*.pat ? [yY/nN] : "
-+        read answer
-+
-+        if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
-+            cp -adp /home/tc/custom-module/*.pat /home/tc/redpill-load/cache/
-+        fi
-+    fi
+    if [ -d /home/tc/custom-module ]; then
+        echo "Want to use firmware files from /home/tc/custom-module/*.pat ? [yY/nN] : "
+        read answer
 
+        if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
+            cp -adp /home/tc/custom-module/*.pat /home/tc/redpill-load/cache/
+        fi
+    fi
 
     if [ "${TARGET_PLATFORM}" = "apollolake" ]; then
         SYNOMODEL="DS918+"

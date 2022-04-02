@@ -1157,6 +1157,7 @@ function getstaticmodule() {
         if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
             REDPILL_MOD_NAME="redpill-linux-v$(modinfo /home/tc/custom-module/redpill.ko | grep vermagic | awk '{print $2}').ko"
             cp /home/tc/custom-module/redpill.ko /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
+            strip --strip-debug /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
             return
         fi
 

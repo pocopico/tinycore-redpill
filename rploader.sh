@@ -23,133 +23,127 @@ fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz m
 # END Do not modify after this line
 ######################################################################################################
 
-function downloadextractor(){
-loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
-tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
-local_cache="/mnt/${tcrppart}/auxfiles"
-temp_folder="/tmp/synoesp"
+function downloadextractor() {
+    loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+    tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+    local_cache="/mnt/${tcrppart}/auxfiles"
+    temp_folder="/tmp/synoesp"
 
-if [ -d ${local_cache/extractor } ] && [ -f ${local_cache}/extractor/scemd ] ; then
+    if [ -d ${local_cache/extractor /} ] && [ -f ${local_cache}/extractor/scemd ]; then
 
-echo "Found extractor locally cached"
+        echo "Found extractor locally cached"
 
-echo "Copying required libraries to local lib directory"
-sudo cp /mnt/${tcrppart}/auxfiles/extractor/lib* /lib/
-echo "Linking lib to lib64"
-sudo ln -s /lib /lib64
-echo "Copying executable"
-sudo cp /mnt/${tcrppart}/auxfiles/extractor/scemd /bin/syno_extract_system_patch
+        echo "Copying required libraries to local lib directory"
+        sudo cp /mnt/${tcrppart}/auxfiles/extractor/lib* /lib/
+        echo "Linking lib to lib64"
+        sudo ln -s /lib /lib64
+        echo "Copying executable"
+        sudo cp /mnt/${tcrppart}/auxfiles/extractor/scemd /bin/syno_extract_system_patch
 
-echo "Removing temp folder /tmp/synoesp" 
-rm -rf $temp_folder
+        echo "Removing temp folder /tmp/synoesp"
+        rm -rf $temp_folder
 
-echo "Checking if tools is accessible"
-/bin/syno_extract_system_patch ; if [ $? -eq 255 ]  ; then  echo "Executed succesfully" ; else echo "Cound not execute" ; fi
+        echo "Checking if tools is accessible"
+        /bin/syno_extract_system_patch
+        if [ $? -eq 255 ]; then echo "Executed succesfully"; else echo "Cound not execute"; fi
 
-else 
+    else
 
-echo "Getting required extraction tool"
-echo "------------------------------------------------------------------"
-echo "Checking tinycore cache folder"
+        echo "Getting required extraction tool"
+        echo "------------------------------------------------------------------"
+        echo "Checking tinycore cache folder"
 
-[ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && ln -s $local_cache /home/tc/custom-module
+        [ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && ln -s $local_cache /home/tc/custom-module
 
-echo "Creating temp folder /tmp/synoesp"
+        echo "Creating temp folder /tmp/synoesp"
 
-mkdir ${temp_folder}
+        mkdir ${temp_folder}
 
-if [ -d /home/tc/custom-module ] && [ -f /home/tc/custom-module/*42218*.pat ] ; then 
+        if [ -d /home/tc/custom-module ] && [ -f /home/tc/custom-module/*42218*.pat ]; then
 
-patfile=`ls /home/tc/custom-module/*42218*.pat | head -1`
-echo "Found custom pat file ${patfile}"
-echo "Processing old pat file to extract required files for extraction"
-tar -C${temp_folder} -xf /${patfile} rd.gz
-else 
-curl --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /homt/rc/oldpat.tar.gz
-tar -C${temp_folder} -xf /${patfile} rd.gz
-fi 
+            patfile=$(ls /home/tc/custom-module/*42218*.pat | head -1)
+            echo "Found custom pat file ${patfile}"
+            echo "Processing old pat file to extract required files for extraction"
+            tar -C${temp_folder} -xf /${patfile} rd.gz
+        else
+            curl --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /homt/rc/oldpat.tar.gz
+            tar -C${temp_folder} -xf /${patfile} rd.gz
+        fi
 
-echo "Entering synoesp"
-cd ${temp_folder}
+        echo "Entering synoesp"
+        cd ${temp_folder}
 
-xz -dc < rd.gz >rd 2>/dev/null || echo "extract rd.gz"
-echo "finish"
-cpio -idm <rd 2>&1 || echo "extract rd"
-mkdir extract 
+        xz -dc <rd.gz >rd 2>/dev/null || echo "extract rd.gz"
+        echo "finish"
+        cpio -idm <rd 2>&1 || echo "extract rd"
+        mkdir extract
 
-mkdir /mnt/${tcrppart}/auxfiles && cd /mnt/${tcrppart}/auxfiles 
+        mkdir /mnt/${tcrppart}/auxfiles && cd /mnt/${tcrppart}/auxfiles
 
-echo "Copying required files to local cache folder for future use"
+        echo "Copying required files to local cache folder for future use"
 
-mkdir /mnt/${tcrppart}/auxfiles/extractor
+        mkdir /mnt/${tcrppart}/auxfiles/extractor
 
-for file in usr/lib/libcurl.so.4 usr/lib/libmbedcrypto.so.5 usr/lib/libmbedtls.so.13 usr/lib/libmbedx509.so.1 usr/lib/libmsgpackc.so.2 usr/lib/libsodium.so usr/lib/libsynocodesign-ng-virtual-junior-wins.so.7 usr/syno/bin/scemd 
-do 
-echo "Copying $file to /mnt/${tcrppart}/auxfiles"
-cp $file /mnt/${tcrppart}/auxfiles/extractor
-done 
+        for file in usr/lib/libcurl.so.4 usr/lib/libmbedcrypto.so.5 usr/lib/libmbedtls.so.13 usr/lib/libmbedx509.so.1 usr/lib/libmsgpackc.so.2 usr/lib/libsodium.so usr/lib/libsynocodesign-ng-virtual-junior-wins.so.7 usr/syno/bin/scemd; do
+            echo "Copying $file to /mnt/${tcrppart}/auxfiles"
+            cp $file /mnt/${tcrppart}/auxfiles/extractor
+        done
 
+        echo "Copying required libraries to local lib directory"
+        sudo cp /mnt/${tcrppart}/auxfiles/extractor/lib* /lib/
+        echo "Linking lib to lib64"
+        sudo ln -s /lib /lib64
+        echo "Copying executable"
+        sudo cp /mnt/${tcrppart}/auxfiles/extractor/scemd /bin/syno_extract_system_patch
 
-echo "Copying required libraries to local lib directory"
-sudo cp /mnt/${tcrppart}/auxfiles/extractor/lib* /lib/
-echo "Linking lib to lib64"
-sudo ln -s /lib /lib64
-echo "Copying executable"
-sudo cp /mnt/${tcrppart}/auxfiles/extractor/scemd /bin/syno_extract_system_patch
+        echo "Removing temp folder /tmp/synoesp"
+        rm -rf $temp_folder
 
-echo "Removing temp folder /tmp/synoesp" 
-rm -rf $temp_folder
+        echo "Checking if tools is accessible"
+        /bin/syno_extract_system_patch
+        if [ $? -eq 255 ]; then echo "Executed succesfully"; else echo "Cound not execute"; fi
 
-echo "Checking if tools is accessible"
-/bin/syno_extract_system_patch ; if [ $? -eq 255 ]  ; then  echo "Executed succesfully" ; else echo "Cound not execute" ; fi
-
-fi 
+    fi
 
 }
 
 function processpat() {
 
+    loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+    tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+    local_cache="/mnt/${tcrppart}/auxfiles"
+    temp_pat_folder="/tmp/pat"
 
-loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
-tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
-local_cache="/mnt/${tcrppart}/auxfiles"
-temp_pat_folder="/tmp/pat"
+    echo "Processing pat file $pat file"
 
-echo "Processing pat file $pat file"
+    echo "Creating temp folder ${temp_pat_folder} "
+    mkdir ${temp_pat_folder} && cd ${temp_pat_folder}
 
-echo "Creating temp folder ${temp_pat_folder} "
-mkdir ${temp_pat_folder} && cd ${temp_pat_folder}
+    echo "Checking for cached pat file"
+    [ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && ln -s $local_cache /home/tc/custom-module
 
-echo "Checking for cached pat file" 
-[ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && ln -s $local_cache /home/tc/custom-module
+    if [ -d ${local_cache} ] && [ -f ${local_cache}/*42621.pat ]; then
+        patfile=$(ls /home/tc/custom-module/*42621*.pat | head -1)
+        echo "Found locally cached pat file ${patfile}"
 
-if [ -d ${local_cache} ] && [ -f ${local_cache}/*42621.pat ] ; then 
-patfile=`ls /home/tc/custom-module/*42621*.pat | head -1`
-echo "Found locally cached pat file ${patfile}"
+        sudo /bin/syno_extract_system_patch ${patfile} ${temp_pat_folder} || echo "extract latest pat"
 
-sudo /bin/syno_extract_system_patch ${patfile} ${temp_pat_folder} || echo "extract latest pat"
+        echo "Copying unectrypted pat file to local cache folder"
 
-echo "Copying unectrypted pat file to local cache folder"
+        mkdir -p /home/tc/redpill-load/cache/
 
-mkdir -p /home/tc/redpill-load/cache/
+        cd ${temp_pat_folder} && tar -czvf /home/tc/redpill-load/cache/ds920_42621.pat ./
 
-cd ${temp_pat_folder} && tar -czvf /home/tc/redpill-load/cache/ds920_42621.pat ./
+        echo "Clearing temp folders"
+        rm -rf ${temp_pat_folder}
 
-echo "Clearing temp folders"
-rm -rf ${temp_pat_folder}
+    else
 
-else 
+        echo "could not find pat file locally cached"
 
-echo "could not find pat file locally cached"
-
-fi
-
-
-
-
+    fi
 
 }
-
 
 function installapache() {
 
@@ -593,7 +587,7 @@ function patchdtc() {
     localdisks=$(lsblk | grep -i disk | grep -i sd | awk '{print $1}' | grep -v $loaderdisk)
     localnvme=$(lsblk | grep -i nvme | awk '{print $1}')
 
-    if [ "${TARGET_PLATFORM}" = "v1000" ] ; then
+    if [ "${TARGET_PLATFORM}" = "v1000" ]; then
         SYNOMODEL="ds1621p"
     elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
         SYNOMODEL="ds920p"
@@ -622,8 +616,14 @@ function patchdtc() {
     for disk in $localdisks; do
         diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}')
         echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot"
-        sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${SYNOMODEL}.dts
-        let diskslot=$diskslot+1
+        if [ "${SYNOMODEL}" == "ds920p" ]; then
+            sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${SYNOMODEL}.dts
+            let diskslot=$diskslot+1
+        else
+            sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${SYNOMODEL}.dts
+            let diskslot=$diskslot+1
+        fi
+
     done
 
     if [ $(echo $localnvme | wc -w) -gt 0 ]; then
@@ -633,8 +633,13 @@ function patchdtc() {
         for nvme in $localnvme; do
             nvmepath=$(udevadm info --query path --name $nvme | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}')
             echo "Found local nvme $nvme with path $nvmepath, adding into m2_card $nvmeslot"
-            sed -i "/m2_card\@${nvmeslot} {/!b;n;n;n;cpcie_root = \"$nvmepath\";" ${SYNOMODEL}.dts
-            let nvmeslot=$diskslot+1
+            if [ "${SYNOMODEL}" == "ds920p" ]; then
+                sed -i "/nvme_slot\@${nvmeslot} {/!b;n;n;n;cpcie_root = \"$nvmepath\";" ${SYNOMODEL}.dts
+                let diskslot=$diskslot+1
+            else
+                sed -i "/m2_card\@${nvmeslot} {/!b;n;n;n;cpcie_root = \"$nvmepath\";" ${SYNOMODEL}.dts
+                let nvmeslot=$diskslot+1
+            fi
         done
 
     else
@@ -642,7 +647,7 @@ function patchdtc() {
     fi
 
     echo "Converting dts to dtb"
-    ./dtc -q -I dts -O dtb ${SYNOMODEL}.dts > ${SYNOMODEL}.dtb  
+    ./dtc -q -I dts -O dtb ${SYNOMODEL}.dts >${SYNOMODEL}.dtb
 
     echo "Remember to replace extension model file ..."
 
@@ -1331,14 +1336,13 @@ function getstaticmodule() {
         fi
     done
 
-    if [ -n `strings redpill.ko |grep $SYNOMODEL` ] ; then
-    REDPILL_MOD_NAME="redpill-linux-v$(modinfo redpill.ko | grep vermagic | awk '{print $2}').ko"
-    mv /home/tc/redpill.ko /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
+    if [ -n $(strings redpill.ko | grep $SYNOMODEL) ]; then
+        REDPILL_MOD_NAME="redpill-linux-v$(modinfo redpill.ko | grep vermagic | awk '{print $2}').ko"
+        mv /home/tc/redpill.ko /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
     else
-    echo "Module does not contain platorm information for ${SYNOMODEL}"
-    exit 99
+        echo "Module does not contain platorm information for ${SYNOMODEL}"
+        exit 99
     fi
-
 
 }
 
@@ -1352,10 +1356,10 @@ function downloadtools() {
 
 function buildloader() {
 
-tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
-local_cache="/mnt/${tcrppart}/auxfiles"
+    tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+    local_cache="/mnt/${tcrppart}/auxfiles"
 
-[ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" &&  [ ! -d /home/tc/custom-module ] && ln -s $local_cache /home/tc/custom-module
+    [ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && [ ! -d /home/tc/custom-module ] && ln -s $local_cache /home/tc/custom-module
 
     cd /home/tc
 
@@ -1395,7 +1399,7 @@ local_cache="/mnt/${tcrppart}/auxfiles"
         read answer
 
         if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
-         sudo cp -adp /home/tc/custom-module/*${TARGET_REVISION}*.pat /home/tc/redpill-load/cache/
+            sudo cp -adp /home/tc/custom-module/*${TARGET_REVISION}*.pat /home/tc/redpill-load/cache/
         fi
     fi
 
@@ -1472,13 +1476,12 @@ local_cache="/mnt/${tcrppart}/auxfiles"
     echo "======================================================================="
     grep menuentry localdiskp1/boot/grub/grub.cfg
 
-
     checkmachine
 
-    if [ "$MACHINE" = "VIRTUAL" ] ; then 
-    echo "Setting default boot entry to SATA"
-    sudo sed -i "/set default=\"0\"/cset default=\"1\"" localdiskp1/boot/grub/grub.cfg
-    fi 
+    if [ "$MACHINE" = "VIRTUAL" ]; then
+        echo "Setting default boot entry to SATA"
+        sudo sed -i "/set default=\"0\"/cset default=\"1\"" localdiskp1/boot/grub/grub.cfg
+    fi
 
     sudo umount part1
     sudo umount part2
@@ -1488,14 +1491,13 @@ local_cache="/mnt/${tcrppart}/auxfiles"
     sudo losetup -D
 
     echo "Caching files for future use"
-     [ ! -d ${local_cache} ] && mkdir ${local_cache}
+    [ ! -d ${local_cache} ] && mkdir ${local_cache}
 
-
-    if [ -f "`ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1`" ] ; then 
-       patfile=`ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1`
-       echo "Found ${patfile}, copying to cache directory : ${local_cache} "
-       cp -f ${patfile} ${local_cache}
-    fi 
+    if [ -f "$(ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1)" ]; then
+        patfile=$(ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1)
+        echo "Found ${patfile}, copying to cache directory : ${local_cache} "
+        cp -f ${patfile} ${local_cache}
+    fi
 
 }
 

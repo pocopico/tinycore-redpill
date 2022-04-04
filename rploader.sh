@@ -1496,7 +1496,7 @@ function buildloader() {
     if [ -f "$(ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1)" ]; then
         patfile=$(ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1)
         echo "Found ${patfile}, copying to cache directory : ${local_cache} "
-        cp -f ${patfile} ${local_cache}
+        cp -adpf ${patfile} ${local_cache}
     fi
 
 }

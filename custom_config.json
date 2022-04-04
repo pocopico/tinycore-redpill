@@ -35,7 +35,7 @@
             "id": "apollolake-7.0.1-42218",
             "platform_version": "apollolake-7.0.1-42218",
             "user_config_json": "apollolake_user_config.json",
-            "docker_base_image": "debian:10-slim",
+            "docker_base_image": "debian:8-slim",
             "compile_with": "toolkit_dev",
             "redpill_lkm_make_target": "test-v7",
             "downloads": {
@@ -59,6 +59,36 @@
             "add_extensions": [
             ]
         },
+		
+		 {
+            "id": "geminilake-7.0.1-42218",
+            "platform_version": "geminilake-7.0.1-42218",
+            "user_config_json": "geminilake_user_config.json",
+            "docker_base_image": "debian:8-slim",
+            "compile_with": "toolkit_dev",
+            "redpill_lkm_make_target": "test-v7",
+            "downloads": {
+                "kernel": {
+                    "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/apollolake-source/linux-4.4.x.txz/download",
+                    "sha256": "af815ee065775d2e569fd7176e25c8ba7ee17a03361557975c8e5a4b64230c5b"
+                },
+                "toolkit_dev": {
+                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.apollolake-7.0.dev.txz/download",
+                    "sha256": "d349fa644392d4cfab8191243ee38aaa32bd517208c144678e0c855cb5a619ea"
+                }
+            },
+            "redpill_lkm": {
+                "source_url": "https://github.com/jumkey/redpill-lkm.git",
+                "branch": "master"
+            },
+            "redpill_load": {
+                "source_url": "https://github.com/jumkey/redpill-load.git",
+                "branch": "develop"
+            },
+            "add_extensions": [
+            ]
+        },
+				
 	  {
                     "id": "broadwell-7.0.1-42218",
                     "platform_version": "broadwell-7.0.1-42218",
@@ -180,7 +210,7 @@
             "id": "apollolake-7.0-41890",
             "platform_version": "apollolake-7.0-41890",
             "user_config_json": "apollolake_user_config.json",
-            "docker_base_image": "debian:10-slim",
+            "docker_base_image": "debian:8-slim",
             "compile_with": "toolkit_dev",
             "redpill_lkm_make_target": "dev-v7",
             "downloads": {
@@ -206,3 +236,4 @@
         }
     ]
 }
+

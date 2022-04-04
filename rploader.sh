@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 22010401
-# Version : 0.6.1.0
+# Date : 22040417
+# Version : 0.7.0.0
 #
 #
 # User Variables :
 
-rploaderver="0.6.1.0"
+rploaderver="0.7.0.0"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -22,6 +22,134 @@ fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz m
 
 # END Do not modify after this line
 ######################################################################################################
+
+function downloadextractor(){
+loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+local_cache="/mnt/${tcrppart}/auxfiles"
+temp_folder="/tmp/synoesp"
+
+if [ -d ${local_cache/extractor } ] && [ -f ${local_cache}/extractor/scemd ] ; then
+
+echo "Found extractor locally cached"
+
+echo "Copying required libraries to local lib directory"
+sudo cp /mnt/${tcrppart}/auxfiles/extractor/lib* /lib/
+echo "Linking lib to lib64"
+sudo ln -s /lib /lib64
+echo "Copying executable"
+sudo cp /mnt/${tcrppart}/auxfiles/extractor/scemd /bin/syno_extract_system_patch
+
+echo "Removing temp folder /tmp/synoesp" 
+rm -rf $temp_folder
+
+echo "Checking if tools is accessible"
+/bin/syno_extract_system_patch ; if [ $? -eq 255 ]  ; then  echo "Executed succesfully" ; else echo "Cound not execute" ; fi
+
+else 
+
+echo "Getting required extraction tool"
+echo "------------------------------------------------------------------"
+echo "Checking tinycore cache folder"
+
+[ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && ln -s $local_cache /home/tc/custom-module
+
+echo "Creating temp folder /tmp/synoesp"
+
+mkdir ${temp_folder}
+
+if [ -d /home/tc/custom-module ] && [ -f /home/tc/custom-module/*42218*.pat ] ; then 
+
+patfile=`ls /home/tc/custom-module/*42218*.pat | head -1`
+echo "Found custom pat file ${patfile}"
+echo "Processing old pat file to extract required files for extraction"
+tar -C${temp_folder} -xf /${patfile} rd.gz
+else 
+curl --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /homt/rc/oldpat.tar.gz
+tar -C${temp_folder} -xf /${patfile} rd.gz
+fi 
+
+echo "Entering synoesp"
+cd ${temp_folder}
+
+xz -dc < rd.gz >rd 2>/dev/null || echo "extract rd.gz"
+echo "finish"
+cpio -idm <rd 2>&1 || echo "extract rd"
+mkdir extract 
+
+mkdir /mnt/${tcrppart}/auxfiles && cd /mnt/${tcrppart}/auxfiles 
+
+echo "Copying required files to local cache folder for future use"
+
+mkdir /mnt/${tcrppart}/auxfiles/extractor
+
+for file in usr/lib/libcurl.so.4 usr/lib/libmbedcrypto.so.5 usr/lib/libmbedtls.so.13 usr/lib/libmbedx509.so.1 usr/lib/libmsgpackc.so.2 usr/lib/libsodium.so usr/lib/libsynocodesign-ng-virtual-junior-wins.so.7 usr/syno/bin/scemd 
+do 
+echo "Copying $file to /mnt/${tcrppart}/auxfiles"
+cp $file /mnt/${tcrppart}/auxfiles/extractor
+done 
+
+
+echo "Copying required libraries to local lib directory"
+sudo cp /mnt/${tcrppart}/auxfiles/extractor/lib* /lib/
+echo "Linking lib to lib64"
+sudo ln -s /lib /lib64
+echo "Copying executable"
+sudo cp /mnt/${tcrppart}/auxfiles/extractor/scemd /bin/syno_extract_system_patch
+
+echo "Removing temp folder /tmp/synoesp" 
+rm -rf $temp_folder
+
+echo "Checking if tools is accessible"
+/bin/syno_extract_system_patch ; if [ $? -eq 255 ]  ; then  echo "Executed succesfully" ; else echo "Cound not execute" ; fi
+
+fi 
+
+}
+
+function processpat() {
+
+
+loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+local_cache="/mnt/${tcrppart}/auxfiles"
+temp_pat_folder="/tmp/pat"
+
+echo "Processing pat file $pat file"
+
+echo "Creating temp folder ${temp_pat_folder} "
+mkdir ${temp_pat_folder} && cd ${temp_pat_folder}
+
+echo "Checking for cached pat file" 
+[ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && ln -s $local_cache /home/tc/custom-module
+
+if [ -d ${local_cache} ] && [ -f ${local_cache}/*42621.pat ] ; then 
+patfile=`ls /home/tc/custom-module/*42621*.pat | head -1`
+echo "Found locally cached pat file ${patfile}"
+
+sudo /bin/syno_extract_system_patch ${patfile} ${temp_pat_folder} || echo "extract latest pat"
+
+echo "Copying unectrypted pat file to local cache folder"
+
+mkdir -p /home/tc/redpill-load/cache/
+
+cd ${temp_pat_folder} && tar -czvf /home/tc/redpill-load/cache/ds920_42621.pat ./
+
+echo "Clearing temp folders"
+rm -rf ${temp_pat_folder}
+
+else 
+
+echo "could not find pat file locally cached"
+
+fi
+
+
+
+
+
+}
+
 
 function installapache() {
 
@@ -126,7 +254,7 @@ function postupdate() {
 
     cd /home/tc/redpill-load/
 
-    echo "Creating loader ... "
+    echo "Creating loader ${MODEL} ${major}.${minor}.${micro}-${buildnumber} ... "
 
     sudo ./build-loader.sh ${MODEL} ${major}.${minor}.${micro}-${buildnumber}
 
@@ -465,8 +593,10 @@ function patchdtc() {
     localdisks=$(lsblk | grep -i disk | grep -i sd | awk '{print $1}' | grep -v $loaderdisk)
     localnvme=$(lsblk | grep -i nvme | awk '{print $1}')
 
-    if [ "${TARGET_PLATFORM}" = "v1000" ]; then
+    if [ "${TARGET_PLATFORM}" = "v1000" ] ; then
         SYNOMODEL="ds1621p"
+    elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
+            SYNOMODEL="ds920p"
     else
         echo "${TARGET_PLATFORM} does not require model.dtc patching "
         return
@@ -1180,6 +1310,8 @@ function getstaticmodule() {
         SYNOMODEL="ds1621p_$TARGET_REVISION"
     elif [ "${TARGET_PLATFORM}" = "denverton" ]; then
         SYNOMODEL="dva3221_$TARGET_REVISION"
+    elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
+        SYNOMODEL="ds920p_$TARGET_REVISION"
     fi
 
     echo "Looking for redpill for : $SYNOMODEL "
@@ -1199,9 +1331,14 @@ function getstaticmodule() {
         fi
     done
 
+    if [ -n `strings redpill.ko |grep $SYNOMODEL` ] ; then
     REDPILL_MOD_NAME="redpill-linux-v$(modinfo redpill.ko | grep vermagic | awk '{print $2}').ko"
-
     mv /home/tc/redpill.ko /home/tc/redpill-load/ext/rp-lkm/${REDPILL_MOD_NAME}
+    else
+    echo "Module does not contain platorm information for ${SYNOMODEL}"
+    exit 99
+    fi
+
 
 }
 
@@ -1214,6 +1351,11 @@ function downloadtools() {
 }
 
 function buildloader() {
+
+tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+local_cache="/mnt/${tcrppart}/auxfiles"
+
+[ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" &&  [ ! -d /home/tc/custom-module ] && ln -s $local_cache /home/tc/custom-module
 
     cd /home/tc
 
@@ -1253,7 +1395,7 @@ function buildloader() {
         read answer
 
         if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
-            cp -adp /home/tc/custom-module/*.pat /home/tc/redpill-load/cache/
+         sudo cp -adp /home/tc/custom-module/*${TARGET_REVISION}*.pat /home/tc/redpill-load/cache/
         fi
     fi
 
@@ -1269,6 +1411,8 @@ function buildloader() {
         SYNOMODEL="DS1621+"
     elif [ "${TARGET_PLATFORM}" = "denverton" ]; then
         SYNOMODEL="DVA3221"
+    elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
+        SYNOMODEL="DS920+"
     fi
 
     sudo ./build-loader.sh $SYNOMODEL $TARGET_VERSION-$TARGET_REVISION loader.img
@@ -1328,12 +1472,30 @@ function buildloader() {
     echo "======================================================================="
     grep menuentry localdiskp1/boot/grub/grub.cfg
 
+
+    checkmachine
+
+    if [ "$MACHINE" = "VIRTUAL" ] ; then 
+    echo "Setting default boot entry to SATA"
+    sudo sed -i "/set default=\"0\"/cset default=\"1\"" localdiskp1/boot/grub/grub.cfg
+    fi 
+
     sudo umount part1
     sudo umount part2
     sudo umount localdiskp1
     sudo umount localdiskp2
 
     sudo losetup -D
+
+    echo "Caching files for future use"
+     [ ! -d ${local_cache} ] && mkdir ${local_cache}
+
+
+    if [ -f "`ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1`" ] ; then 
+       patfile=`ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1`
+       echo "Found ${patfile}, copying to cache directory : ${local_cache} "
+       cp -f ${patfile} ${local_cache}
+    fi 
 
 }
 
@@ -1444,7 +1606,7 @@ function getvars() {
         KERNEL_MAJOR="3"
         MODULE_ALIAS_FILE="modules.alias.3.json"
         ;;
-    apollolake | broadwell | broadwellnk | v1000 | denverton)
+    apollolake | broadwell | broadwellnk | v1000 | denverton | geminilake)
         KERNEL_MAJOR="4"
         MODULE_ALIAS_FILE="modules.alias.4.json"
         ;;

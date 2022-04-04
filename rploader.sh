@@ -596,7 +596,7 @@ function patchdtc() {
     if [ "${TARGET_PLATFORM}" = "v1000" ] ; then
         SYNOMODEL="ds1621p"
     elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
-            SYNOMODEL="ds920p"
+        SYNOMODEL="ds920p"
     else
         echo "${TARGET_PLATFORM} does not require model.dtc patching "
         return
@@ -642,7 +642,7 @@ function patchdtc() {
     fi
 
     echo "Converting dts to dtb"
-    ./dtc -I dts -O dtb ${SYNOMODEL}.dts >${SYNOMODEL}.dtb 2>&1 >/dev/null
+    ./dtc -q -I dts -O dtb ${SYNOMODEL}.dts > ${SYNOMODEL}.dtb  
 
     echo "Remember to replace extension model file ..."
 

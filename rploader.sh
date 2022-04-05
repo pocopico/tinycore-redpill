@@ -43,7 +43,7 @@ function downloadextractor() {
         echo "Removing temp folder /tmp/synoesp"
         rm -rf $temp_folder
 
-        echo "Checking if tools is accessible"
+        echo "Checking if tool is accessible"
         /bin/syno_extract_system_patch 2>&1 >/dev/null
         if [ $? -eq 255 ]; then echo "Executed succesfully"; else echo "Cound not execute"; fi
 
@@ -129,8 +129,6 @@ function processpat() {
     elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
         SYNOMODEL="ds920p_$TARGET_REVISION" && MODEL="DS920+"
     fi
-
-    echo "Processing pat file $pat file"
 
     if [ ! -d "${temp_pat_folder}" ]; then
         echo "Creating temp folder ${temp_pat_folder} "

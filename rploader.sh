@@ -138,11 +138,11 @@ function processpat() {
     echo "Checking for cached pat file"
     [ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && [ ! -h /home/tc/custom-module ] && sudo ln -s $local_cache /home/tc/custom-module
 
-    if [ -d ${local_cache} ] && [ -f ${local_cache}/*${SYNOMODEL}*${TARGET_REVISION}*.pat ] || [ -f ${local_cache}/*${MODEL}*${TARGET_REVISION}*.pat ]; then
-        patfile=$(ls /home/tc/custom-module/*${TARGET_REVISION}*.pat | head -1)
+    if [ -d ${local_cache} ] && [ -f ${local_cache}/*${SYNOMODEL}*.pat ] || [ -f ${local_cache}/*${MODEL}*${TARGET_REVISION}*.pat ]; then
+        patfile=$(ls /home/tc/custom-module/*${SYNOMODEL}*.pat | head -1)
         echo "Found locally cached pat file ${patfile}"
 
-        testarchive ${patfile}
+        testarchive "${patfile}"
         if [ ${isencrypted} = "no" ]; then
             echo "File /home/tc/custom-module/${patfile} is already unencrypted"
             echo "Copying file to /home/tc/redpill-load/cache folder"
@@ -205,7 +205,7 @@ function processpat() {
         echo -e "Configdir : $configdir \nConfigfile: $configfile \nPat URL : $pat_url"
         echo "Downloading pat file from URL : ${pat_url} "
         [ -n $pat_url ] && curl --location ${pat_url} -o "/${local_cache}/${SYNOMODEL}.pat"
-        patfile="/${local_cache}/${MODEL}_${TARGET_REVISION}.pat"
+        patfile="/${local_cache}/${SYNOMODEL}.pat"
         if [ -f ${patfile} ]; then
             testarchive ${patfile}
         else
@@ -227,18 +227,28 @@ function processpat() {
 function testarchive() {
 
     archive="$1"
-    archiveheader="$(od -bc ${archive} | head -1 | awk '{print $2}')"
+    archiveheader="$(od -bc ${archive} | head -1 | awk '{print $3}')"
 
     case ${archiveheader} in
-    037)
+    105)
         echo "${archive}, is a Tar file"
         isencrypted="no"
         return 0
         ;;
-    336)
+    255)
         echo "File ${archive}, is  encrypted"
         isencrypted="yes"
         return 1
+        ;;
+    213)
+        echo "File ${archive}, is a compressed tar"
+        isencrypted="no"
+        ;;
+    *)
+        echo "Could not determine if file ${archive} is encrypted or not, maybe corrupted"
+        ls -ltr ${archive}
+        echo ${archiveheader}
+        exit 99
         ;;
     esac
 
@@ -246,10 +256,10 @@ function testarchive() {
 
 function addrequiredexts() {
 
-    echo "Getting ${EXTENSIONS}"
+    echo "Processing add_extensions entries found on custom_config.json file : ${EXTENSIONS}"
 
     for extension in ${EXTENSIONS_SOURCE_URL}; do
-        echo "Adding  extension ${extension} "
+        echo "Adding extension ${extension} "
         cd /home/tc/redpill-load/ && ./ext-manager.sh add "$(echo $extension | sed -s 's/"//g' | sed -s 's/,//g')"
     done
     echo "Updating extension contents"

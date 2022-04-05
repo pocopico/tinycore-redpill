@@ -30,6 +30,34 @@
             "add_extensions": [
             ]
         },
+		  {
+            "id": "bromolow-7.1.0-42621",
+            "platform_version": "bromolow-7.1.0-42621",
+            "user_config_json": "bromolow_user_config.json",
+            "docker_base_image": "debian:8-slim",
+            "compile_with": "toolkit_dev",
+            "redpill_lkm_make_target": "dev-v7",
+            "downloads": {
+                "kernel": {
+                    "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/bromolow-source/linux-3.10.x.txz/download",
+                    "sha256": "18aecead760526d652a731121d5b8eae5d6e45087efede0da057413af0b489ed"
+                },
+                "toolkit_dev": {
+                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.bromolow-7.0.dev.txz/download",
+                    "sha256": "a5fbc3019ae8787988c2e64191549bfc665a5a9a4cdddb5ee44c10a48ff96cdd"
+                }
+            },
+            "redpill_lkm": {
+                "source_url": "https://github.com/pocopico/redpill-lkm.git",
+                "branch": "master"
+            },
+            "redpill_load": {
+                "source_url": "https://github.com/pocopico/redpill-load.git",
+                "branch": "develop"
+            },
+            "add_extensions": [
+            ]
+        },
 
         {
             "id": "apollolake-7.0.1-42218",
@@ -59,10 +87,65 @@
             "add_extensions": [
             ]
         },
-		
+		 {
+            "id": "apollolake-7.1.0-42621",
+            "platform_version": "apollolake-7.1.0-42621",
+            "user_config_json": "apollolake_user_config.json",
+            "docker_base_image": "debian:8-slim",
+            "compile_with": "toolkit_dev",
+            "redpill_lkm_make_target": "test-v7",
+            "downloads": {
+                "kernel": {
+                    "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/apollolake-source/linux-4.4.x.txz/download",
+                    "sha256": "af815ee065775d2e569fd7176e25c8ba7ee17a03361557975c8e5a4b64230c5b"
+                },
+                "toolkit_dev": {
+                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.apollolake-7.0.dev.txz/download",
+                    "sha256": "d349fa644392d4cfab8191243ee38aaa32bd517208c144678e0c855cb5a619ea"
+                }
+            },
+            "redpill_lkm": {
+                "source_url": "https://github.com/RedPill-TTG/redpill-lkm.git",
+                "branch": "master"
+            },
+            "redpill_load": {
+                "source_url": "https://github.com/pocopico/redpill-load.git",
+                "branch": "develop"
+            },
+            "add_extensions": [
+            ]
+        },
 		 {
             "id": "geminilake-7.0.1-42218",
             "platform_version": "geminilake-7.0.1-42218",
+            "user_config_json": "geminilake_user_config.json",
+            "docker_base_image": "debian:8-slim",
+            "compile_with": "toolkit_dev",
+            "redpill_lkm_make_target": "test-v7",
+            "downloads": {
+                "kernel": {
+                    "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/apollolake-source/linux-4.4.x.txz/download",
+                    "sha256": "af815ee065775d2e569fd7176e25c8ba7ee17a03361557975c8e5a4b64230c5b"
+                },
+                "toolkit_dev": {
+                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.apollolake-7.0.dev.txz/download",
+                    "sha256": "d349fa644392d4cfab8191243ee38aaa32bd517208c144678e0c855cb5a619ea"
+                }
+            },
+            "redpill_lkm": {
+                "source_url": "https://github.com/pocopico/redpill-lkm.git",
+                "branch": "master"
+            },
+            "redpill_load": {
+                "source_url": "https://github.com/pocopico/redpill-load.git",
+                "branch": "develop"
+            },
+            "add_extensions": [
+            ]
+        },
+		 {
+            "id": "geminilake-7.1.0-42621",
+            "platform_version": "geminilake-7.1.0-42621",
             "user_config_json": "geminilake_user_config.json",
             "docker_base_image": "debian:8-slim",
             "compile_with": "toolkit_dev",
@@ -119,6 +202,36 @@
             ]
 					
             },
+			{
+                    "id": "broadwell-7.1.0-42621",
+                    "platform_version": "broadwell-7.1.0-42621",
+                    "user_config_json": "broadwell_user_config-test.json",
+                    "docker_base_image": "debian:8-slim",
+                    "redpill_lkm_make_target": "dev-v7",
+                    "compile_with": "toolkit_dev",
+                    "downloads": {
+                            "kernel": {
+          "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/broadwell-source/linux-3.10.x.txz/download",
+                    "sha256": "d3e85eb80f16a83244fcae6016ab6783cd8ac55e3af2b4240455261396e1e1be"
+
+                            },
+                            "toolkit_dev": {
+                                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.broadwell-7.0.dev.txz/download",
+                                    "sha256": "e050987fbbab0c246aff2af935b1d8a4140ce490915aa4c92f3c8d163eea970c"
+                            }
+                    },
+                    "redpill_lkm": {
+                            "source_url": "https://github.com/jimmyGALLAND/redpill-lkm.git",
+                            "branch": "develop"
+                    },
+                    "redpill_load": {
+                            "source_url": "https://github.com/pocopico/redpill-load.git",
+                            "branch": "develop"
+                    },
+					 "add_extensions": [
+            ]
+					
+            },
 	      {
                     "id": "broadwellnk-7.0.1-42218",
                     "platform_version": "broadwellnk-7.0.1-42218",
@@ -143,6 +256,35 @@
                     },
                     "redpill_load": {
                             "source_url": "https://github.com/dogodefi/redpill-load.git",
+                            "branch": "develop"
+                    },
+            "add_extensions": [
+            ]
+            },
+			 {
+                    "id": "broadwellnk-7.1.0-42621",
+                    "platform_version": "broadwellnk-7.1.0-42621",
+                    "user_config_json": "broadwellnk_user_config-test.json",
+                    "docker_base_image": "debian:8-slim",
+                    "redpill_lkm_make_target": "dev-v7",
+                    "compile_with": "toolkit_dev",
+                    "downloads": {
+                            "kernel": {
+          "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/broadwellnk-source/linux-4.4.x.txz/download",
+                    "sha256": "d3e85eb80f16a83244fcae6016ab6783cd8ac55e3af2b4240455261396e1e1be"
+
+                            },
+                            "toolkit_dev": {
+                                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.broadwellnk-7.0.dev.txz/download",
+                                    "sha256": "0d9edca67d9e7e14c2529bbb58341b623936124d5264f71f1e4acbacf3ea202d"
+                            }
+                    },
+                    "redpill_lkm": {
+                            "source_url": "https://github.com/dogodefi/redpill-lkm.git",
+                            "branch": "develop"
+                    },
+                    "redpill_load": {
+                            "source_url": "https://github.com/pocopico/redpill-load.git",
                             "branch": "develop"
                     },
             "add_extensions": [
@@ -177,6 +319,35 @@
             "add_extensions": [
             ]
             },
+			  {
+                    "id": "v1000-7.1.0-42621",
+                    "platform_version": "v1000-7.1.0-42621",
+                    "user_config_json": "v1000_user_config-test.json",
+                    "docker_base_image": "debian:8-slim",
+                    "redpill_lkm_make_target": "dev-v7",
+                    "compile_with": "toolkit_dev",
+                    "downloads": {
+                            "kernel": {
+          "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/v1000-source/linux-4.4.x.txz/download",
+                    "sha256": "d3e85eb80f16a83244fcae6016ab6783cd8ac55e3af2b4240455261396e1e1be"
+
+                            },
+                            "toolkit_dev": {
+                                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.v1000-7.0.dev.txz/download",
+                                    "sha256": "6108f9f7b7f0a13ee985314aef9419303375ab7ded4112be991590339b66ecd1"
+                            }
+                    },
+                    "redpill_lkm": {
+                            "source_url": "https://github.com/jumkey/redpill-lkm.git",
+                            "branch": "develop"
+                    },
+                    "redpill_load": {
+                            "source_url": "https://github.com/pocopico/redpill-load.git",
+                            "branch": "develop"
+                    },
+            "add_extensions": [
+            ]
+            },
 			 {
                     "id": "denverton-7.0.1-42218",
                     "platform_version": "denverton-7.0.1-42218",
@@ -201,6 +372,35 @@
                     },
                     "redpill_load": {
                             "source_url": "https://github.com/dogodefi/redpill-load.git",
+                            "branch": "develop"
+                    },
+            "add_extensions": [
+            ]
+            },
+			 {
+                    "id": "denverton-7.1.0-42621",
+                    "platform_version": "denverton-7.1.0-42621",
+                    "user_config_json": "denverton_user_config-test.json",
+                    "docker_base_image": "debian:8-slim",
+                    "redpill_lkm_make_target": "dev-v7",
+                    "compile_with": "toolkit_dev",
+                    "downloads": {
+                            "kernel": {
+          "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/denverton-source/linux-4.4.x.txz/download",
+                    "sha256": "d3e85eb80f16a83244fcae6016ab6783cd8ac55e3af2b4240455261396e1e1be"
+
+                            },
+                            "toolkit_dev": {
+                                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.denverton-7.0.dev.txz/download",
+                                    "sha256": "6dc6818bad28daff4b3b8d27b5e12d0565b65ee60ac17e55c36d913462079f57"
+                            }
+                    },
+                    "redpill_lkm": {
+                            "source_url": "https://github.com/dogodefi/redpill-lkm.git",
+                            "branch": "develop"
+                    },
+                    "redpill_load": {
+                            "source_url": "https://github.com/pocopico/redpill-load.git",
                             "branch": "develop"
                     },
             "add_extensions": [

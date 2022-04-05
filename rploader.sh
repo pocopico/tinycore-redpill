@@ -44,7 +44,7 @@ function downloadextractor() {
         rm -rf $temp_folder
 
         echo "Checking if tools is accessible"
-        /bin/syno_extract_system_patch 2>&1>/dev/null
+        /bin/syno_extract_system_patch 2>&1 >/dev/null
         if [ $? -eq 255 ]; then echo "Executed succesfully"; else echo "Cound not execute"; fi
 
     else
@@ -205,8 +205,8 @@ function processpat() {
         configfile="/home/tc/redpill-load/config/${MODEL}/${configdir}/config.json"
         pat_url=$(cat ${configfile} | jq '.os .pat_url' | sed -s 's/"//g')
         echo "Downloading pat file from URL : ${pat_url} "
-        curl --location ${pat_url} -o "/mnt/sda3/auxfiles/${MODEL}_${TARGET_REVISION}.pat"
-        patfile="/mnt/sda3/auxfiles/${MODEL}_${TARGET_REVISION}.pat"
+        curl --location ${pat_url} -o "/${local_cache}/${MODEL}_${TARGET_REVISION}.pat"
+        patfile="/${local_cache}/${MODEL}_${TARGET_REVISION}.pat"
         if [ -f ${patfile} ]; then
             testarchive ${patfile}
         else

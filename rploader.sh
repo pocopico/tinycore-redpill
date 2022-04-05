@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 22040514
-# Version : 0.7.0.0
+# Version : 0.7.0.1
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.0"
+rploaderver="0.7.0.1"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -148,7 +148,7 @@ function processpat() {
         if [ ${isencrypted} = "no" ]; then
             echo "File /home/tc/custom-module/${patfile} is already unencrypted"
             echo "Copying file to /home/tc/redpill-load/cache folder"
-            cp /home/tc/custom-module/${patfile} /home/tc/redpill-load/cache/
+            cp ${patfile} /home/tc/redpill-load/cache/
         elif [ ${isencrypted} = "yes" ]; then
             [ -f /home/tc/redpill-load/cache/${SYNOMODEL}.pat ] && testarchive /home/tc/redpill-load/cache/${SYNOMODEL}.pat
             if [ -f /home/tc/redpill-load/cache/${SYNOMODEL}.pat ] && [ ${isencrypted} = "no" ]; then
@@ -242,6 +242,19 @@ function testarchive() {
         return 1
         ;;
     esac
+
+}
+
+function addrequiredexts() {
+
+    echo "Getting ${EXTENSIONS}"
+
+    for extension in ${EXTENSIONS_SOURCE_URL}; do
+        echo "Adding  extension ${extension} "
+        cd /home/tc/redpill-load/ && ./ext-manager.sh add "$(echo $extension | sed -s 's/"//g' | sed -s 's/,//g')"
+    done
+    echo "Updating extension contents"
+    ./ext-manager.sh _update_platform_exts ${SYNOMODEL}
 
 }
 
@@ -347,6 +360,8 @@ function postupdate() {
     removebundledexts
 
     cd /home/tc/redpill-load/
+
+    addrequiredexts
 
     echo "Creating loader ${MODEL} ${major}.${minor}.${micro}-${buildnumber} ... "
 
@@ -1513,25 +1528,11 @@ function buildloader() {
 
     fi
 
-    if [ "${TARGET_PLATFORM}" = "apollolake" ]; then
-        SYNOMODEL="DS918+"
-    elif [ "${TARGET_PLATFORM}" = "bromolow" ]; then
-        SYNOMODEL="DS3615xs"
-    elif [ "${TARGET_PLATFORM}" = "broadwell" ]; then
-        SYNOMODEL="DS3617xs"
-    elif [ "${TARGET_PLATFORM}" = "broadwellnk" ]; then
-        SYNOMODEL="DS3622xs+"
-    elif [ "${TARGET_PLATFORM}" = "v1000" ]; then
-        SYNOMODEL="DS1621+"
-    elif [ "${TARGET_PLATFORM}" = "denverton" ]; then
-        SYNOMODEL="DVA3221"
-    elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
-        SYNOMODEL="DS920+"
-    fi
-
     [ -d /home/tc/redpill-load ] && cd /home/tc/redpill-load
 
-    sudo ./build-loader.sh $SYNOMODEL $TARGET_VERSION-$TARGET_REVISION loader.img
+    addrequiredexts
+
+    sudo ./build-loader.sh $MODEL $TARGET_VERSION-$TARGET_REVISION loader.img
 
     if [ $? -ne 0 ]; then
         echo "FAILED : Loader creation failed check the output for any errors"
@@ -1708,8 +1709,10 @@ function getvars() {
     LD_BRANCH="$(echo $platform_selected | jq -r -e '.redpill_load .branch')"
     LKM_SOURCE_URL="$(echo $platform_selected | jq -r -e '.redpill_lkm .source_url')"
     LKM_BRANCH="$(echo $platform_selected | jq -r -e '.redpill_lkm .branch')"
-    EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[] .id')"
-    EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq '.add_extensions[] .url')"
+    #EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]')"
+    EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}')"
+    #EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq '.add_extensions[] .url')"
+    EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq '.add_extensions[]' | grep json | awk '{print $2}')"
     TOOLKIT_URL="$(echo $platform_selected | jq -r -e '.downloads .toolkit_dev .url')"
     TOOLKIT_SHA="$(echo $platform_selected | jq -r -e '.downloads .toolkit_dev .sha256')"
     SYNOKERNEL_URL="$(echo $platform_selected | jq -r -e '.downloads .kernel .url')"
@@ -1738,6 +1741,22 @@ function getvars() {
         ;;
     esac
 
+    if [ "${TARGET_PLATFORM}" = "apollolake" ]; then
+        SYNOMODEL="ds918p_$TARGET_REVISION" && MODEL="DS918+"
+    elif [ "${TARGET_PLATFORM}" = "bromolow" ]; then
+        SYNOMODEL="ds3615xs_$TARGET_REVISION" && MODEL="DS3615xs"
+    elif [ "${TARGET_PLATFORM}" = "broadwell" ]; then
+        SYNOMODEL="ds3617xs_$TARGET_REVISION" && MODEL="DS3617xs"
+    elif [ "${TARGET_PLATFORM}" = "broadwellnk" ]; then
+        SYNOMODEL="ds3622xsp_$TARGET_REVISION" && MODEL="DS3622xs+"
+    elif [ "${TARGET_PLATFORM}" = "v1000" ]; then
+        SYNOMODEL="ds1621p_$TARGET_REVISION" && MODEL="DS1621+"
+    elif [ "${TARGET_PLATFORM}" = "denverton" ]; then
+        SYNOMODEL="dva3221_$TARGET_REVISION" && MODEL="DVA3221"
+    elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
+        SYNOMODEL="ds920p_$TARGET_REVISION" && MODEL="DS920+"
+    fi
+
     #echo "Platform : $platform_selected"
     echo "Rploader Version : ${rploaderver}"
     echo "Loader source : $LD_SOURCE_URL Loader Branch : $LD_BRANCH "
@@ -1754,7 +1773,9 @@ function getvars() {
     echo "TARGET_REVISION : $TARGET_REVISION"
     echo "REDPILL_LKM_MAKE_TARGET : $REDPILL_LKM_MAKE_TARGET"
     echo "KERNEL_MAJOR : $KERNEL_MAJOR"
-    echo "MODULE_ALIAS_FILE= $MODULE_ALIAS_FILE"
+    echo "MODULE_ALIAS_FILE :  $MODULE_ALIAS_FILE"
+    echo "SYNOMODEL : $SYNOMODEL "
+    echo "MODEL : $MODEL "
 }
 
 function matchpciidmodule() {

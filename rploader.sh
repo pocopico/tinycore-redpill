@@ -138,7 +138,7 @@ function processpat() {
     echo "Checking for cached pat file"
     [ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && [ ! -h /home/tc/custom-module ] && sudo ln -s $local_cache /home/tc/custom-module
 
-    if [ -d ${local_cache} ] && [ -f ${local_cache}/*${TARGET_REVISION}.pat ]; then
+    if [ -d ${local_cache} ] && [ -f ${local_cache}/*${SYNOMODEL}*${TARGET_REVISION}*.pat ] || [ -f ${local_cache}/*${MODEL}*${TARGET_REVISION}*.pat ]; then
         patfile=$(ls /home/tc/custom-module/*${TARGET_REVISION}*.pat | head -1)
         echo "Found locally cached pat file ${patfile}"
 
@@ -199,11 +199,12 @@ function processpat() {
     else
 
         echo "Could not find pat file locally cached"
-        configdir=$(ls /home/tc/redpill-load/config/${MODEL} | grep ${TARGET_REVISION} | head -1)
-        configfile="/home/tc/redpill-load/config/${MODEL}/${configdir}/config.json"
+        configdir="/home/tc/redpill-load/config/${MODEL}/${TARGET_VERSION}-${TARGET_REVISION}"
+        configfile="${configdir}/config.json"
         pat_url=$(cat ${configfile} | jq '.os .pat_url' | sed -s 's/"//g')
+        echo -e "Configdir : $configdir \nConfigfile: $configfile \nPat URL : $pat_url"
         echo "Downloading pat file from URL : ${pat_url} "
-        curl --location ${pat_url} -o "/${local_cache}/${MODEL}_${TARGET_REVISION}.pat"
+        [ -n $pat_url ] && curl --location ${pat_url} -o "/${local_cache}/${SYNOMODEL}.pat"
         patfile="/${local_cache}/${MODEL}_${TARGET_REVISION}.pat"
         if [ -f ${patfile} ]; then
             testarchive ${patfile}

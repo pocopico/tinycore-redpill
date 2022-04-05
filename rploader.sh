@@ -262,8 +262,14 @@ function addrequiredexts() {
         echo "Adding extension ${extension} "
         cd /home/tc/redpill-load/ && ./ext-manager.sh add "$(echo $extension | sed -s 's/"//g' | sed -s 's/,//g')"
     done
-    echo "Updating extension contents"
-    ./ext-manager.sh _update_platform_exts ${SYNOMODEL}
+    for extension in ${EXTENSIONS}; do
+        echo "Updating extension contents"
+        cd /home/tc/redpill-load/ && ./ext-manager.sh _update_platform_exts ${SYNOMODEL} ${extension}
+    done
+
+    if [ ${TARGET_PLATFORM} = "geminilake" ] || [ ${TARGET_PLATFORM} = "v1000" ]; then
+        patchdtc
+    fi
 
 }
 
@@ -712,9 +718,9 @@ function patchdtc() {
     localnvme=$(lsblk | grep -i nvme | awk '{print $1}')
 
     if [ "${TARGET_PLATFORM}" = "v1000" ]; then
-        SYNOMODEL="ds1621p"
+        dtbfile="ds1621p"
     elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
-        SYNOMODEL="ds920p"
+        dtbfile="ds920p"
     else
         echo "${TARGET_PLATFORM} does not require model.dtc patching "
         return
@@ -728,9 +734,9 @@ function patchdtc() {
     curl --location --progress-bar "$dtcbin" -O
     chmod 700 dtc
 
-    if [ ! -f ${SYNOMODEL}.dts ]; then
-        echo "dts file for ${SYNOMODEL} not found, trying to download"
-        curl --location --progress-bar -O "${dtsfiles}/${SYNOMODEL}.dts"
+    if [ ! -f ${dtbfile}.dts ]; then
+        echo "dts file for ${dtbfile} not found, trying to download"
+        curl --location --progress-bar -O "${dtsfiles}/${dtbfile}.dts"
     fi
 
     echo "Found $(echo $localdisks | wc -w) disks and $(echo $localnvme | wc -w) nvme"
@@ -740,11 +746,11 @@ function patchdtc() {
     for disk in $localdisks; do
         diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}')
         echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot"
-        if [ "${SYNOMODEL}" == "ds920p" ]; then
-            sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${SYNOMODEL}.dts
+        if [ "${dtbfile}" == "ds920p" ]; then
+            sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${dtbfile}.dts
             let diskslot=$diskslot+1
         else
-            sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${SYNOMODEL}.dts
+            sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${dtbfile}.dts
             let diskslot=$diskslot+1
         fi
 
@@ -757,11 +763,11 @@ function patchdtc() {
         for nvme in $localnvme; do
             nvmepath=$(udevadm info --query path --name $nvme | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}')
             echo "Found local nvme $nvme with path $nvmepath, adding into m2_card $nvmeslot"
-            if [ "${SYNOMODEL}" == "ds920p" ]; then
-                sed -i "/nvme_slot\@${nvmeslot} {/!b;n;n;n;cpcie_root = \"$nvmepath\";" ${SYNOMODEL}.dts
+            if [ "${dtbfile}" == "ds920p" ]; then
+                sed -i "/nvme_slot\@${nvmeslot} {/!b;n;cpcie_root = \"$nvmepath\";" ${dtbfile}.dts
                 let diskslot=$diskslot+1
             else
-                sed -i "/m2_card\@${nvmeslot} {/!b;n;n;n;cpcie_root = \"$nvmepath\";" ${SYNOMODEL}.dts
+                sed -i "/m2_card\@${nvmeslot} {/!b;n;n;n;cpcie_root = \"$nvmepath\";" ${dtbfile}.dts
                 let nvmeslot=$diskslot+1
             fi
         done
@@ -771,10 +777,20 @@ function patchdtc() {
     fi
 
     echo "Converting dts to dtb"
-    ./dtc -q -I dts -O dtb ${SYNOMODEL}.dts >${SYNOMODEL}.dtb
+    ./dtc -q -I dts -O dtb ${dtbfile}.dts >${dtbfile}.dtb
 
-    echo "Remember to replace extension model file ..."
-
+    dtbextfile="$(find /home/tc/redpill-load/custom -name model_${dtbfile}.dtb)"
+    if [ ! -z ${dtbextfile} ] && [ -f ${dtbextfile} ]; then
+        echo -n "Copying patched dtb file ${dtbfile}.dtb to ${dtbextfile} -> "
+        sudo cp ${dtbfile}.dtb ${dtbextfile}
+        if [ $(sha256sum ${dtbfile}.dtb | awk '{print $1}') = $(sha256sum ${dtbextfile} | awk '{print $1}') ]; then
+            echo -e "OK ! File copied and verified !"
+        else
+            echo -e "ERROR !\nFile has not been copied succesfully, you will need to copy it yourself"
+        fi
+    else
+        echo "Remember to replace extension model file ..."
+    fi
 }
 
 function mountshare() {
@@ -1719,7 +1735,7 @@ function getvars() {
     LKM_SOURCE_URL="$(echo $platform_selected | jq -r -e '.redpill_lkm .source_url')"
     LKM_BRANCH="$(echo $platform_selected | jq -r -e '.redpill_lkm .branch')"
     #EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]')"
-    EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}')"
+    EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
     #EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq '.add_extensions[] .url')"
     EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq '.add_extensions[]' | grep json | awk '{print $2}')"
     TOOLKIT_URL="$(echo $platform_selected | jq -r -e '.downloads .toolkit_dev .url')"

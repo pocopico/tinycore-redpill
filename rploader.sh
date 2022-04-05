@@ -66,8 +66,8 @@ function downloadextractor() {
             echo "Processing old pat file to extract required files for extraction"
             tar -C${temp_folder} -xf /${patfile} rd.gz
         else
-            curl --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/rc/oldpat.tar.gz
-            [ -f /home/rc/oldpat.tar.gz ] && tar -C${temp_folder} -xf /${patfile} rd.gz
+            curl --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
+            [ -f /home/tc/oldpat.tar.gz ] && tar -C${temp_folder} -xf /${patfile} rd.gz
         fi
 
         echo "Entering synoesp"

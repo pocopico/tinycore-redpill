@@ -144,7 +144,7 @@ function processpat() {
 
         testarchive "${patfile}"
         if [ ${isencrypted} = "no" ]; then
-            echo "File /home/tc/custom-module/${patfile} is already unencrypted"
+            echo "File ${patfile} is already unencrypted"
             echo "Copying file to /home/tc/redpill-load/cache folder"
             cp ${patfile} /home/tc/redpill-load/cache/
         elif [ ${isencrypted} = "yes" ]; then
@@ -162,32 +162,34 @@ function processpat() {
 
             fi
 
-            tar xvf /home/tc/redpill-load/cache/${SYNOMODEL}.pat ./VERSION && . ./VERSION && rm ./VERSION
-            os_sha256=$(sha256sum ${patfile} | awk '{print $1}')
-            echo "Pat file  sha256sum is : $os_sha256"
-
-            echo -n "Checking config file existence -> "
-            if [ -f "/home/tc/redpill-load/config/$MODEL/${major}.${minor}.${micro}-${buildnumber}/config.json" ]; then
-                echo "OK"
-                configfile="/home/tc/redpill-load/config/$MODEL/${major}.${minor}.${micro}-${buildnumber}/config.json"
-            else
-                echo "No config file found, please use the proper repo, clean and download again"
-                exit 99
-            fi
-
-            echo -n "Editing config file -> "
-            sed -i "/\"os\": {/!b;n;n;n;c\"sha256\": \"$os_sha256\"" ${configfile}
-            echo -n "Verifying config file -> "
-            verifyid="$(cat ${configfile} | jq -r -e '.os .sha256')"
-
-            if [ "$os_sha256" == "$verifyid" ]; then
-                echo "OK ! "
-            else
-                echo "config file, os sha256 verify FAILED, check ${configfile} "
-                exit 99
-            fi
         else
+
             echo "Something went wrong, please check cache files"
+            exit 99
+        fi
+
+        tar xvf /home/tc/redpill-load/cache/${SYNOMODEL}.pat ./VERSION && . ./VERSION && rm ./VERSION
+        os_sha256=$(sha256sum ${patfile} | awk '{print $1}')
+        echo "Pat file  sha256sum is : $os_sha256"
+
+        echo -n "Checking config file existence -> "
+        if [ -f "/home/tc/redpill-load/config/$MODEL/${major}.${minor}.${micro}-${buildnumber}/config.json" ]; then
+            echo "OK"
+            configfile="/home/tc/redpill-load/config/$MODEL/${major}.${minor}.${micro}-${buildnumber}/config.json"
+        else
+            echo "No config file found, please use the proper repo, clean and download again"
+            exit 99
+        fi
+
+        echo -n "Editing config file -> "
+        sed -i "/\"os\": {/!b;n;n;n;c\"sha256\": \"$os_sha256\"" ${configfile}
+        echo -n "Verifying config file -> "
+        verifyid="$(cat ${configfile} | jq -r -e '.os .sha256')"
+
+        if [ "$os_sha256" == "$verifyid" ]; then
+            echo "OK ! "
+        else
+            echo "config file, os sha256 verify FAILED, check ${configfile} "
             exit 99
         fi
 

@@ -55,10 +55,38 @@
                 "source_url": "https://github.com/pocopico/redpill-load.git",
                 "branch": "develop"
             },
+         "add_extensions": [{
+		    "redpill-misc" : "https://github.com/pocopico/redpill-load/raw/master/redpill-misc/rpext-index.json"
+	                        }]
+        },
+         {
+            "id": "apollolake-7.0-41890",
+            "platform_version": "apollolake-7.0-41890",
+            "user_config_json": "apollolake_user_config.json",
+            "docker_base_image": "debian:8-slim",
+            "compile_with": "toolkit_dev",
+            "redpill_lkm_make_target": "dev-v7",
+            "downloads": {
+                "kernel": {
+                    "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/apollolake-source/linux-4.4.x.txz/download",
+                    "sha256": "af815ee065775d2e569fd7176e25c8ba7ee17a03361557975c8e5a4b64230c5b"
+                },
+                "toolkit_dev": {
+                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.apollolake-7.0.dev.txz/download",
+                    "sha256": "d349fa644392d4cfab8191243ee38aaa32bd517208c144678e0c855cb5a619ea"
+                }
+            },
+            "redpill_lkm": {
+                "source_url": "https://github.com/RedPill-TTG/redpill-lkm.git",
+                "branch": "master"
+            },
+            "redpill_load": {
+                "source_url": "https://github.com/RedPill-TTG/redpill-load.git",
+                "branch": "master"
+            },
             "add_extensions": [
             ]
         },
-
         {
             "id": "apollolake-7.0.1-42218",
             "platform_version": "apollolake-7.0.1-42218",
@@ -87,7 +115,7 @@
             "add_extensions": [
             ]
         },
-		 {
+         {
             "id": "apollolake-7.1.0-42621",
             "platform_version": "apollolake-7.1.0-42621",
             "user_config_json": "apollolake_user_config.json",
@@ -112,8 +140,9 @@
                 "source_url": "https://github.com/pocopico/redpill-load.git",
                 "branch": "develop"
             },
-            "add_extensions": [
-            ]
+          "add_extensions": [{
+		   "redpill-misc" : "https://github.com/pocopico/redpill-load/raw/master/redpill-misc/rpext-index.json"
+	                        }]
         },
 		 {
             "id": "geminilake-7.0.1-42218",
@@ -140,8 +169,9 @@
                 "source_url": "https://github.com/pocopico/redpill-load.git",
                 "branch": "develop"
             },
-            "add_extensions": [
-            ]
+              "add_extensions": [{
+		    "redpill-dtb" : "https://github.com/pocopico/redpill-load/raw/master/redpill-dtb/rpext-index.json"		    
+	                        }]
         },
 		 {
             "id": "geminilake-7.1.0-42621",
@@ -168,8 +198,10 @@
                 "source_url": "https://github.com/pocopico/redpill-load.git",
                 "branch": "develop"
             },
-            "add_extensions": [
-            ]
+             "add_extensions": [{
+		    "redpill-dtb" : "https://github.com/pocopico/redpill-load/raw/master/redpill-dtb/rpext-index.json",
+		    "redpill-misc" : "https://github.com/pocopico/redpill-load/raw/master/redpill-misc/rpext-index.json"
+	                        }]
         },
 				
 	  {
@@ -228,9 +260,9 @@
                             "source_url": "https://github.com/pocopico/redpill-load.git",
                             "branch": "develop"
                     },
-					 "add_extensions": [
-            ]
-					
+					 "add_extensions": [{
+		   		    "redpill-misc" : "https://github.com/pocopico/redpill-load/raw/master/redpill-misc/rpext-index.json"
+	                        }]					
             },
 	      {
                     "id": "broadwellnk-7.0.1-42218",
@@ -287,8 +319,9 @@
                             "source_url": "https://github.com/pocopico/redpill-load.git",
                             "branch": "develop"
                     },
-            "add_extensions": [
-            ]
+            "add_extensions": [{
+		        "redpill-misc" : "https://github.com/pocopico/redpill-load/raw/master/redpill-misc/rpext-index.json"
+	                        }]
             },
 			       {
                     "id": "v1000-7.0.1-42218",
@@ -316,8 +349,9 @@
                             "source_url": "https://github.com/jumkey/redpill-load.git",
                             "branch": "develop"
                     },
-            "add_extensions": [
-            ]
+              "add_extensions": [{
+		    "redpill-dtb" : "https://github.com/pocopico/redpill-load/raw/master/redpill-dtb/rpext-index.json"
+		                        }]
             },
 			  {
                     "id": "v1000-7.1.0-42621",
@@ -345,8 +379,10 @@
                             "source_url": "https://github.com/pocopico/redpill-load.git",
                             "branch": "develop"
                     },
-            "add_extensions": [
-            ]
+            "add_extensions": [{
+		    "redpill-dtb" : "https://github.com/pocopico/redpill-load/raw/master/redpill-dtb/rpext-index.json",
+		    "redpill-misc" : "https://github.com/pocopico/redpill-load/raw/master/redpill-misc/rpext-index.json"
+	                        }]
             },
 			 {
                     "id": "denverton-7.0.1-42218",
@@ -403,37 +439,11 @@
                             "source_url": "https://github.com/pocopico/redpill-load.git",
                             "branch": "develop"
                     },
-            "add_extensions": [
-            ]
-            },
-        {
-            "id": "apollolake-7.0-41890",
-            "platform_version": "apollolake-7.0-41890",
-            "user_config_json": "apollolake_user_config.json",
-            "docker_base_image": "debian:8-slim",
-            "compile_with": "toolkit_dev",
-            "redpill_lkm_make_target": "dev-v7",
-            "downloads": {
-                "kernel": {
-                    "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/apollolake-source/linux-4.4.x.txz/download",
-                    "sha256": "af815ee065775d2e569fd7176e25c8ba7ee17a03361557975c8e5a4b64230c5b"
-                },
-                "toolkit_dev": {
-                    "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.apollolake-7.0.dev.txz/download",
-                    "sha256": "d349fa644392d4cfab8191243ee38aaa32bd517208c144678e0c855cb5a619ea"
-                }
-            },
-            "redpill_lkm": {
-                "source_url": "https://github.com/RedPill-TTG/redpill-lkm.git",
-                "branch": "master"
-            },
-            "redpill_load": {
-                "source_url": "https://github.com/RedPill-TTG/redpill-load.git",
-                "branch": "master"
-            },
-            "add_extensions": [
-            ]
-        }
+             "add_extensions": [{
+		     "redpill-misc" : "https://github.com/pocopico/redpill-load/raw/master/redpill-misc/rpext-index.json"
+	                        }]
+            }
+      
     ]
 }
 

@@ -139,10 +139,10 @@ function processpat() {
     [ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && [ ! -h /home/tc/custom-module ] && sudo ln -s $local_cache /home/tc/custom-module
 
     if [ -d ${local_cache} ] && [ -f ${local_cache}/*${SYNOMODEL}*.pat ] || [ -f ${local_cache}/*${MODEL}*${TARGET_REVISION}*.pat ]; then
-        
+
         [ -f /home/tc/custom-module/*${SYNOMODEL}*.pat ] && patfile=$(ls /home/tc/custom-module/*${SYNOMODEL}*.pat | head -1)
         [ -f ${local_cache}/*${MODEL}*${TARGET_REVISION}*.pat ] && patfile=$(ls /home/tc/custom-module/*${MODEL}*${TARGET_REVISION}*.pat | head -1)
-        
+
         echo "Found locally cached pat file ${patfile}"
 
         testarchive "${patfile}"
@@ -211,8 +211,8 @@ function processpat() {
         echo "Downloading pat file from URL : ${pat_url} "
 
         if [ $(df -h /${local_cache} | grep mnt | awk '{print $4}' | cut -c 1-3) -le 370 ]; then
-        echo "No adequate space on ${local_cache} to download file into cache folder, clean up the space and restart"
-        exit 99
+            echo "No adequate space on ${local_cache} to download file into cache folder, clean up the space and restart"
+            exit 99
         fi
 
         [ -n $pat_url ] && curl --location ${pat_url} -o "/${local_cache}/${SYNOMODEL}.pat"
@@ -274,7 +274,7 @@ function addrequiredexts() {
         cd /home/tc/redpill-load/ && ./ext-manager.sh add "$(echo $extension | sed -s 's/"//g' | sed -s 's/,//g')"
     done
     for extension in ${EXTENSIONS}; do
-        echo "Updating extension contents"
+        echo "Updating extension : ${extension} contents for model : ${SYNOMODEL}  "
         cd /home/tc/redpill-load/ && ./ext-manager.sh _update_platform_exts ${SYNOMODEL} ${extension}
     done
 
@@ -787,7 +787,7 @@ function patchdtc() {
         echo "NO NVME disks found, returning"
     fi
 
-    echo "Converting dts to dtb"
+    echo "Converting dts file : ${dtbfile}.dts to dtb file : >${dtbfile}.dtb "
     ./dtc -q -I dts -O dtb ${dtbfile}.dts >${dtbfile}.dtb
 
     dtbextfile="$(find /home/tc/redpill-load/custom -name model_${dtbfile}.dtb)"
@@ -800,7 +800,11 @@ function patchdtc() {
             echo -e "ERROR !\nFile has not been copied succesfully, you will need to copy it yourself"
         fi
     else
-        echo "Remember to replace extension model file ..."
+        [ -z ${dtbextfile} ] && "dtb extension is not loaded and its required for DSM to find disks on ${SYNOMODEL}"
+        echo "Copy of the DTB file ${dtbfile}.dtb to ${dtbextfile} was not succesfull."
+        echo "Please remember to replace the dtb extension model file ..."
+        echo "execute manually : cp ${dtbfile}.dtb ${dtbextfile} and re-run"
+        exit 99
     fi
 }
 

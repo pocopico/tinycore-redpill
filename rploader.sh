@@ -18,7 +18,7 @@ modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modu
 dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/dtc"
 dtsfiles="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main"
 
-fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz modules.alias.4.json.gz rpext-index.json user_config.json dtc rploader.sh ds1621p.dts"
+fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz modules.alias.4.json.gz rpext-index.json user_config.json dtc rploader.sh ds1621p.dts ds920p.dts"
 
 # END Do not modify after this line
 ######################################################################################################

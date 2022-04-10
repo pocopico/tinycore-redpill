@@ -67,7 +67,7 @@ function downloadextractor() {
             tar -C${temp_folder} -xf /${patfile} rd.gz
         else
             curl --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
-            [ -f /home/tc/oldpat.tar.gz ] && tar -C${temp_folder} -xf /${patfile} rd.gz
+            [ -f /home/tc/oldpat.tar.gz ] && tar -C${temp_folder} -xf /home/tc/oldpat.tar.gz rd.gz
         fi
 
         echo "Entering synoesp"

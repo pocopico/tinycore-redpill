@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 22040514
-# Version : 0.7.0.1
+# Date : 22041616
+# Version : 0.7.0.2
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.1"
+rploaderver="0.7.0.2"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -727,6 +727,9 @@ function patchdtc() {
     loaderdisk=$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)
     localdisks=$(lsblk | grep -i disk | grep -i sd | awk '{print $1}' | grep -v $loaderdisk)
     localnvme=$(lsblk | grep -i nvme | awk '{print $1}')
+    usbpid=$(cat user_config.json | jq '.extra_cmdline .pid' | sed -e 's/"//g' | sed -e 's/0x//g')
+    usbvid=$(cat user_config.json | jq '.extra_cmdline .pid' | sed -e 's/"//g' | sed -e 's/0x//g')
+    loaderusb=$(lsusb | grep "${usbvid}:${usbpid}" | awk '{print $2 "-"  $4 }' | sed -e 's/://g' | sed -s 's/00//g')
 
     if [ "${TARGET_PLATFORM}" = "v1000" ]; then
         dtbfile="ds1621p"
@@ -755,7 +758,7 @@ function patchdtc() {
     echo "Collecting disk paths"
 
     for disk in $localdisks; do
-        diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}')
+        diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}' | sed 's/,*$//')
         echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot"
         if [ "${dtbfile}" == "ds920p" ]; then
             sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${dtbfile}.dts
@@ -772,7 +775,7 @@ function patchdtc() {
         echo "Collecting nvme paths"
 
         for nvme in $localnvme; do
-            nvmepath=$(udevadm info --query path --name $nvme | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}')
+            nvmepath=$(udevadm info --query path --name $nvme | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}' | sed 's/,*$//')
             echo "Found local nvme $nvme with path $nvmepath, adding into m2_card $nvmeslot"
             if [ "${dtbfile}" == "ds920p" ]; then
                 sed -i "/nvme_slot\@${nvmeslot} {/!b;n;cpcie_root = \"$nvmepath\";" ${dtbfile}.dts
@@ -785,6 +788,15 @@ function patchdtc() {
 
     else
         echo "NO NVME disks found, returning"
+    fi
+
+    if
+        [ ! -z $loaderusb ] && [ -n $loaderusb ]
+    then
+        echo "Patching USB to include your loader. Loader found in ${loaderusb} port"
+        sed -i "/usb_slot\@1 {/!b;n;n;n;n;n;n;n;cusb_port = \"3-5\";" ${dtbfile}.dts
+    else
+        echo "Your loader is not in USB, i will not try to patch dtb for USB"
     fi
 
     echo "Converting dts file : ${dtbfile}.dts to dtb file : >${dtbfile}.dtb "
@@ -800,7 +812,7 @@ function patchdtc() {
             echo -e "ERROR !\nFile has not been copied succesfully, you will need to copy it yourself"
         fi
     else
-        [ -z ${dtbextfile} ] && "dtb extension is not loaded and its required for DSM to find disks on ${SYNOMODEL}"
+        [ -z ${dtbextfile} ] && echo "dtb extension is not loaded and its required for DSM to find disks on ${SYNOMODEL}"
         echo "Copy of the DTB file ${dtbfile}.dtb to ${dtbextfile} was not succesfull."
         echo "Please remember to replace the dtb extension model file ..."
         echo "execute manually : cp ${dtbfile}.dtb ${dtbextfile} and re-run"

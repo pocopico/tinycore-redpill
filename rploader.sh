@@ -728,7 +728,7 @@ function patchdtc() {
     localdisks=$(lsblk | grep -i disk | grep -i sd | awk '{print $1}' | grep -v $loaderdisk)
     localnvme=$(lsblk | grep -i nvme | awk '{print $1}')
     usbpid=$(cat user_config.json | jq '.extra_cmdline .pid' | sed -e 's/"//g' | sed -e 's/0x//g')
-    usbvid=$(cat user_config.json | jq '.extra_cmdline .pid' | sed -e 's/"//g' | sed -e 's/0x//g')
+    usbvid=$(cat user_config.json | jq '.extra_cmdline .vid' | sed -e 's/"//g' | sed -e 's/0x//g')
     loaderusb=$(lsusb | grep "${usbvid}:${usbpid}" | awk '{print $2 "-"  $4 }' | sed -e 's/://g' | sed -s 's/00//g')
 
     if [ "${TARGET_PLATFORM}" = "v1000" ]; then

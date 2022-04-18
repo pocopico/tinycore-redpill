@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 22041616
-# Version : 0.7.0.2
+# Date : 22041816
+# Version : 0.7.0.3
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.2"
+rploaderver="0.7.0.3"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -759,12 +759,19 @@ function patchdtc() {
 
     for disk in $localdisks; do
         diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}' | sed 's/,*$//')
-        echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot"
+
+        if [ $(udevadm info --query path --name $disk | awk -F "\/" '{print $8  }' | awk -F: '{print $1}' | cut -c 1-6) = "target" ]; then
+            diskport=$(udevadm info --query path --name $disk | awk -F "\/" '{print $8  }' | awk -F: '{print $1}' | sed -e 's/target//g')
+        fi
+
+        echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot with portnumber $diskport"
         if [ "${dtbfile}" == "ds920p" ]; then
             sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${dtbfile}.dts
+            sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;n;n;n;cata_port = <0x$diskport>;" ${dtbfile}.dts
             let diskslot=$diskslot+1
         else
             sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${dtbfile}.dts
+            sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;n;cata_port = <0x$diskport>;" ${dtbfile}.dts
             let diskslot=$diskslot+1
         fi
 

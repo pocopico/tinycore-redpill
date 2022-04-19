@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 22041816
-# Version : 0.7.0.3
+# Date : 22041911
+# Version : 0.7.0.4
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.3"
+rploaderver="0.7.0.4"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -1778,6 +1778,10 @@ function getvars() {
     TARGET_VERSION="$(echo $platform_selected | jq -r -e '.platform_version | split("-")' | jq -r -e .[1])"
     TARGET_REVISION="$(echo $platform_selected | jq -r -e '.platform_version | split("-")' | jq -r -e .[2])"
     REDPILL_LKM_MAKE_TARGET="$(echo $platform_selected | jq -r -e '.redpill_lkm_make_target')"
+    tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+    local_cache="/mnt/${tcrppart}/auxfiles"
+
+    mkdir -p ${local_cache} && ln -s $local_cache /home/tc/custom-module
 
     if [ -z "$TARGET_PLATFORM" ] || [ -z "$TARGET_VERSION" ] || [ -z "$TARGET_REVISION" ]; then
         echo "Error : Platform not found "
@@ -1832,6 +1836,7 @@ function getvars() {
     echo "MODULE_ALIAS_FILE :  $MODULE_ALIAS_FILE"
     echo "SYNOMODEL : $SYNOMODEL "
     echo "MODEL : $MODEL "
+    echo "Local Cache Folder : $local_cache"
 }
 
 function matchpciidmodule() {

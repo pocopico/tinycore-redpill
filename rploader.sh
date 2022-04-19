@@ -759,10 +759,7 @@ function patchdtc() {
 
     for disk in $localdisks; do
         diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}' | sed 's/,*$//')
-
-        if [ $(udevadm info --query path --name $disk | awk -F "\/" '{print $8  }' | awk -F: '{print $1}' | cut -c 1-6) = "target" ]; then
-            diskport=$(udevadm info --query path --name $disk | awk -F "\/" '{print $8  }' | awk -F: '{print $1}' | sed -e 's/target//g')
-        fi
+        diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target//;p;}' | awk -F: '{print $1}')
 
         echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot with portnumber $diskport"
         if [ "${dtbfile}" == "ds920p" ]; then

@@ -1726,9 +1726,9 @@ function getlatestrploader() {
 
     curl -s --location "$rploaderfile" --output latestrploader.sh
     curl -s --location "$modalias3" --output modules.alias.3.json.gz
-    gunzip -f modules.alias.3.json.gz
+    [ -f modules.alias.3.json.gz ] && gunzip -f modules.alias.3.json.gz
     curl -s --location "$modalias4" --output modules.alias.4.json.gz
-    gunzip -f modules.alias.4.json.gz
+    [ -f modules.alias.4.json.gz ] && gunzip -f modules.alias.4.json.gz
 
     CURRENTSHA="$(sha256sum rploader.sh | awk '{print $1}')"
     REPOSHA="$(sha256sum latestrploader.sh | awk '{print $1}')"

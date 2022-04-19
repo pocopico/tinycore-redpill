@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 22041911
-# Version : 0.7.0.4
+# Version : 0.7.0.5
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.4"
+rploaderver="0.7.0.5"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -1733,7 +1733,7 @@ function getlatestrploader() {
     CURRENTSHA="$(sha256sum rploader.sh | awk '{print $1}')"
     REPOSHA="$(sha256sum latestrploader.sh | awk '{print $1}')"
 
-    if [ "${CURRENTSHA}" != "${REPOSHA}" ]; then
+    if [ -f latestrploader.sh ] && [ "${CURRENTSHA}" != "${REPOSHA}" ]; then
         echo -n "There is a newer version of the script on the repo should we use that ? [yY/nN]"
         read confirmation
         if [ "$confirmation" = "y" ] || [ "$confirmation" = "Y" ]; then
@@ -2111,8 +2111,8 @@ interactive)
     if [ -f interactive.sh ]; then
         . ./interactive.sh
     else
-        #curl --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/main/interactive.sh" --output interactive.sh
-        #. ./interactive.sh
+        curl --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/main/interactive.sh" --output interactive.sh
+        . ./interactive.sh
         exit 99
     fi
     ;;

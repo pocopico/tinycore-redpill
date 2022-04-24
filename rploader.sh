@@ -798,7 +798,7 @@ function patchdtc() {
         [ ! -z $loaderusb ] && [ -n $loaderusb ]
     then
         echo "Patching USB to include your loader. Loader found in ${loaderusb} port"
-        sed -i "/usb_slot\@1 {/!b;n;n;n;n;n;n;n;cusb_port = \"3-5\";" ${dtbfile}.dts
+        sed -i "/usb_slot\@1 {/!b;n;n;n;n;n;n;n;cusb_port = \"${loaderusb}\";" ${dtbfile}.dts
     else
         echo "Your loader is not in USB, i will not try to patch dtb for USB"
     fi

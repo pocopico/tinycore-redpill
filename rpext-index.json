@@ -227,6 +227,43 @@
   }
 }
 {
+  "id": "pocopico.arcmsr",
+  "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/rpext-index.json",
+  "info": {
+    "name": "arcmsr",
+    "description": "Adds Areca ARC11xx/12xx/16xx/188x SAS/SATA RAID Controller Driver Support",
+    "author_url": "https://github.com/pocopico",
+    "packer_url": "https://github.com/pocopico/rp-ext/tree/main/arcmsr",
+    "help_url": "<todo>"
+  },
+  "releases": {
+    "ds3615xs_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3615xs_25556.json",
+    "ds3615xs_41222": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3615xs_41222.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3615xs_42218.json",
+    "ds3615xs_42621": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3615xs_42218.json",
+    "ds3615xs_42661": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3615xs_42218.json",
+    "ds3617xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3617xs_42218.json",
+    "ds3617xs_42621": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3617xs_42218.json",
+    "ds3617xs_42661": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3617xs_42218.json",
+    "ds3622xsp_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3622xsp_42218.json",
+    "ds3622xsp_42621": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3622xsp_42218.json",
+    "ds3622xsp_42661": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds3622xsp_42218.json",
+    "ds1621p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds1621p_42218.json",
+    "ds1621p_42621": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds1621p_42218.json",
+    "ds1621p_42661": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds1621p_42218.json",
+    "dva3221_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/dva3221_42218.json",
+    "dva3221_42621": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/dva3221_42218.json",
+    "dva3221_42661": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/dva3221_42218.json",
+    "ds918p_25556": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds918p_25556.json",
+    "ds918p_41890": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds918p_41890.json",
+    "ds918p_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds918p_42218.json",
+    "ds918p_42621": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds918p_42218.json",
+    "ds918p_42661": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds918p_42218.json",
+    "ds920p_42621": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds920p_42218.json",
+    "ds920p_42661": "https://raw.githubusercontent.com/pocopico/rp-ext/master/arcmsr/releases/ds920p_42218.json"
+  }
+}
+{
   "id": "pocopico.asix",
   "url": "https://raw.githubusercontent.com/pocopico/rp-ext/master/asix/rpext-index.json",
   "info": {
@@ -1205,7 +1242,7 @@
     "help_url": "<todo>"
   },
   "releases": {
-    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbe.vanilla/releases/ds3615xs_42218.json",
+    "ds3615xs_42218": "https://raw.githubusercontent.com/pocopico/rp-ext/master/ixgbe.vanilla/releases/ds3615xs_42218.json"
   }
 }
 {

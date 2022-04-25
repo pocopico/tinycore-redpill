@@ -1781,7 +1781,8 @@ function getvars() {
     tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
     local_cache="/mnt/${tcrppart}/auxfiles"
 
-    mkdir -p ${local_cache} && ln -s $local_cache /home/tc/custom-module
+    [ ! -d ${local_cache} ] && sudo mkdir -p ${local_cache}
+    [ ! -h /home/tc/custom-module ] && sudo ln -s $local_cache /home/tc/custom-module
 
     if [ -z "$TARGET_PLATFORM" ] || [ -z "$TARGET_VERSION" ] || [ -z "$TARGET_REVISION" ]; then
         echo "Error : Platform not found "

@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 22041911
-# Version : 0.7.0.5
+# Date : 220425
+# Version : 0.7.0.6
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.5"
+rploaderver="0.7.0.6"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -22,6 +22,56 @@ fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz m
 
 # END Do not modify after this line
 ######################################################################################################
+
+function savesession() {
+
+    lastsessiondir="/mnt/${tcrppart}/lastsession"
+
+    echo -n "Saving user session for future use. "
+
+    [ ! -d ${lastsessiondir} ] && sudo mkdir ${lastsessiondir}
+
+    echo -n "Saving current extensions "
+
+    cat /home/tc/redpill-load/custom/extensions/*/*json | jq '.url' >${lastsessiondir}/extensions.list
+
+    [ -f ${lastsessiondir}/extensions.list ] && echo " -> OK !"
+
+    echo -n "Saving current user_config.json "
+
+    cp /home/tc/user_config.json ${lastsessiondir}/user_config.json
+
+    [ -f ${lastsessiondir}/user_config.json ] && echo " -> OK !"
+
+}
+
+function restoresession() {
+
+    lastsessiondir="/mnt/${tcrppart}/lastsession"
+
+    if [ -d $lastsessiondir ]; then
+
+        echo -n "Found last user session :  , restore session ? [yY/nN] : "
+        read answer
+
+        if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
+
+            if [ -d $lastsessiondir ] && [ -f ${lastsessiondir}/extensions.list ]; then
+                for extension in $(cat ${lastsessiondir}/extensions.list); do
+                    echo "Adding extension ${extension} "
+                    cd /home/tc/redpill-load/ && ./ext-manager.sh add "$(echo $extension | sed -s 's/"//g' | sed -s 's/,//g')"
+                done
+            fi
+            if [ -d $lastsessiondir ] && [ -f ${lastsessiondir}/user_config.json ]; then
+                echo "Copying last user_config.json"
+                cp ${lastsessiondir}/user_config.json /home/tc
+            fi
+
+        fi
+    else
+        echo "OK, we will not restore last session"
+    fi
+}
 
 function downloadextractor() {
     loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
@@ -1398,6 +1448,8 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, s
 
 - restoreloader:Restore current loader partitions from your TCRP partition
 
+- restoresession: Restore last user session files. (extensions and user_config.json)
+
 - mountdsmroot: Mount DSM root for manual intervention on DSM root partition
 
 - postupdate:   Runs a postupdate process to recreate your rd.gz, zImage and custom.gz for junior to match root
@@ -1670,13 +1722,13 @@ function buildloader() {
             rm -f /mnt/${tcrppart}/auxfiles/*.pat
             patfile=$(ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1)
             echo "Found ${patfile}, copying to cache directory : ${local_cache} "
-            cp -adf ${patfile} ${local_cache}
+            cp -f ${patfile} ${local_cache}
         fi
     else
         if [ -f "$(ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1)" ]; then
             patfile=$(ls /home/tc/redpill-load/cache/*${TARGET_REVISION}*.pat | head -1)
             echo "Found ${patfile}, copying to cache directory : ${local_cache} "
-            cp -adf ${patfile} ${local_cache}
+            cp -f ${patfile} ${local_cache}
         fi
     fi
 
@@ -2050,6 +2102,7 @@ build)
         listmodules
         echo "Starting loader creation "
         buildloader
+        [ $? -eq 0 ] && savesession
         ;;
 
     manual)
@@ -2060,6 +2113,7 @@ build)
         echo "Manual extension handling,skipping extension auto detection "
         echo "Starting loader creation "
         buildloader
+        [ $? -eq 0 ] && savesession
         ;;
 
     *)
@@ -2070,6 +2124,7 @@ build)
         listmodules
         echo "Starting loader creation "
         buildloader
+        [ $? -eq 0 ] && savesession
         ;;
 
     esac
@@ -2085,6 +2140,13 @@ ext)
     else
         ext_manager $@ # instead of listmodules
     fi
+    ;;
+
+restoresession)
+    getvars $2
+    checkinternet
+    gitdownload
+    restoresession
     ;;
 
 clean)
@@ -2149,6 +2211,7 @@ postupdate)
     gitdownload
     getstaticmodule
     postupdate
+    [ $? -eq 0 ] && savesession
     ;;
 
 mountdsmroot)

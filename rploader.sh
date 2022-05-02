@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220425
-# Version : 0.7.0.6
+# Date : 220502
+# Version : 0.7.0.7
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.6"
+rploaderver="0.7.0.7"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -1813,6 +1813,10 @@ function getvars() {
     CONFIG=$(readConfig)
     selectPlatform $1
 
+    GETTIME=$(curl -v --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
+    INTERNETDATE=$(date +"%d%m%Y" -d "$GETTIME")
+    LOCALDATE=$(date +"%d%m%Y")
+
     LD_SOURCE_URL="$(echo $platform_selected | jq -r -e '.redpill_load .source_url')"
     LD_BRANCH="$(echo $platform_selected | jq -r -e '.redpill_load .branch')"
     LKM_SOURCE_URL="$(echo $platform_selected | jq -r -e '.redpill_lkm .source_url')"
@@ -1890,6 +1894,10 @@ function getvars() {
     echo "SYNOMODEL : $SYNOMODEL "
     echo "MODEL : $MODEL "
     echo "Local Cache Folder : $local_cache"
+    echo "DATE Internet : $INTERNETDATE Local : $LOCALDATE"
+
+    [ "$INTERNETDATE" != "$LOCALDATE" ] && echo "ERROR ! System DATE is not correct, PLEASE FIX DATE" && exit 99
+
 }
 
 function matchpciidmodule() {

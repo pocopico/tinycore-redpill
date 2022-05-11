@@ -798,7 +798,7 @@ function patchdtc() {
     curl --location --progress-bar "$dtcbin" -O
     chmod 700 dtc
 
-    if [ -f /home/tc/custom-module ]; then
+    if [ -f /home/tc/custom-module/${dtbfile}.dtb ]; then
 
         echo "Fould locally cached dts file"
         read -p "Should i use that file ? [Yy/Nn]" answer
@@ -811,8 +811,10 @@ function patchdtc() {
                 sudo cp /home/tc/custom-module/${dtbfile}.dtb ${dtbextfile}
                 if [ $(sha256sum ${dtbfile}.dtb | awk '{print $1}') = $(sha256sum ${dtbextfile} | awk '{print $1}') ]; then
                     echo -e "OK ! File copied and verified !"
+                    return
                 else
                     echo -e "ERROR !\nFile has not been copied succesfully, you will need to copy it yourself"
+                    return
                 fi
             else
                 [ -z ${dtbextfile} ] && echo "dtb extension is not loaded and its required for DSM to find disks on ${SYNOMODEL}"

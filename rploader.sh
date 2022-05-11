@@ -809,7 +809,7 @@ function patchdtc() {
             if [ ! -z ${dtbextfile} ] && [ -f ${dtbextfile} ]; then
                 echo -n "Copying patched dtb file ${dtbfile}.dtb to ${dtbextfile} -> "
                 sudo cp /home/tc/custom-module/${dtbfile}.dtb ${dtbextfile}
-                if [ $(sha256sum ${dtbfile}.dtb | awk '{print $1}') = $(sha256sum ${dtbextfile} | awk '{print $1}') ]; then
+                if [ $(sha256sum /home/tc/custom-module/${dtbfile}.dtb | awk '{print $1}') = $(sha256sum ${dtbextfile} | awk '{print $1}') ]; then
                     echo -e "OK ! File copied and verified !"
                     return
                 else

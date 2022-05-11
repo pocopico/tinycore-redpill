@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220502
-# Version : 0.7.0.7
+# Date : 220511
+# Version : 0.7.0.8
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.7"
+rploaderver="0.7.0.8"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -797,6 +797,36 @@ function patchdtc() {
     echo "Downloading dtc binary"
     curl --location --progress-bar "$dtcbin" -O
     chmod 700 dtc
+
+    if [ -f /home/tc/custom-module ]; then
+
+        echo "Fould locally cached dts file"
+        read -p "Should i use that file ? [Yy/Nn]" answer
+        if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+            echo "OK copying over the cached dtb file"
+
+            dtbextfile="$(find /home/tc/redpill-load/custom -name model_${dtbfile}.dtb)"
+            if [ ! -z ${dtbextfile} ] && [ -f ${dtbextfile} ]; then
+                echo -n "Copying patched dtb file ${dtbfile}.dtb to ${dtbextfile} -> "
+                sudo cp /home/tc/custom-module/${dtbfile}.dtb ${dtbextfile}
+                if [ $(sha256sum ${dtbfile}.dtb | awk '{print $1}') = $(sha256sum ${dtbextfile} | awk '{print $1}') ]; then
+                    echo -e "OK ! File copied and verified !"
+                else
+                    echo -e "ERROR !\nFile has not been copied succesfully, you will need to copy it yourself"
+                fi
+            else
+                [ -z ${dtbextfile} ] && echo "dtb extension is not loaded and its required for DSM to find disks on ${SYNOMODEL}"
+                echo "Copy of the DTB file ${dtbfile}.dtb to ${dtbextfile} was not succesfull."
+                echo "Please remember to replace the dtb extension model file ..."
+                echo "execute manually : cp ${dtbfile}.dtb ${dtbextfile} and re-run"
+                exit 99
+            fi
+        else
+            echo "OK lets continue patching"
+        fi
+    else
+        echo "No cached dtb file found in /home/tc/custom-module/${dtbfile}.dtb"
+    fi
 
     if [ ! -f ${dtbfile}.dts ]; then
         echo "dts file for ${dtbfile} not found, trying to download"

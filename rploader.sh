@@ -1040,7 +1040,8 @@ function satamap() {
             else
                 echo "WARNING: the first controller should be virtual SATA attached to the loader image. SATABOOT will probably fail!"
             fi
-            [ $ports -gt 1 ] && echo "WARNING: Additional devices detected on this controller. These will be inaccessible!"
+
+            [ ${ports} -gt 1 ] && echo "WARNING: Additional devices detected on this controller. These will be inaccessible!"
             sataportmap=$sataportmap"1"
             diskidxmap=$diskidxmap$(printf "%02x" $maxdisks)
         else

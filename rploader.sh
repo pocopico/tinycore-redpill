@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220514
-# Version : 0.7.0.9
+# Version : 0.7.0.10
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.9"
+rploaderver="0.7.0.10"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -1074,8 +1074,8 @@ function satamap() {
     echo -n "Should i update the user_config.json with these values ? [Yy/Nn] "
     read answer
     if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-        json="$(jq --arg var "$sataportmap" '.extra_cmdline.SataPortMap = $var' user_config.json)" && echo -E "${json}" >user_config.json
-        json="$(jq --arg var "$diskidxmap" '.extra_cmdline.DiskIdxMap = $var' user_config.json)" && echo -E "${json}" >user_config.json
+        json="$(jq --arg var "$sataportmap" '.extra_cmdline.SataPortMap = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
+        json="$(jq --arg var "$diskidxmap" '.extra_cmdline.DiskIdxMap = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
         echo "Done."
     else
         echo "OK remember to update manually by editing user_config.json file"
@@ -1137,8 +1137,10 @@ function usbidentify() {
         echo "Should i update the user_config.json with these values ? [Yy/Nn]"
         read answer
         if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-            sed -i "/\"pid\": \"/c\    \"pid\": \"$productid\"," user_config.json
-            sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"," user_config.json
+            #  sed -i "/\"pid\": \"/c\    \"pid\": \"$productid\"," user_config.json
+            json="$(jq --arg var "$productid" '.extra_cmdline.pid = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
+            #  sed -i "/\"vid\": \"/c\    \"vid\": \"$vendorid\"," user_config.json
+            json="$(jq --arg var "$vendorid" '.extra_cmdline.vid = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
         else
             echo "OK remember to update manually by editing user_config.json file"
         fi
@@ -1159,9 +1161,11 @@ function serialgen() {
         echo "Should i update the user_config.json with these values ? [Yy/Nn]"
         read answer
         if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-            sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"," user_config.json
+            # sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"," user_config.json
+            json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
             macaddress=$(echo $mac | sed -s 's/://g')
-            sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"," user_config.json
+            json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
+            # sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"," user_config.json
         else
             echo "OK remember to update manually by editing user_config.json file"
         fi

@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220511
-# Version : 0.7.0.8
+# Date : 220514
+# Version : 0.7.0.9
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.8"
+rploaderver="0.7.0.9"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -982,69 +982,102 @@ function backup() {
 }
 
 function satamap() {
+    # This function will attempt to identify all disk controllers and create sataportmap and diskidxmap.
+    # Since we cannot know how many ports are on the controllers, we ask the user for the desired number
+    # of disk ports to be mapped into DSM.
+    #
+    # In the case of VMware, we assume the user intends to SATABOOT. While TinyCore suppresses creation
+    # of the /dev/sd device servicing synoboot, the controller still takes up a sataportmap entry.
+    # ThorGroup advised not to map the controller ports beyond the MaxDisks limit but there does not
+    # appear to be any harm in doing so - unless additional devices are connected along with SATABOOT.
+    # If we allow other devices on the SATABOOT controller, there will be an unavoidable empty slot 1.
+    #
+    # By mapping the SATABOOT controller ports beyond MaxDisks, we force standardization of user data
+    # disks onto a secondary controller, and furthermore, it's clear what the SATABOOT controller and
+    # device are being used for. Therefore, we must positively identify the SATABOOT controller, which
+    # ought to be the first virtual SATA controller encountered. If any other drives are connected to
+    # it, they are ignored.
+    #
+    # This code was written with the intention of reusing the detection strategy for device tree
+    # creation, and the two functions could easily be integrated if desired.
 
     checkmachine
-
     checkforscsi
 
-    let controller=0
-    let diskidxmap=0
+    let diskidxmapidx=0
+    sataportmap=""
+    diskidxmap=""
 
+    maxdisks=$(jq -r ".synoinfo.maxdisks" user_config.json)
+
+    # get all controllers PCI class 100 = SCSI, 104 = RAIDHBA, 106 = SATA, 107 = SAS
+    hbas=$(
+        lspci -d ::106
+        lspci -d ::100
+        lspci -d ::104
+        lspci -d ::107
+    )
+    # fix list to newlines
+    S_IFS=$IFS
+    IFS=$'\n' hbas=($hbas)
+    IFS=$S_IFS
+
+    # look expressly for first VMWARE SATA for sataboot
     if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ]; then
-        echo "Running on VMware, Possible working solution, SataPortMap=1 DiskIdxMap=00"
-    else
-        for hba in $(lsscsi -Hv | grep pci | grep -v usb | cut -c 44-50 | uniq); do
-            if [ $(lsscsi -Hv | grep "$hba" | grep ata | wc -l) -gt 0 ]; then
-                echo "HBA: $hba Disks : $(lsscsi -Hv | grep "$hba" | wc -l)"
-                lsscsi -Hv | grep "$hba" | wc -l >>satamap.$$
-                if [ $controller = 0 ]; then
-                    printf "%02X" $diskidxmap >>diskmap.$$
-                else
-                    let diskidxmap=$diskidxmap+$(lsscsi -Hv | grep "$hba" | wc -l)
-                    printf "%02X" $diskidxmap >>diskmap.$$
-                fi
+        vmsb=$(echo $hbas | fgrep -i "vmware sata ahci" | head -1 | awk '{ print $1 }')
+    fi
+
+    # loop through controllers
+    for hbatext in "${hbas[@]}"; do
+        hba="$(echo $hbatext | awk -F" " '{print $1}')"
+        # get attached devices
+        ports=$(lsscsi -Nv | fgrep "$hba" | wc -l)
+        echo "Found \"$hbatext\" ($ports drive(s) connected)"
+        # is it the sataboot controller?
+        if [ "$hba" = "$vmsb" ]; then
+            if [ -z "$sataportmap" ]; then
+                echo "NOTE: On VMware, reserve this controller for SATABOOT, and map loader device after maxdisks $maxdisks"
             else
-                if [ $(lsscsi -Hv | grep -B 2 $hba | head -1 | awk '{print $2}' | grep vmw | wc -l) -gt 0 ]; then
-                    pcidev=$(lsscsi -Hv | grep $hba | awk '{print $3}')
-                    echo "HBA: $hba Disks : $(ls -ltrd ${pcidev}/target* | wc -l)"
-                    ls -ltrd ${pcidev}/target* | wc -l >>satamap.$$
-                    if [ $controller = 0 ]; then
-                        printf "%02X" $diskidxmap >>diskmap.$$
-                    else
-                        let diskidxmap=$diskidxmap+$(lsscsi -Hv | grep "$hba" | wc -l)
-                        printf "%02X" $diskidxmap >>diskmap.$$
-                    fi
-                else
-                    pcidev=$(lsscsi -Hv | grep $hba | awk '{print $3}')
-                    echo "HBA: $hba Disks : $(ls -ltrd ${pcidev}/port* | wc -l)"
-                    ls -ltrd ${pcidev}/port* | wc -l >>satamap.$$
-                    if [ $controller = 0 ]; then
-                        printf "%02X" $diskidxmap >>diskmap.$$
-                    else
-                        let diskidxmap=$diskidxmap+$(lsscsi -Hv | grep "$hba" | wc -l)
-                        printf "%02X" $diskidxmap >>diskmap.$$
-                    fi
+                echo "WARNING: the first controller should be virtual SATA attached to the loader image. SATABOOT will probably fail!"
+            fi
+            [ $ports -gt 1 ] @@ echo "WARNING: Additional devices detected on this controller. These will be inaccessible!"
+            sataportmap=$sataportmap"1"
+            diskidxmap=$diskidxmap$(printf "%02x" $maxdisks)
+        else
+            # not SATABOOT controller
+            echo -n "How many ports should be mapped for this controller? [0-9] <$ports> "
+            read newports
+            if [ ! -z $newports ]; then
+                ports=$newports
+                if ! [ "$ports" -eq "$ports" ] 2>/dev/null; then
+                    echo "Non-numeric, overridden to 0"
+                    ports=0
+                fi
+                if [ $ports -gt 9 ]; then
+                    echo "Overridden to the max value for SataPortMap = 9"
+                    ports=9
                 fi
             fi
-            let controller=$controller+1
-        done
-
-        sataportmap=$(cat satamap.$$ | tr -d '\n')
-        diskidxmap=$(cat diskmap.$$ | tr -d '\n')
-        echo "SataPortMap=$sataportmap"
-        echo "DiskIdxMap=$diskidxmap"
-
-        echo "Should i update the user_config.json with these values ? [Yy/Nn]"
-        read answer
-        if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-            sed -i "/\"SataPortMap\": \"/c\    \"SataPortMap\": \"$sataportmap\"," user_config.json
-            sed -i "/\"DiskIdxMap\": \"/c\    \"DiskIdxMap\": \"$diskidxmap\"" user_config.json
-        else
-            echo "OK remember to update manually by editing user_config.json file"
+            sataportmap=$sataportmap$ports
+            diskidxmap=$diskidxmap$(printf "%02x" $diskidxmapidx)
+            let diskidxmapidx=$diskidxmapidx+$ports
+            # warn if exceeding maxdisks
+            [ $diskidxmapidx -gt $maxdisks ] && echo "WARNING: number of mapped ports exceed maxdisks $maxdisks"
         fi
+    done
 
-        rm satamap.$$
-        rm diskmap.$$
+    echo "SataPortMap=$sataportmap"
+    echo "DiskIdxMap=$diskidxmap"
+
+    echo
+    echo -n "Should i update the user_config.json with these values ? [Yy/Nn] "
+    read answer
+    if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+        json="$(jq --arg var "$sataportmap" '.extra_cmdline.SataPortMap = $var' user_config.json)" && echo -E "${json}" >user_config.json
+        json="$(jq --arg var "$diskidxmap" '.extra_cmdline.DiskIdxMap = $var' user_config.json)" && echo -E "${json}" >user_config.json
+        echo "Done."
+    else
+        echo "OK remember to update manually by editing user_config.json file"
     fi
 
 }

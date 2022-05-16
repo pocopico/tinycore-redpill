@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220514
-# Version : 0.7.1.0
+# Version : 0.7.1.1
 #
 #
 # User Variables :
 
-rploaderver="0.7.1.0"
+rploaderver="0.7.1.1"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -28,8 +28,68 @@ function history() {
     cat <<EOF
 
     0.7.1.0 Added the history, version and enhanced patchdtc function
+    0.7.1.1 Added a syntaxcheck function
 
 EOF
+
+}
+
+function syntaxcheck() {
+
+    if [ $# -lt 2 ] && [ "$1" == "download" ] || [ "$1" == "build" ] || [ "$1" == "ext" ] || [ "$1" == "restoresession" ] || [ "$1" == "listmods" ] || [ "$1" == "serialgen" ] || [ "$1" == "patchdtc" ] || [ "$1" == "postupdate" ]; then
+
+        echo "Error : Number of arguments : $#, options $@ "
+        case $1 in
+
+        download)
+            echo "Syntax error, You have to specify one of the existing platforms" && getPlatforms
+            ;;
+
+        build)
+            echo "Syntax error, You have to specify one of the existing platforms" && getPlatforms
+            ;;
+
+        ext)
+            echo "Syntax error, You have to specify one of the existing platforms, the action and the extension URL"
+            echo "example:"
+            echo "rploader.sh ext apollolake-7.0.1-42218 add https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/rpext-index.json"
+            echo "or for auto detect use"
+            echo "rploader.sh ext apollolake-7.0.1-42218 auto"
+            ;;
+
+        restoresession)
+            echo "Syntax error, You have to specify one of the existing platforms" && getPlatforms
+            ;;
+
+        listmods)
+            echo "Syntax error, You have to specify one of the existing platforms" && getPlatforms
+            ;;
+
+        serialgen)
+            echo "Syntax error, You have to specify one of the existing models"
+            echo "DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+"
+            ;;
+
+        patchdtc)
+            echo "Syntax error, You have to specify one of the existing platforms" && getPlatforms
+            ;;
+
+        postupdate)
+            echo "Syntax error, You have to specify one of the existing platforms" && getPlatforms
+            ;;
+
+        *)
+            echo "Syntax error, not valid arguments or not enough options"
+            showhelp
+            ;;
+
+        esac
+
+        exit 99
+
+    else
+        return
+    fi
 
 }
 
@@ -1550,6 +1610,8 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, s
 
 - mountshare:   Mounts a remote CIFS working directory
 
+- version:      Prints rploader version and if the history option is passed then the version history is listed.
+
 Version : $rploaderver
 ----------------------------------------------------------------------------------------
 Available platform versions:
@@ -1880,7 +1942,7 @@ function getlatestrploader() {
     REPOSHA="$(sha256sum latestrploader.sh | awk '{print $1}')"
 
     if [ -f latestrploader.sh ] && [ "${CURRENTSHA}" != "${REPOSHA}" ]; then
-        echo "Fould newversion : $(bash ./latestrploader.sh version now)"
+        echo "Found newversion : $(bash ./latestrploader.sh version now)"
         echo "Current version : $(bash ./rploader.sh version now)"
         echo -n "There is a newer version of the script on the repo should we use that ? [yY/nN]"
         read confirmation
@@ -2162,8 +2224,7 @@ function ext_manager() {
 }
 
 if [ $# -lt 2 ]; then
-    showhelp
-    exit 99
+    syntaxcheck $@
 fi
 
 case $1 in

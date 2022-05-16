@@ -20,7 +20,7 @@
                 }
             },
             "redpill_lkm": {
-                "source_url": "https://github.com/RedPill-TTG/redpill-lkm.git",
+                "source_url": "https://github.com/pocopico/redpill-lkm.git",
                 "branch": "master"
             },
             "redpill_load": {
@@ -106,11 +106,11 @@
                 }
             },
             "redpill_lkm": {
-                "source_url": "https://github.com/RedPill-TTG/redpill-lkm.git",
+                "source_url": "https://github.com/pocopico/redpill-lkm.git",
                 "branch": "master"
             },
             "redpill_load": {
-                "source_url": "https://github.com/RedPill-TTG/redpill-load.git",
+                "source_url": "https://github.com/pocopico/redpill-load.git",
                 "branch": "master"
             },
             "add_extensions": [
@@ -134,7 +134,7 @@
                 }
             },
             "redpill_lkm": {
-                "source_url": "https://github.com/RedPill-TTG/redpill-lkm.git",
+                "source_url": "https://github.com/pocopico/redpill-lkm.git",
                 "branch": "master"
             },
             "redpill_load": {
@@ -162,7 +162,7 @@
                 }
             },
             "redpill_lkm": {
-                "source_url": "https://github.com/RedPill-TTG/redpill-lkm.git",
+                "source_url": "https://github.com/pocopico/redpill-lkm.git",
                 "branch": "master"
             },
             "redpill_load": {
@@ -191,7 +191,7 @@
                 }
             },
             "redpill_lkm": {
-                "source_url": "https://github.com/RedPill-TTG/redpill-lkm.git",
+                "source_url": "https://github.com/pocopico/redpill-lkm.git",
                 "branch": "master"
             },
             "redpill_load": {
@@ -311,11 +311,11 @@
                             }
                     },
                     "redpill_lkm": {
-                            "source_url": "https://github.com/jimmyGALLAND/redpill-lkm.git",
+                            "source_url": "https://github.com/pocopico/redpill-lkm.git",
                             "branch": "develop"
                     },
                     "redpill_load": {
-                            "source_url": "https://github.com/jimmyGALLAND/redpill-load.git",
+                            "source_url": "https://github.com/pocopico/redpill-load.git",
                             "branch": "develop"
                     },
 					 "add_extensions": [
@@ -341,7 +341,7 @@
                             }
                     },
                     "redpill_lkm": {
-                            "source_url": "https://github.com/jimmyGALLAND/redpill-lkm.git",
+                            "source_url": "https://github.com/pocopico/redpill-lkm.git",
                             "branch": "develop"
                     },
                     "redpill_load": {
@@ -371,7 +371,7 @@
                             }
                     },
                     "redpill_lkm": {
-                            "source_url": "https://github.com/jimmyGALLAND/redpill-lkm.git",
+                            "source_url": "https://github.com/pocopico/redpill-lkm.git",
                             "branch": "develop"
                     },
                     "redpill_load": {
@@ -401,11 +401,11 @@
                             }
                     },
                     "redpill_lkm": {
-                            "source_url": "https://github.com/dogodefi/redpill-lkm.git",
+                            "source_url": "https://github.com/pocopico/redpill-lkm.git",
                             "branch": "develop"
                     },
                     "redpill_load": {
-                            "source_url": "https://github.com/dogodefi/redpill-load.git",
+                            "source_url": "https://github.com/pocopico/redpill-load.git",
                             "branch": "develop"
                     },
             "add_extensions": [
@@ -430,7 +430,7 @@
                             }
                     },
                     "redpill_lkm": {
-                            "source_url": "https://github.com/dogodefi/redpill-lkm.git",
+                            "source_url": "https://github.com/pocopico/redpill-lkm.git",
                             "branch": "develop"
                     },
                     "redpill_load": {
@@ -460,7 +460,7 @@
                             }
                     },
                     "redpill_lkm": {
-                            "source_url": "https://github.com/dogodefi/redpill-lkm.git",
+                            "source_url": "https://github.com/pocopico/redpill-lkm.git",
                             "branch": "develop"
                     },
                     "redpill_load": {
@@ -583,11 +583,11 @@
                             }
                     },
                     "redpill_lkm": {
-                            "source_url": "https://github.com/dogodefi/redpill-lkm.git",
+                            "source_url": "https://github.com/pocopico/redpill-lkm.git",
                             "branch": "develop"
                     },
                     "redpill_load": {
-                            "source_url": "https://github.com/dogodefi/redpill-load.git",
+                            "source_url": "https://github.com/pocopico/redpill-load.git",
                             "branch": "develop"
                     },
             "add_extensions": [
@@ -612,7 +612,7 @@
                             }
                     },
                     "redpill_lkm": {
-                            "source_url": "https://github.com/dogodefi/redpill-lkm.git",
+                            "source_url": "https://github.com/pocopico/redpill-lkm.git",
                             "branch": "develop"
                     },
                     "redpill_load": {
@@ -642,7 +642,7 @@
                             }
                     },
                     "redpill_lkm": {
-                            "source_url": "https://github.com/dogodefi/redpill-lkm.git",
+                            "source_url": "https://github.com/pocopico/redpill-lkm.git",
                             "branch": "develop"
                     },
                     "redpill_load": {

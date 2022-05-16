@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220514
-# Version : 0.7.1.1
+# Date : 220516
+# Version : 0.7.1.2
 #
 #
 # User Variables :
 
-rploaderver="0.7.1.1"
+rploaderver="0.7.1.2"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -17,6 +17,8 @@ modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modu
 modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modules.alias.3.json.gz"
 dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/dtc"
 dtsfiles="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main"
+timezone="UTC"
+ntpserver="pool.ntp.org"
 
 fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz modules.alias.4.json.gz rpext-index.json user_config.json dtc rploader.sh ds1621p.dts ds920p.dts"
 
@@ -39,6 +41,7 @@ function history() {
     0.7.0.9 Added flyride satamap review
     0.7.1.0 Added the history, version and enhanced patchdtc function
     0.7.1.1 Added a syntaxcheck function
+    0.7.1.2 Added sync time with NTP server : pool.ntp.org (Set timezone and ntpserver variables accordingly )
     --------------------------------------------------------------------------------------
 EOF
 
@@ -2064,7 +2067,14 @@ function getvars() {
     echo "Local Cache Folder : $local_cache"
     echo "DATE Internet : $INTERNETDATE Local : $LOCALDATE"
 
-    [ "$INTERNETDATE" != "$LOCALDATE" ] && echo "ERROR ! System DATE is not correct, PLEASE FIX DATE" && exit 99
+    if [ "$INTERNETDATE" != "$LOCALDATE" ]; then
+        echo "ERROR ! System DATE is not correct"
+        echo "Downloading ntpclient to assist"
+        tce-load -iw ntpclient 2>&1 >/dev/null
+        export TZ="${timezone}"
+        sudo ntpclient -s -h ${ntpserver} 2>&1 >/dev/null
+        echo "Current time after communicating with NTP server ${ntpserver} :  $(date) "
+    fi
 
 }
 

@@ -26,6 +26,7 @@ fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz m
 function history() {
 
     cat <<EOF
+    --------------------------------------------------------------------------------------
     0.7.0.0 Added build for version greater than 42218
     0.7.0.1 Added required extension parsing adding and downloading
     0.7.0.2 Added usb patch in patchdtc
@@ -38,7 +39,7 @@ function history() {
     0.7.0.9 Added flyride satamap review
     0.7.1.0 Added the history, version and enhanced patchdtc function
     0.7.1.1 Added a syntaxcheck function
-
+    --------------------------------------------------------------------------------------
 EOF
 
 }

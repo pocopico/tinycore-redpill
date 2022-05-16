@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220516
-# Version : 0.7.1.2
+# Version : 0.7.1.3
 #
 #
 # User Variables :
 
-rploaderver="0.7.1.2"
+rploaderver="0.7.1.3"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -42,6 +42,7 @@ function history() {
     0.7.1.0 Added the history, version and enhanced patchdtc function
     0.7.1.1 Added a syntaxcheck function
     0.7.1.2 Added sync time with NTP server : pool.ntp.org (Set timezone and ntpserver variables accordingly )
+    0.7.1.3 Added the option to create JUN mod loader (By Jumkey)
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1751,6 +1752,8 @@ function buildloader() {
     tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
     local_cache="/mnt/${tcrppart}/auxfiles"
 
+    [ "$1" == "junmod" ] && JUNLOADER="YES"
+
     [ -d $local_cache ] && echo "Found tinycore cache folder, linking to home/tc/custom-module" && [ ! -d /home/tc/custom-module ] && ln -s $local_cache /home/tc/custom-module
 
     cd /home/tc
@@ -1809,7 +1812,12 @@ function buildloader() {
 
     addrequiredexts
 
-    sudo ./build-loader.sh $MODEL $TARGET_VERSION-$TARGET_REVISION loader.img
+    if [ "$JUNLOADER" == "YES" ]; then
+        echo "jun build option has been specified, so JUN MOD loader will be created"
+        sudo BRP_JUN_MOD=1 BRP_DEBUG=1 BRP_USER_CFG=user_config.json ./build-loader.sh $MODEL $TARGET_VERSION-$TARGET_REVISION loader.img
+    else
+        sudo ./build-loader.sh $MODEL $TARGET_VERSION-$TARGET_REVISION loader.img
+    fi
 
     if [ $? -ne 0 ]; then
         echo "FAILED : Loader creation failed check the output for any errors"
@@ -2279,17 +2287,6 @@ build)
             buildloader
         fi
         ;;
-
-    static)
-        echo "Using static compiled redpill extension"
-        getstaticmodule
-        echo "Got $REDPILL_MOD_NAME "
-        listmodules
-        echo "Starting loader creation "
-        buildloader
-        [ $? -eq 0 ] && savesession
-        ;;
-
     manual)
 
         echo "Using static compiled redpill extension"
@@ -2301,8 +2298,18 @@ build)
         [ $? -eq 0 ] && savesession
         ;;
 
-    *)
-        echo "No extra build option specified, using default <static> "
+    jun)
+        echo "Using static compiled redpill extension"
+        getstaticmodule
+        echo "Got $REDPILL_MOD_NAME "
+        listmodules
+        echo "Starting loader creation "
+        buildloader junmod
+        [ $? -eq 0 ] && savesession
+        ;;
+
+    static | *)
+        echo "No extra build option or static specified, using default <static> "
         echo "Using static compiled redpill extension"
         getstaticmodule
         echo "Got $REDPILL_MOD_NAME "
@@ -2313,9 +2320,11 @@ build)
         ;;
 
     esac
+
     ;;
 
-ext)
+\
+    ext)
     getvars $2
     checkinternet
     gitdownload

@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220514
-# Version : 0.7.0.10
+# Version : 0.7.1.0
 #
 #
 # User Variables :
 
-rploaderver="0.7.0.10"
+rploaderver="0.7.1.0"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -22,6 +22,25 @@ fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz m
 
 # END Do not modify after this line
 ######################################################################################################
+
+function history() {
+
+    cat <<EOF
+
+    0.7.1.0 Added the history, version and enhanced patchdtc function
+
+EOF
+
+}
+
+function version() {
+
+    shift 1
+    echo $rploaderver
+
+    [ "$1" == "history" ] && history
+
+}
 
 function savesession() {
 
@@ -798,9 +817,14 @@ function patchdtc() {
     curl --location --progress-bar "$dtcbin" -O
     chmod 700 dtc
 
+    if [ -f /home/tc/custom-module/${dtbfile}.dts ] && [ ! -f /home/tc/custom-module/${dtbfile}.dtb ]; then
+        echo "Found locally cached dts file ${dtbfile}.dts and dtb file does not exist in cache, converting dts to dtb"
+        ./dtc -q -I dts -O dtb /home/tc/custom-module/${dtbfile}.dts >/home/tc/custom-module/${dtbfile}.dtb
+    fi
+
     if [ -f /home/tc/custom-module/${dtbfile}.dtb ]; then
 
-        echo "Fould locally cached dts file"
+        echo "Fould locally cached dtb file"
         read -p "Should i use that file ? [Yy/Nn]" answer
         if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
             echo "OK copying over the cached dtb file"
@@ -1856,6 +1880,8 @@ function getlatestrploader() {
     REPOSHA="$(sha256sum latestrploader.sh | awk '{print $1}')"
 
     if [ -f latestrploader.sh ] && [ "${CURRENTSHA}" != "${REPOSHA}" ]; then
+        echo "Fould newversion : $(bash ./latestrploader.sh version now)"
+        echo "Current version : $(bash ./rploader.sh version now)"
         echo -n "There is a newer version of the script on the repo should we use that ? [yY/nN]"
         read confirmation
         if [ "$confirmation" = "y" ] || [ "$confirmation" = "Y" ]; then
@@ -2304,6 +2330,9 @@ mountshare)
     ;;
 installapache)
     installapache
+    ;;
+version)
+    version $@
     ;;
 *)
     showhelp

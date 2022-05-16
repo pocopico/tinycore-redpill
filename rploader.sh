@@ -26,7 +26,16 @@ fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz m
 function history() {
 
     cat <<EOF
-
+    0.7.0.0 Added build for version greater than 42218
+    0.7.0.1 Added required extension parsing adding and downloading
+    0.7.0.2 Added usb patch in patchdtc
+    0.7.0.3 Added portnumber on patchdtc
+    0.7.0.4 Make sure that local cache folder is created early in the process
+    0.7.0.5 Enabled interactive
+    0.7.0.6 Added save/restore session functions
+    0.7.0.7 Added a check date function
+    0.7.0.8 Added the ability to use local dtb file
+    0.7.0.9 Added flyride satamap review
     0.7.1.0 Added the history, version and enhanced patchdtc function
     0.7.1.1 Added a syntaxcheck function
 

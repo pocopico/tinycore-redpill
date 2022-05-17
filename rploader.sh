@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220516
-# Version : 0.7.1.3
+# Version : 0.7.1.4
 #
 #
 # User Variables :
 
-rploaderver="0.7.1.3"
+rploaderver="0.7.1.4"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -20,7 +20,7 @@ dtsfiles="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main"
 timezone="UTC"
 ntpserver="pool.ntp.org"
 
-fullupdatefiles="custom_config.json global_config.json modules.alias.3.json.gz modules.alias.4.json.gz rpext-index.json user_config.json dtc rploader.sh ds1621p.dts ds920p.dts"
+fullupdatefiles="custom_config.json custom_config_jun.json global_config.json modules.alias.3.json.gz modules.alias.4.json.gz rpext-index.json user_config.json dtc rploader.sh ds1621p.dts ds920p.dts"
 
 # END Do not modify after this line
 ######################################################################################################
@@ -43,6 +43,7 @@ function history() {
     0.7.1.1 Added a syntaxcheck function
     0.7.1.2 Added sync time with NTP server : pool.ntp.org (Set timezone and ntpserver variables accordingly )
     0.7.1.3 Added the option to create JUN mod loader (By Jumkey)
+    0.7.1.4 Added the use of the additional custom_config_jun.json for JUN mod loader creation
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1439,14 +1440,14 @@ function gettoolchain() {
 
 function getPlatforms() {
 
-    platform_versions=$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' global_config.json custom_config.json | jq -r '.build_configs[].id')
+    platform_versions=$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq -r '.build_configs[].id')
     echo "$platform_versions"
 
 }
 
 function selectPlatform() {
 
-    platform_selected=$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' global_config.json custom_config.json | jq ".build_configs[] | select(.id==\"${1}\")")
+    platform_selected=$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq ".build_configs[] | select(.id==\"${1}\")")
 
 }
 function getValueByJsonPath() {
@@ -1462,7 +1463,7 @@ function readConfig() {
     if [ ! -e custom_config.json ]; then
         cat global_config.json
     else
-        jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' global_config.json custom_config.json
+        jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json
     fi
 
 }
@@ -1814,7 +1815,7 @@ function buildloader() {
 
     if [ "$JUNLOADER" == "YES" ]; then
         echo "jun build option has been specified, so JUN MOD loader will be created"
-        sudo BRP_JUN_MOD=1 BRP_DEBUG=1 BRP_USER_CFG=user_config.json ./build-loader.sh $MODEL $TARGET_VERSION-$TARGET_REVISION loader.img
+        sudo BRP_JUN_MOD=1 BRP_DEBUG=0 BRP_USER_CFG=user_config.json ./build-loader.sh $MODEL $TARGET_VERSION-$TARGET_REVISION loader.img
     else
         sudo ./build-loader.sh $MODEL $TARGET_VERSION-$TARGET_REVISION loader.img
     fi

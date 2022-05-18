@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220516
-# Version : 0.7.1.4
+# Version : 0.7.1.5
 #
 #
 # User Variables :
 
-rploaderver="0.7.1.4"
+rploaderver="0.7.1.5"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -44,6 +44,7 @@ function history() {
     0.7.1.2 Added sync time with NTP server : pool.ntp.org (Set timezone and ntpserver variables accordingly )
     0.7.1.3 Added the option to create JUN mod loader (By Jumkey)
     0.7.1.4 Added the use of the additional custom_config_jun.json for JUN mod loader creation
+    0.7.1.5 Updated satamap function to support higher the 9 port counts per HBA.
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1135,12 +1136,11 @@ function satamap() {
         # is it the sataboot controller?
         if [ "$hba" = "$vmsb" ]; then
             if [ -z "$sataportmap" ]; then
-                echo "NOTE: On VMware, reserve this controller for SATABOOT, and map loader device after maxdisks $maxdisks"
+                echo "Running on VMware. Reserving this controller for SATABOOT and mapping loader after maxdisks $maxdisks"
             else
-                echo "WARNING: the first controller should be virtual SATA attached to the loader image. SATABOOT will probably fail!"
+                echo "WARNING: first controller should be virtual SATA attached to the loader dev. SATABOOT will probably fail!"
             fi
-
-            [ ${ports} -gt 1 ] && echo "WARNING: Additional devices detected on this controller. These will be inaccessible!"
+            [ ${ports} -gt 1 ] && echo "NOTE: Additional devices are attached. These will be inaccessible!"
             sataportmap=$sataportmap"1"
             diskidxmap=$diskidxmap$(printf "%02x" $maxdisks)
         else
@@ -1153,17 +1153,21 @@ function satamap() {
                     echo "Non-numeric, overridden to 0"
                     ports=0
                 fi
-                if [ $ports -gt 9 ]; then
-                    echo "Overridden to the max value for SataPortMap = 9"
-                    ports=9
-                fi
             fi
-            sataportmap=$sataportmap$ports
+            if [ $ports -gt 9 ]; then
+                echo "WARNING: more than 9 ports per controller is technically unsupported and may affect stability"
+                let ports=$ports+48
+                portchar=$(printf \\$(printf "%o" $ports))
+            else
+                portchar=$ports
+            fi
+            sataportmap=$sataportmap$portchar
             diskidxmap=$diskidxmap$(printf "%02x" $diskidxmapidx)
             let diskidxmapidx=$diskidxmapidx+$ports
             # warn if exceeding maxdisks
             [ $diskidxmapidx -gt $maxdisks ] && echo "WARNING: number of mapped ports exceed maxdisks $maxdisks"
         fi
+        echo
     done
 
     echo "SataPortMap=$sataportmap"

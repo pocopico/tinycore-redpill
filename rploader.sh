@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220516
-# Version : 0.7.1.5
+# Date : 220522
+# Version : 0.7.1.6
 #
 #
 # User Variables :
 
-rploaderver="0.7.1.5"
+rploaderver="0.7.1.6"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -45,6 +45,7 @@ function history() {
     0.7.1.3 Added the option to create JUN mod loader (By Jumkey)
     0.7.1.4 Added the use of the additional custom_config_jun.json for JUN mod loader creation
     0.7.1.5 Updated satamap function to support higher the 9 port counts per HBA.
+    0.7.1.6 Updated satamap function to to fix the broken q35 KVM controller, and to stop scanning for CD-ROM's
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1082,27 +1083,27 @@ function backup() {
 }
 
 function satamap() {
-    # This function will attempt to identify all disk controllers and create sataportmap and diskidxmap.
+    # This function will attempt to identify all SATA controllers and create sataportmap and diskidxmap.
     # Since we cannot know how many ports are on the controllers, we ask the user for the desired number
     # of disk ports to be mapped into DSM.
     #
-    # In the case of VMware, we assume the user intends to SATABOOT. While TinyCore suppresses creation
-    # of the /dev/sd device servicing synoboot, the controller still takes up a sataportmap entry.
-    # ThorGroup advised not to map the controller ports beyond the MaxDisks limit but there does not
-    # appear to be any harm in doing so - unless additional devices are connected along with SATABOOT.
-    # If we allow other devices on the SATABOOT controller, there will be an unavoidable empty slot 1.
+    # In the case of SATABOOT: While TinyCore suppresses the /dev/sd device servicing synoboot, the
+    # controller still takes up a sataportmap entry. ThorGroup advised not to map the controller ports
+    # beyond the MaxDisks limit but there does not appear to be any harm in doing so - unless additional
+    # devices are connected along with SATABOOT. This will create a gap/empty first slot.
     #
     # By mapping the SATABOOT controller ports beyond MaxDisks, we force standardization of user data
-    # disks onto a secondary controller, and furthermore, it's clear what the SATABOOT controller and
-    # device are being used for. Therefore, we must positively identify the SATABOOT controller, which
-    # ought to be the first virtual SATA controller encountered. If any other drives are connected to
-    # it, they are ignored.
+    # disks onto a secondary controller, and it's clear what the SATABOOT controller and device are
+    # being used for. Therefore, we must positively identify it, map it out, and ignore any other drives
+    # connected to it.
+    #
+    # We need something similar to disable the bogus SATA controller in the KVM q35 hardware model.
     #
     # This code was written with the intention of reusing the detection strategy for device tree
     # creation, and the two functions could easily be integrated if desired.
 
     checkmachine
-    checkforscsi
+    #checkforscsi
 
     let diskidxmapidx=0
     sataportmap=""
@@ -1110,66 +1111,63 @@ function satamap() {
 
     maxdisks=$(jq -r ".synoinfo.maxdisks" user_config.json)
 
-    # get all controllers PCI class 100 = SCSI, 104 = RAIDHBA, 106 = SATA, 107 = SAS
-    hbas=$(
-        lspci -d ::106
-        lspci -d ::100
-        lspci -d ::104
-        lspci -d ::107
-    )
-    # fix list to newlines
-    S_IFS=$IFS
-    IFS=$'\n' hbas=($hbas)
-    IFS=$S_IFS
-
-    # look expressly for first VMWARE SATA for sataboot
-    if [ "$MACHINE" = "VIRTUAL" ] && [ "$HYPERVISOR" = "VMware" ]; then
-        vmsb=$(echo $hbas | fgrep -i "vmware sata ahci" | head -1 | awk '{ print $1 }')
+    # if we cannot find usb disk, the boot disk must be intended for SATABOOT
+    if [ $(ls -la /sys/block/sd* | fgrep "/usb" | wc -l) -eq 0 ]; then
+        loaderdisk=$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)
+        sbpci=$(ls -la /sys/block/$loaderdisk | awk -F"/ata" '{print $1}' | awk -F"/" '{print $NF}' | cut --complement -f1 -d:)
     fi
 
-    # loop through controllers
-    for hbatext in "${hbas[@]}"; do
-        hba="$(echo $hbatext | awk -F" " '{print $1}')"
-        # get attached devices
-        ports=$(lsscsi -Nv | fgrep "$hba" | wc -l)
-        echo "Found \"$hbatext\" ($ports drive(s) connected)"
-        # is it the sataboot controller?
-        if [ "$hba" = "$vmsb" ]; then
-            if [ -z "$sataportmap" ]; then
-                echo "Running on VMware. Reserving this controller for SATABOOT and mapping loader after maxdisks $maxdisks"
-            else
-                echo "WARNING: first controller should be virtual SATA attached to the loader dev. SATABOOT will probably fail!"
-            fi
-            [ ${ports} -gt 1 ] && echo "NOTE: Additional devices are attached. These will be inaccessible!"
+    # get all SATA controllers PCI class 106
+    # 100 = SCSI, 104 = RAIDHBA, 107 = SAS - none of these appear to honor sataportmap/diskidxmap
+    pcis=$(lspci -d ::106 | awk '{print $1}')
+
+    # loop through controllers in correct order
+    for pci in $pcis; do
+        # get attached block devices (exclude CD-ROMs)
+        ports=$(ls -la /sys/block | fgrep "$pci" | grep -v "sr.$" | wc -l)
+        echo -e "\nFound \"$(lspci -s $pci | sed "s/SATA controller: //")\""
+        echo -n "$ports drive(s) connected. "
+
+        if [ "$pci" = "$sbpci" ]; then
+            # sataboot controller? if so it has to be mapped as first controller (we think)
+            echo "SATABOOT detected. Mapping loader dev after maxdisks $maxdisks"
+            [ ${ports} -gt 1 ] && echo "WARNING: Additional devices are attached. These will be inaccessible!"
             sataportmap=$sataportmap"1"
             diskidxmap=$diskidxmap$(printf "%02x" $maxdisks)
         else
-            # not SATABOOT controller
-            echo -n "How many ports should be mapped for this controller? [0-9] <$ports> "
-            read newports
-            if [ ! -z $newports ]; then
-                ports=$newports
-                if ! [ "$ports" -eq "$ports" ] 2>/dev/null; then
-                    echo "Non-numeric, overridden to 0"
-                    ports=0
-                fi
-            fi
-            if [ $ports -gt 9 ]; then
-                echo "WARNING: more than 9 ports per controller is technically unsupported and may affect stability"
-                let ports=$ports+48
-                portchar=$(printf \\$(printf "%o" $ports))
+            if [ "$pci" = "00:1f.2" ] && [ "$HYPERVISOR" = "KVM" ]; then
+                # KVM q35 bogus controller?
+                echo "Reserving and disabling KVM q35 hardware model bogus controller"
+                # is there an issue of mapping overlap between SATABOOT and this?
+                sataportmap=$sataportmap"1"
+                diskidxmap=$diskidxmap$(printf "%02x" $maxdisks)
             else
-                portchar=$ports
+                echo -n "How many ports does this controller have? [0-9] <$ports> "
+                read newports
+                if [ ! -z $newports ]; then
+                    ports=$newports
+                    if ! [ "$ports" -eq "$ports" ] 2>/dev/null; then
+                        echo "Non-numeric, overridden to 0"
+                        ports=0
+                    fi
+                fi
+                if [ $ports -gt 9 ]; then
+                    echo "WARNING: specifying more than 9 ports per controller is unsupported and may affect stability"
+                    let ports=$ports+48
+                    portchar=$(printf \\$(printf "%o" $ports))
+                else
+                    portchar=$ports
+                fi
+                sataportmap=$sataportmap$portchar
+                diskidxmap=$diskidxmap$(printf "%02x" $diskidxmapidx)
+                let diskidxmapidx=$diskidxmapidx+$ports
+                # warn if exceeding maxdisks
+                [ $diskidxmapidx -gt $maxdisks ] && echo "WARNING: the total number of mapped ports exceeds maxdisks $maxdisks"
             fi
-            sataportmap=$sataportmap$portchar
-            diskidxmap=$diskidxmap$(printf "%02x" $diskidxmapidx)
-            let diskidxmapidx=$diskidxmapidx+$ports
-            # warn if exceeding maxdisks
-            [ $diskidxmapidx -gt $maxdisks ] && echo "WARNING: number of mapped ports exceed maxdisks $maxdisks"
         fi
-        echo
     done
 
+    echo -e "\nRecommended settings:"
     echo "SataPortMap=$sataportmap"
     echo "DiskIdxMap=$diskidxmap"
 
@@ -1183,7 +1181,6 @@ function satamap() {
     else
         echo "OK remember to update manually by editing user_config.json file"
     fi
-
 }
 
 function usbidentify() {

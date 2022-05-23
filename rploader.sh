@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220522
-# Version : 0.7.1.6
+# Date : 220523
+# Version : 0.7.1.7
 #
 #
 # User Variables :
 
-rploaderver="0.7.1.6"
+rploaderver="0.7.1.7"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -45,7 +45,8 @@ function history() {
     0.7.1.3 Added the option to create JUN mod loader (By Jumkey)
     0.7.1.4 Added the use of the additional custom_config_jun.json for JUN mod loader creation
     0.7.1.5 Updated satamap function to support higher the 9 port counts per HBA.
-    0.7.1.6 Updated satamap function to to fix the broken q35 KVM controller, and to stop scanning for CD-ROM's
+    0.7.1.6 Updated satamap function to fix the broken q35 KVM controller, and to stop scanning for CD-ROM's
+    0.7.1.7 Updated serialgen function to include the option for using the realmac
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1252,25 +1253,38 @@ function usbidentify() {
 
 function serialgen() {
 
+    shift 1
+
+    [ "$2" == "realmac" ] && let keepmac=1 || let keepmac=0
+
     if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ]; then
         serial="$(generateSerial $1)"
         mac="$(generateMacAddress $1)"
+        realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}')
         echo "Serial Number for Model : $serial"
         echo "Mac Address for Model $1 : $mac "
+        [ $keepmac -eq 1 ] && echo "Real Mac Address : $realmac"
+        [ $keepmac -eq 1 ] && echo "Notice : realmac option is requested, real mac will be used"
 
         echo "Should i update the user_config.json with these values ? [Yy/Nn]"
         read answer
         if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
             # sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"," user_config.json
             json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
-            macaddress=$(echo $mac | sed -s 's/://g')
+
+            if [ $keepmac -eq 1 ]; then
+                macaddress=$(echo $realmac | sed -s 's/://g')
+            else
+                macaddress=$(echo $mac | sed -s 's/://g')
+            fi
+
             json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
             # sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"," user_config.json
         else
             echo "OK remember to update manually by editing user_config.json file"
         fi
     else
-        echo "Error : $2 is not an available model for serial number generation. "
+        echo "Error : $1 is not an available model for serial number generation. "
         echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+"
     fi
 
@@ -1605,6 +1619,8 @@ Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, s
 - serialgen:    Generates a serial number and mac address for the following platforms 
 
                 DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+
+
+                options : realmac , keeps the real mac of interface eth0
 
 - identifyusb:  Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
 
@@ -2019,6 +2035,7 @@ function getvars() {
     local_cache="/mnt/${tcrppart}/auxfiles"
 
     [ ! -d ${local_cache} ] && sudo mkdir -p ${local_cache}
+    [ -h /home/tc/custom-module ] && unlink /home/tc/custom-module
     [ ! -h /home/tc/custom-module ] && sudo ln -s $local_cache /home/tc/custom-module
 
     if [ -z "$TARGET_PLATFORM" ] || [ -z "$TARGET_VERSION" ] || [ -z "$TARGET_REVISION" ]; then
@@ -2363,7 +2380,7 @@ listmods)
     ;;
 
 serialgen)
-    serialgen $2
+    serialgen $@
     ;;
 
 interactive)

@@ -1104,7 +1104,7 @@ function satamap() {
     # creation, and the two functions could easily be integrated if desired.
 
     checkmachine
-    #checkforscsi
+    checkforscsi
 
     let diskidxmapidx=0
     sataportmap=""

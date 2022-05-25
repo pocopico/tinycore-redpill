@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220523
-# Version : 0.7.1.7
+# Version : 0.7.1.8
 #
 #
 # User Variables :
 
-rploaderver="0.7.1.7"
+rploaderver="0.7.1.8"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -47,6 +47,7 @@ function history() {
     0.7.1.5 Updated satamap function to support higher the 9 port counts per HBA.
     0.7.1.6 Updated satamap function to fix the broken q35 KVM controller, and to stop scanning for CD-ROM's
     0.7.1.7 Updated serialgen function to include the option for using the realmac
+    0.7.1.8 Updated satamap function to fine tune SATA port identification and identify SATABOOT
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1104,7 +1105,6 @@ function satamap() {
     # creation, and the two functions could easily be integrated if desired.
 
     checkmachine
-    checkforscsi
 
     let diskidxmapidx=0
     sataportmap=""
@@ -1125,25 +1125,30 @@ function satamap() {
     # loop through controllers in correct order
     for pci in $pcis; do
         # get attached block devices (exclude CD-ROMs)
-        ports=$(ls -la /sys/block | fgrep "$pci" | grep -v "sr.$" | wc -l)
+        ports=$(ls -la /sys/class/ata_device | fgrep "$pci" | wc -l)
+        drives=$(ls -la /sys/block | fgrep "$pci" | grep -v "sr.$" | wc -l)
         echo -e "\nFound \"$(lspci -s $pci | sed "s/SATA controller: //")\""
-        echo -n "$ports drive(s) connected. "
+        echo -n "Detected $ports ports/$drives drives. "
 
         if [ "$pci" = "$sbpci" ]; then
             # sataboot controller? if so it has to be mapped as first controller (we think)
-            echo "SATABOOT detected. Mapping loader dev after maxdisks $maxdisks"
-            [ ${ports} -gt 1 ] && echo "WARNING: Additional devices are attached. These will be inaccessible!"
+            echo "SATABOOT detected. Mapping loader dev after maxdisks"
+            [ ${drives} -gt 1 ] && echo "WARNING: Additional devices are attached. These will be inaccessible!"
             sataportmap=$sataportmap"1"
-            diskidxmap=$diskidxmap$(printf "%02x" $maxdisks)
+            diskidxmap=$diskidxmap$(printf "%02X" $maxdisks)
         else
             if [ "$pci" = "00:1f.2" ] && [ "$HYPERVISOR" = "KVM" ]; then
                 # KVM q35 bogus controller?
-                echo "Reserving and disabling KVM q35 hardware model bogus controller"
-                # is there an issue of mapping overlap between SATABOOT and this?
+                echo "Reserving and disabling KVM q35 bogus controller"
                 sataportmap=$sataportmap"1"
-                diskidxmap=$diskidxmap$(printf "%02x" $maxdisks)
+                diskidxmap=$diskidxmap$(printf "%02X" $maxdisks)
             else
-                echo -n "How many ports does this controller have? [0-9] <$ports> "
+                # handle VMware insane port count
+                if [ "$HYPERVISOR" = "VMware" ] && [ $ports -eq 30 ]; then
+                    echo "Setting 8 VMware virtual ports for compatibility with typical systems"
+                    ports=8
+                fi
+                echo -n "Override # of ports or ENTER to accept <$ports> "
                 read newports
                 if [ ! -z $newports ]; then
                     ports=$newports
@@ -1163,10 +1168,17 @@ function satamap() {
                 diskidxmap=$diskidxmap$(printf "%02x" $diskidxmapidx)
                 let diskidxmapidx=$diskidxmapidx+$ports
                 # warn if exceeding maxdisks
-                [ $diskidxmapidx -gt $maxdisks ] && echo "WARNING: the total number of mapped ports exceeds maxdisks $maxdisks"
+                [ $diskidxmapidx -gt $maxdisks ] && echo "WARNING: the total number of mapped ports exceeds maxdisks"
             fi
         fi
     done
+
+    # handle no assigned SATA ports affecting SCSI mapping problem
+    if [ $diskidxmapidx -eq 0 ]; then
+        echo "No SATA ports mapped. Setup for compatibility with SCSI/SAS controller mapping."
+        [ -z $sataportmap ] && sataportmap="1"
+        diskidxmap=$diskidxmap"00"
+    fi
 
     echo -e "\nRecommended settings:"
     echo "SataPortMap=$sataportmap"

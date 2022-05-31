@@ -1623,7 +1623,7 @@ Available platform versions:
 ----------------------------------------------------------------------------------------
 $(getPlatforms)
 ----------------------------------------------------------------------------------------
-Check global_settings.json for settings.
+Check custom_config.json for platform settings.
 EOF
 }
 
@@ -1718,7 +1718,7 @@ Available platform versions:
 ----------------------------------------------------------------------------------------
 $(getPlatforms)
 ----------------------------------------------------------------------------------------
-Check global_settings.json for settings.
+Check custom_config.json for platform settings.
 EOF
 
 }

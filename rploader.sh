@@ -1,22 +1,23 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220531
-# Version : 0.7.1.9
+# Date : 220601
+# Version : 0.8.0.0
 #
 #
 # User Variables :
 
-rploaderver="0.7.1.9"
-rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
-rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
+rploaderver="0.8.0.0"
+build="main"
+rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
+rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
 
-redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
-modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
-modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modules.alias.4.json.gz"
-modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/modules.alias.3.json.gz"
-dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/dtc"
-dtsfiles="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main"
+redpillextension="https://github.com/pocopico/rp-ext/raw/$build/redpill/rpext-index.json"
+modextention="https://github.com/pocopico/rp-ext/raw/$build/rpext-index.json"
+modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.4.json.gz"
+modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.3.json.gz"
+dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/dtc"
+dtsfiles="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build"
 timezone="UTC"
 ntpserver="pool.ntp.org"
 
@@ -49,6 +50,7 @@ function history() {
     0.7.1.7 Updated serialgen function to include the option for using the realmac
     0.7.1.8 Updated satamap function to fine tune SATA port identification and identify SATABOOT
     0.7.1.9 Updated patchdtc function to fix wrong port identification for VMware hosted systems
+    0.8.0.0 Stable version. All new features will be moved to develop repo
     --------------------------------------------------------------------------------------
 EOF
 
@@ -474,7 +476,7 @@ function postupdate() {
 
         echo "bspatch does not exist, bringing over from repo"
 
-        curl --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/bspatch" -O
+        curl --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/bspatch" -O
 
         chmod 777 bspatch
         sudo mv bspatch /usr/local/bin/
@@ -1603,6 +1605,28 @@ EOF
 
 }
 
+function showsyntax() {
+    cat <<EOF
+$(basename ${0})
+
+Version : $rploaderver
+----------------------------------------------------------------------------------------
+
+Usage: ${0} <action> <platform version> <static or compile module> [extension manager arguments]
+
+Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, patchdtc, 
+satamap, backup, backuploader, restoreloader, restoresession, mountdsmroot, postupdate,
+mountshare, version, help
+
+----------------------------------------------------------------------------------------
+Available platform versions:
+----------------------------------------------------------------------------------------
+$(getPlatforms)
+----------------------------------------------------------------------------------------
+Check global_settings.json for settings.
+EOF
+}
+
 function showhelp() {
     cat <<EOF
 $(basename ${0})
@@ -1611,56 +1635,82 @@ Version : $rploaderver
 ----------------------------------------------------------------------------------------
 Usage: ${0} <action> <platform version> <static or compile module> [extension manager arguments]
 
-Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, satamap, mountshare
+Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, patchdtc, 
+satamap, backup, backuploader, restoreloader, restoresession, mountdsmroot, postupdate, 
+mountshare, version, help 
 
-- build:        Build the 💊 RedPill LKM and update the loader image for the specified 
-                platform version and update current loader.
+- build <platform> <option> : 
+  Build the 💊 RedPill LKM and update the loader image for the specified platform version and update
+  current loader.
 
-- ext:          Manage extensions, options go after platform (add/force_add/info/remove/update/cleanup/auto)
+  Valid Options:     static/compile/manual 
+  
+- ext <platform> <option> <URL> 
+  Manage extensions using redpill extension manager. 
 
-                example: 
+  Valid Options:  add/force_add/info/remove/update/cleanup/auto . Options after platform 
+  
+  Example: 
+  rploader.sh ext apollolake-7.0.1-42218 add https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/rpext-index.json
+  or for auto detect use 
+  rploader.sh ext apollolake-7.0.1-42218 auto 
+  
+- download <platform> :
+  Download redpill sources only
+  
+- clean :
+  Removes all cached and downloaded files and starts over clean
+  
+- update : 
+  Checks github repo for latest version of rploader, and prompts you download and overwrite
+  
+- listmods <platform>:
+  Tries to figure out any required extensions. This usually are device modules
+  
+- serialgen <synomodel> <option> :
+  Generates a serial number and mac address for the following platforms 
+  DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+
+  
+  Valid Options :  realmac , keeps the real mac of interface eth0
+  
+- identifyusb :    
+  Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
+  
+- patchdtc :       
+  Tries to identify and patch your dtc model for your disk and nvme devices. If you want to have 
+  your manually edited dts file used convert it to dtb and place it under /home/tc/custom-modules
+  
+- satamap :
+  Tries to identify your SataPortMap and DiskIdxMap values and updates the user_config.json file 
+  
+- backup :
+  Backup and make changes /home/tc changed permanent to your loader disk. Next time you boot,
+  your /home will be restored to the current state.
+  
+- backuploader :
+  Backup current loader partitions to your TCRP partition
+  
+- restoreloader :
+  Restore current loader partitions from your TCRP partition
+  
+- restoresession :
+  Restore last user session files. (extensions and user_config.json)
+  
+- mountdsmroot :
+  Mount DSM root for manual intervention on DSM root partition
+  
+- postupdate :
+  Runs a postupdate process to recreate your rd.gz, zImage and custom.gz for junior to match root
+  
+- mountshare :
+  Mounts a remote CIFS working directory
 
-                rploader.sh ext apollolake-7.0.1-42218 add https://raw.githubusercontent.com/pocopico/rp-ext/master/e1000/rpext-index.json
+- version <option>:
+  Prints rploader version and if the history option is passed then the version history is listed.
 
-                or for auto detect use 
-
-                rploader.sh ext apollolake-7.0.1-42218 auto 
-
-- download:     Download redpill sources only
-
-- clean:        Removes all cached files and starts over
-
-- update:       Checks github repo for latest version of rploader 
-
-- listmods:     Tries to figure out required extensions
-
-- serialgen:    Generates a serial number and mac address for the following platforms 
-
-                DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+
-
-                options : realmac , keeps the real mac of interface eth0
-
-- identifyusb:  Tries to identify your loader usb stick VID:PID and updates the user_config.json file 
-
-- patchdtc:     Tries to identify and patch your dtc model for your disk and nvme devices.
-
-- satamap:      Tries to identify your SataPortMap and DiskIdxMap values and updates the user_config.json file 
-
-- backup:       Backup and make changes /home/tc changed permanent to your loader disk
-
-- backuploader: Backup current loader partitions to your TCRP partition
-
-- restoreloader:Restore current loader partitions from your TCRP partition
-
-- restoresession: Restore last user session files. (extensions and user_config.json)
-
-- mountdsmroot: Mount DSM root for manual intervention on DSM root partition
-
-- postupdate:   Runs a postupdate process to recreate your rd.gz, zImage and custom.gz for junior to match root
-
-- mountshare:   Mounts a remote CIFS working directory
-
-- version:      Prints rploader version and if the history option is passed then the version history is listed.
+  Valid Options : history, shows rploader release history.
+  
+- help:           Show this page
 
 Version : $rploaderver
 ----------------------------------------------------------------------------------------
@@ -1987,7 +2037,7 @@ EOF
 
 function getlatestrploader() {
 
-    echo -n "Checking if a newer version exists on the repo -> "
+    echo -n "Checking if a newer version exists on the $build repo -> "
 
     curl -s --location "$rploaderfile" --output latestrploader.sh
     curl -s --location "$modalias3" --output modules.alias.3.json.gz
@@ -2405,7 +2455,7 @@ interactive)
     if [ -f interactive.sh ]; then
         . ./interactive.sh
     else
-        curl --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/main/interactive.sh" --output interactive.sh
+        curl --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/$build/interactive.sh" --output interactive.sh
         . ./interactive.sh
         exit 99
     fi
@@ -2461,8 +2511,12 @@ installapache)
 version)
     version $@
     ;;
-*)
+help)
     showhelp
+    exit 99
+    ;;
+*)
+    showsyntax
     exit 99
     ;;
 

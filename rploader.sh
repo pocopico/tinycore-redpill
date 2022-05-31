@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220523
-# Version : 0.7.1.8
+# Date : 220531
+# Version : 0.7.1.9
 #
 #
 # User Variables :
 
-rploaderver="0.7.1.8"
+rploaderver="0.7.1.9"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/main/"
 
@@ -48,6 +48,7 @@ function history() {
     0.7.1.6 Updated satamap function to fix the broken q35 KVM controller, and to stop scanning for CD-ROM's
     0.7.1.7 Updated serialgen function to include the option for using the realmac
     0.7.1.8 Updated satamap function to fine tune SATA port identification and identify SATABOOT
+    0.7.1.9 Updated patchdtc function to fix wrong port identification for VMware hosted systems
     --------------------------------------------------------------------------------------
 EOF
 
@@ -944,7 +945,11 @@ function patchdtc() {
 
     for disk in $localdisks; do
         diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}' | sed 's/,*$//')
-        diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target//;p;}' | awk -F: '{print $1}')
+        if [ $HYPERVISOR == "VMware" ]; then
+            diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target3//;p;}' | awk -F: '{print $1}')
+        else
+            diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target//;p;}' | awk -F: '{print $1}')
+        fi
 
         echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot with portnumber $diskport"
         if [ "${dtbfile}" == "ds920p" ]; then

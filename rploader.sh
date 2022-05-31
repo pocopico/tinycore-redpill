@@ -8,7 +8,7 @@
 # User Variables :
 
 rploaderver="0.8.0.0"
-build="main"
+build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
 

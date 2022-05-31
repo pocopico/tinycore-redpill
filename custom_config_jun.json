@@ -90,7 +90,7 @@
       },
       "add_extensions": [
         {
-          "redpill-dtb": "https://github.com/pocopico/redpill-load/raw/master/redpill-dtb/rpext-index.json",
+          "redpill-dtb-static" : "https://github.com/pocopico/rp-ext/raw/main/redpill-dtb-static/rpext-index.json",
           "redpill-misc": "https://github.com/pocopico/redpill-load/raw/master/redpill-misc/rpext-index.json"
         }
       ]
@@ -184,7 +184,7 @@
       },
       "add_extensions": [
         {
-          "redpill-dtb": "https://github.com/pocopico/redpill-load/raw/master/redpill-dtb/rpext-index.json",
+          "redpill-dtb-static" : "https://github.com/pocopico/rp-ext/raw/main/redpill-dtb-static/rpext-index.json",
           "redpill-misc": "https://github.com/pocopico/redpill-load/raw/master/redpill-misc/rpext-index.json"
         }
       ]

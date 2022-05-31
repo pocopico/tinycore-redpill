@@ -947,7 +947,7 @@ function patchdtc() {
     for disk in $localdisks; do
         diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}' | sed 's/,*$//')
         if [ "$HYPERVISOR" == "VMware" ]; then
-            diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target3//;p;}' | awk -F: '{print $1}')
+            diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target[1-9]//;p;}' | awk -F: '{print $1}')
         else
             diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target//;p;}' | awk -F: '{print $1}')
         fi

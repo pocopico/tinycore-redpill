@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220601
-# Version : 0.8.0.0
+# Version : 0.9.0.0
 #
 #
 # User Variables :
 
-rploaderver="0.8.0.0"
+rploaderver="0.9.0.0"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -51,6 +51,7 @@ function history() {
     0.7.1.8 Updated satamap function to fine tune SATA port identification and identify SATABOOT
     0.7.1.9 Updated patchdtc function to fix wrong port identification for VMware hosted systems
     0.8.0.0 Stable version. All new features will be moved to develop repo
+    0.9.0.0 Development version. Moving all new features to development build
     --------------------------------------------------------------------------------------
 EOF
 

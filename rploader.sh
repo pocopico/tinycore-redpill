@@ -472,26 +472,33 @@ function postupdate() {
     if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
 
         echo "Extracting redpill ramdisk" && cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
+        . ./etc.defaults/VERSION && echo "The new smallupdate version will be  : ${productversion}-${buildnumber}-${smallfixnumber}"
 
-        echo "Recreating ramdisk " && find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma >../rd.gz
+        echo -n "Do you want to use this for the loader ? [yY/nN] : "
+        read answer
 
-        cd ..
+        if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
 
-        echo "Adding fake sign" && dd if=/dev/zero of=rd.gz bs=68 count=1 conv=notrunc oflag=append
+            echo "Recreating ramdisk " && find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma >../rd.gz
 
-        echo "Putting ramdisk back to the loader partition ${loaderdisk}1" sudo cp -f rd.gz /mnt/${loaderdisk}1/rd.gz
+            cd ..
 
-        echo "Removing temp ramdisk space " && rm -rf ramdisk
+            echo "Adding fake sign" && dd if=/dev/zero of=rd.gz bs=68 count=1 conv=notrunc oflag=append
 
-        echo "Done"
-    else
+            echo "Putting ramdisk back to the loader partition ${loaderdisk}1" && sudo cp -f rd.gz /mnt/${loaderdisk}1/rd.gz
 
-        exit 0
+            echo "Removing temp ramdisk space " && rm -rf ramdisk
+
+            echo "Done"
+        else
+
+            exit 0
+
+        fi
 
     fi
 
 }
-
 function postupdatev1() {
 
     echo "Mounting root to get the latest dsmroot patch in /.syno/patch "

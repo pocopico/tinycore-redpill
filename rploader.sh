@@ -463,7 +463,7 @@ function postupdate() {
 
     cd /home/tc/ramdisk
 
-    echo "Extracting update ramdisk" && unlzma -c /mnt/${loaderdisk}2/rd.gz | cpio -idm 2>&1 >/dev/null
+    echo "Extracting update ramdisk" && sudo unlzma -c /mnt/${loaderdisk}2/rd.gz | cpio -idm 2>&1 >/dev/null
     . ./etc.defaults/VERSION && echo "Found Version : ${productversion}-${buildnumber}-${smallfixnumber}"
 
     echo -n "Do you want to use this for the loader ? [yY/nN] : "
@@ -471,7 +471,7 @@ function postupdate() {
 
     if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
 
-        echo "Extracting redpill ramdisk" && cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
+        echo "Extracting redpill ramdisk" && sudo cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
         . ./etc.defaults/VERSION && echo "The new smallupdate version will be  : ${productversion}-${buildnumber}-${smallfixnumber}"
 
         echo -n "Do you want to use this for the loader ? [yY/nN] : "
@@ -479,11 +479,11 @@ function postupdate() {
 
         if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
 
-            echo "Recreating ramdisk " && find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma >../rd.gz
+            echo "Recreating ramdisk " && sudo find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma >../rd.gz
 
             cd ..
 
-            echo "Adding fake sign" && dd if=/dev/zero of=rd.gz bs=68 count=1 conv=notrunc oflag=append
+            echo "Adding fake sign" && sudo dd if=/dev/zero of=rd.gz bs=68 count=1 conv=notrunc oflag=append
 
             echo "Putting ramdisk back to the loader partition ${loaderdisk}1" && sudo cp -f rd.gz /mnt/${loaderdisk}1/rd.gz
 

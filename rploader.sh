@@ -503,7 +503,14 @@ function postupdate() {
 
     cd /home/tc/ramdisk
 
-    echo "Extracting update ramdisk" && sudo unlzma -c /mnt/${loaderdisk}2/rd.gz | cpio -idm 2>&1 >/dev/null
+    echo "Extracting update ramdisk"
+
+    if [ $(od /mnt/${loaderdisk}2/rd.gz | head -1 | awk '{print $2}') == "000135" ]; then
+        sudo unlzma -c /mnt/${loaderdisk}2/rd.gz | cpio -idm 2>&1 >/dev/null
+    else
+        sudo cat /mnt/${loaderdisk}2/rd.gz | cpio -idm 2>&1 >/dev/null
+    fi
+
     . ./etc.defaults/VERSION && echo "Found Version : ${productversion}-${buildnumber}-${smallfixnumber}"
 
     echo -n "Do you want to use this for the loader ? [yY/nN] : "
@@ -511,7 +518,14 @@ function postupdate() {
 
     if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
 
-        echo "Extracting redpill ramdisk" && sudo cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
+        echo "Extracting redpill ramdisk"
+
+        if [ $(od /mnt/${loaderdisk}1/rd.gz | head -1 | awk '{print $2}') == "000135" ]; then
+            sudo unlzma -c /mnt/${loaderdisk}1/rd.gz | cpio -idm
+        else
+            sudo cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
+        fi
+
         . ./etc.defaults/VERSION && echo "The new smallupdate version will be  : ${productversion}-${buildnumber}-${smallfixnumber}"
 
         echo -n "Do you want to use this for the loader ? [yY/nN] : "

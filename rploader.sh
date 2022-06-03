@@ -466,19 +466,30 @@ function postupdate() {
 
     echo "Extracting update ramdisk" && unlzma -c /mnt/${loaderdisk}2/rd.gz | cpio -idm 2>&1 >/dev/null
     . ./etc.defaults/VERSION && echo "Found Version : ${productversion}-${buildnumber}-${smallfixnumber}"
-    echo "Extracting redpill ramdisk" && cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
 
-    echo "Recreating ramdisk " && find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma >../rd.gz
+    echo -n "Do you want to use this for the loader ? [yY/nN] : "
+    read answer
 
-    cd ..
+    if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
 
-    echo "Adding fake sign" && dd if=/dev/zero of=rd.gz bs=68 count=1 conv=notrunc oflag=append
+        echo "Extracting redpill ramdisk" && cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
 
-    echo "Putting ramdisk back to the loader partition ${loaderdisk}1" sudo cp -f rd.gz /mnt/${loaderdisk}1/rd.gz
+        echo "Recreating ramdisk " && find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma >../rd.gz
 
-    echo "Removing temp ramdisk space " && rm -rf ramdisk
+        cd ..
 
-    echo "Done"
+        echo "Adding fake sign" && dd if=/dev/zero of=rd.gz bs=68 count=1 conv=notrunc oflag=append
+
+        echo "Putting ramdisk back to the loader partition ${loaderdisk}1" sudo cp -f rd.gz /mnt/${loaderdisk}1/rd.gz
+
+        echo "Removing temp ramdisk space " && rm -rf ramdisk
+
+        echo "Done"
+    else
+
+        exit 0
+
+    fi
 
 }
 

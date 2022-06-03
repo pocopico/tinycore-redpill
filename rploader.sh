@@ -511,7 +511,7 @@ function postupdate() {
 
     if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
 
-        echo "Extracting redpill ramdisk" && sudu cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
+        echo "Extracting redpill ramdisk" && sudo cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
         . ./etc.defaults/VERSION && echo "The new smallupdate version will be  : ${productversion}-${buildnumber}-${smallfixnumber}"
 
         echo -n "Do you want to use this for the loader ? [yY/nN] : "

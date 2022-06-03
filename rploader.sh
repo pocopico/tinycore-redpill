@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220601
-# Version : 0.9.0.0
+# Version : 0.9.0.1
 #
 #
 # User Variables :
 
-rploaderver="0.9.0.0"
+rploaderver="0.9.0.1"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -52,6 +52,7 @@ function history() {
     0.7.1.9 Updated patchdtc function to fix wrong port identification for VMware hosted systems
     0.8.0.0 Stable version. All new features will be moved to develop repo
     0.9.0.0 Development version. Moving all new features to development build
+    0.9.0.1 Updated postupdate to facilitate update to update2
     --------------------------------------------------------------------------------------
 EOF
 
@@ -451,6 +452,37 @@ function installapache() {
 }
 
 function postupdate() {
+
+    loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+
+    cd /home/tc
+
+    echo "Creating temp ramdisk space" && mkdir /home/tc/ramdisk
+
+    echo "Mounting partition ${loaderdisk}1}" && sudo mount /dev/${loaderdisk}1
+    echo "Mounting partition ${loaderdisk}2}" && sudo mount /dev/${loaderdisk}2
+
+    cd /home/tc/ramdisk
+
+    echo "Extracting update ramdisk" && unlzma -c /mnt/${loaderdisk}2/rd.gz | cpio -idm 2>&1 >/dev/null
+    . ./etc.defaults/VERSION && echo "Found Version : ${productversion}-${buildnumber}-${smallfixnumber}"
+    echo "Extracting redpill ramdisk" && cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
+
+    echo "Recreating ramdisk " && find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma >../rd.gz
+
+    cd ..
+
+    echo "Adding fake sign" && dd if=/dev/zero of=rd.gz bs=68 count=1 conv=notrunc oflag=append
+
+    echo "Putting ramdisk back to the loader partition ${loaderdisk}1" sudo cp -f rd.gz /mnt/${loaderdisk}1/rd.gz
+
+    echo "Removing temp ramdisk space " && rm -rf ramdisk
+
+    echo "Done"
+
+}
+
+function postupdatev1() {
 
     echo "Mounting root to get the latest dsmroot patch in /.syno/patch "
 

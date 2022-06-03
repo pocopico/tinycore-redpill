@@ -1,19 +1,19 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220601
-# Version : 0.9.0.1
+# Date : 220603
+# Version : 0.9.0.2
 #
 #
 # User Variables :
 
-rploaderver="0.9.0.1"
+rploaderver="0.9.0.2"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
 
-redpillextension="https://github.com/pocopico/rp-ext/raw/$build/redpill/rpext-index.json"
-modextention="https://github.com/pocopico/rp-ext/raw/$build/rpext-index.json"
+redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
+modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.4.json.gz"
 modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.3.json.gz"
 dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/dtc"
@@ -53,8 +53,47 @@ function history() {
     0.8.0.0 Stable version. All new features will be moved to develop repo
     0.9.0.0 Development version. Moving all new features to development build
     0.9.0.1 Updated postupdate to facilitate update to update2
+    0.9.0.2 Added system monitor function 
     --------------------------------------------------------------------------------------
 EOF
+
+}
+
+function monitor() {
+
+    loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+    mount /dev/${loaderdisk}1
+    mount /dev/${loaderdisk}2
+
+    while true; do
+        clear
+        echo -e "-------------------------------System Information----------------------------"
+        echo -e "Hostname:\t\t"$(hostname) "uptime:\t\t\t"$(uptime | awk '{print $3,$4}' | sed 's/,//')
+        echo -e "Manufacturer:\t\t"$(cat /sys/class/dmi/id/chassis_vendor) "Product Name:\t\t"$(cat /sys/class/dmi/id/product_name)
+        echo -e "Version:\t\t"$(cat /sys/class/dmi/id/product_version)
+        echo -e "Serial Number:\t\t"$(sudo cat /sys/class/dmi/id/product_serial)
+        echo -e "Machine Type:\t\t"$(
+            vserver=$(lscpu | grep Hypervisor | wc -l)
+            if [ $vserver -gt 0 ]; then echo "VM"; else echo "Physical"; fi
+        ) "Operating System:\t"$(grep PRETTY_NAME /etc/os-release | awk -F \= '{print $2}')
+        echo -e "Kernel:\t\t\t"$(uname -r)
+        echo -e ""$(lscpu | head -1)"\t" "Processor Name:\t\t"$(awk -F':' '/^model name/ {print $2}' /proc/cpuinfo | uniq | sed -e 's/^[ \t]*//')
+        echo -e "Active Users:\t\t"$(who -u | cut -d ' ' -f1 | grep -v USER | xargs -n1)
+        echo -e "System Main IP:\t\t"$(ifconfig | grep inet | awk '{print $2}' | awk -F \: '{print $2}')
+        [ $(ps -ef | grep -i sshd | wc -l) -gt 0 ] && echo -e "SSHD connections ready" || echo -e "SSHD connections not ready"
+        echo -e "-------------------------------Loader boot entries------------------------------"
+        grep -i menuentry /mnt/${loaderdisk}1/boot/grub/grub.cfg | awk -F \' '{print $2}'
+        echo -e "-------------------------------CPU/Memory Usage------------------------------"
+        echo -e "Memory Usage:\t"$(free | awk '/Mem/{printf("%.2f%"), $3/$2*100}')
+        echo -e "Swap Usage:\t"$(free | awk '/Swap/{printf("%.2f%"), $3/$2*100}')
+        echo -e "CPU Usage:\t"$(cat /proc/stat | awk '/cpu/{printf("%.2f%\n"), ($2+$4)*100/($2+$4+$5)}' | awk '{print $0}' | head -1)
+        echo -e "-------------------------------Disk Usage >80%-------------------------------"
+        df -Ph | grep -v loop
+        [ $(lscpu | grep Hypervisor | wc -l) -gt 0 ] && echo "$(hostname) is a VM"
+
+        echo "Press ctrl-c to exti"
+        sleep 10
+    done
 
 }
 
@@ -473,21 +512,29 @@ function postupdate() {
     if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
 
         echo "Extracting redpill ramdisk" && cat /mnt/${loaderdisk}1/rd.gz | cpio -idm
+        . ./etc.defaults/VERSION && echo "The new smallupdate version will be  : ${productversion}-${buildnumber}-${smallfixnumber}"
 
-        echo "Recreating ramdisk " && find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma >../rd.gz
+        echo -n "Do you want to use this for the loader ? [yY/nN] : "
+        read answer
 
-        cd ..
+        if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
 
-        echo "Adding fake sign" && dd if=/dev/zero of=rd.gz bs=68 count=1 conv=notrunc oflag=append
+            echo "Recreating ramdisk " && find . 2>/dev/null | cpio -o -H newc -R root:root | xz -9 --format=lzma >../rd.gz
 
-        echo "Putting ramdisk back to the loader partition ${loaderdisk}1" sudo cp -f rd.gz /mnt/${loaderdisk}1/rd.gz
+            cd ..
 
-        echo "Removing temp ramdisk space " && rm -rf ramdisk
+            echo "Adding fake sign" && dd if=/dev/zero of=rd.gz bs=68 count=1 conv=notrunc oflag=append
 
-        echo "Done"
-    else
+            echo "Putting ramdisk back to the loader partition ${loaderdisk}1" && sudo cp -f rd.gz /mnt/${loaderdisk}1/rd.gz
 
-        exit 0
+            echo "Removing temp ramdisk space " && rm -rf ramdisk
+
+            echo "Done"
+        else
+
+            exit 0
+
+        fi
 
     fi
 
@@ -1660,7 +1707,7 @@ Usage: ${0} <action> <platform version> <static or compile module> [extension ma
 
 Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, patchdtc, 
 satamap, backup, backuploader, restoreloader, restoresession, mountdsmroot, postupdate,
-mountshare, version, help
+mountshare, version, monitor, help
 
 ----------------------------------------------------------------------------------------
 Available platform versions:
@@ -1681,7 +1728,7 @@ Usage: ${0} <action> <platform version> <static or compile module> [extension ma
 
 Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, patchdtc, 
 satamap, backup, backuploader, restoreloader, restoresession, mountdsmroot, postupdate, 
-mountshare, version, help 
+mountshare, version, monitor, help 
 
 - build <platform> <option> : 
   Build the 💊 RedPill LKM and update the loader image for the specified platform version and update
@@ -1753,6 +1800,9 @@ mountshare, version, help
   Prints rploader version and if the history option is passed then the version history is listed.
 
   Valid Options : history, shows rploader release history.
+
+- monitor 
+  Prints system statistics related to TCRP loader 
   
 - help:           Show this page
 
@@ -2558,6 +2608,10 @@ version)
 help)
     showhelp
     exit 99
+    ;;
+monitor)
+    monitor
+    exit 0
     ;;
 *)
     showsyntax

@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220603
-# Version : 0.8.0.1
+# Date : 220607
+# Version : 0.8.0.2
 #
 #
 # User Variables :
 
-rploaderver="0.8.0.1"
+rploaderver="0.8.0.2"
 build="main"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -52,6 +52,7 @@ function history() {
     0.7.1.9 Updated patchdtc function to fix wrong port identification for VMware hosted systems
     0.8.0.0 Stable version. All new features will be moved to develop repo
     0.8.0.1 Updated postupdate to facilitate update to update2
+    0.8.0.2 Updated satamap to support DUMMY PORT detection 
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1157,37 +1158,47 @@ function backup() {
 }
 
 function satamap() {
-    # This function will attempt to identify all SATA controllers and create sataportmap and diskidxmap.
-    # Since we cannot know how many ports are on the controllers, we ask the user for the desired number
-    # of disk ports to be mapped into DSM.
+
+    # This function identifies all SATA controllers and create a plausible sataportmap and diskidxmap.
     #
     # In the case of SATABOOT: While TinyCore suppresses the /dev/sd device servicing synoboot, the
     # controller still takes up a sataportmap entry. ThorGroup advised not to map the controller ports
-    # beyond the MaxDisks limit but there does not appear to be any harm in doing so - unless additional
-    # devices are connected along with SATABOOT. This will create a gap/empty first slot.
+    # beyond the MaxDisks limit, but there is no harm in doing so - unless additional devices are
+    # connected along with SATABOOT. This will create a gap/empty first slot.
     #
-    # By mapping the SATABOOT controller ports beyond MaxDisks, we force standardization of user data
-    # disks onto a secondary controller, and it's clear what the SATABOOT controller and device are
-    # being used for. Therefore, we must positively identify it, map it out, and ignore any other drives
-    # connected to it.
+    # By mapping the SATABOOT controller ports beyond MaxDisks like Jun loader, it forces data disks
+    # onto a secondary controller, and it's clear what the SATABOOT controller and device are being
+    # used for. The KVM q35 bogus controller is mapped in the same manner.
     #
-    # We need something similar to disable the bogus SATA controller in the KVM q35 hardware model.
+    # DUMMY ports (flagged by kernel as empty/non-functional, usually because hotplug is supported and
+    # not enabled, and no disk is attached are detected and alerted. Any DUMMY port visible to the
+    # DSM installer will result in a "SATA port disabled" message.
+    #
+    # SCSI/SAS and non-AHCI compliant SATA are unaffected by sataportmap and diskidxmap but a summary
+    # controller and drive report is provided in order to avoid user distress.
     #
     # This code was written with the intention of reusing the detection strategy for device tree
     # creation, and the two functions could easily be integrated if desired.
 
+#   add $2 arg to satamap invocation
+
     checkmachine
+    checkforscsi
 
     let diskidxmapidx=0
+    badportfail=false
     sataportmap=""
     diskidxmap=""
 
     maxdisks=$(jq -r ".synoinfo.maxdisks" user_config.json)
 
+    # look for dummy SATA flagged by kernel (bad ports)
+    dmys=$(dmesg | grep ": DUMMY$" | awk -F"] ata" '{print $2}' | awk -F: '{print $1}' | sort -n)
+
     # if we cannot find usb disk, the boot disk must be intended for SATABOOT
     if [ $(ls -la /sys/block/sd* | fgrep "/usb" | wc -l) -eq 0 ]; then
         loaderdisk=$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)
-        sbpci=$(ls -la /sys/block/$loaderdisk | awk -F"/ata" '{print $1}' | awk -F"/" '{print $NF}' | cut --complement -f1 -d:)
+        sbpci=$(ls -la /sys/block/$loaderdisk | awk -F"/ata" '{print $1}' | awk-F"/" '{print $NF}' | cut --complement -f1 -d:)
     fi
 
     # get all SATA controllers PCI class 106
@@ -1199,38 +1210,75 @@ function satamap() {
         # get attached block devices (exclude CD-ROMs)
         ports=$(ls -la /sys/class/ata_device | fgrep "$pci" | wc -l)
         drives=$(ls -la /sys/block | fgrep "$pci" | grep -v "sr.$" | wc -l)
-        echo -e "\nFound \"$(lspci -s $pci | sed "s/SATA controller: //")\""
+        echo -e "\nFound \"$(lspci -s $pci | sed "s/\ .*://")\""
         echo -n "Detected $ports ports/$drives drives. "
 
+        # look for bad ports on this controller
+        badports=""
+        for dmy in $dmys; do
+          badpci=$(ls -la /sys/class/ata_port/ata$dmy | awk -F"/ata$dmy/ata_port/" '{print $1}' | awk -F"/" '{print $NF}' | cut --complement -f1 -d:)
+          [ "$pci" = "$badpci" ] && badports=$(echo $badports$dmy" ")
+        done
+        # display the bad ports, referenced to controller port numbering
+        if [ ! -z "$badports" ]; then
+          # minmap is invalid with bad ports!
+          [ "$1" = "minmap" ] && badportfail=true
+          # get first port of PCI adapter with bad ports
+          badportbase=$(ls -la /sys/class/ata_port | fgrep "$badpci" | awk -F"/ata_port/ata" '{print $2}' | sort -n | head -1)
+          echo -n "Bad ports:"
+          for badport in $badports; do
+            let badport=$badport-$badportbase+1
+            echo -n " "$badport
+          done
+          echo -n ". "
+        fi
+        # SATABOOT controller? (if so, it has to be mapped as first controller, we think)
         if [ "$pci" = "$sbpci" ]; then
-            # sataboot controller? if so it has to be mapped as first controller (we think)
-            echo "SATABOOT detected. Mapping loader dev after maxdisks"
-            [ ${drives} -gt 1 ] && echo "WARNING: Additional devices are attached. These will be inaccessible!"
+            echo "SATABOOT drive detected, mapping it after maxdisks"
+            [ ${drives} -gt 1 ] && echo "WARNING: Non-SATABOOT drive(s) connected. Move them to another controller!"
             sataportmap=$sataportmap"1"
             diskidxmap=$diskidxmap$(printf "%02X" $maxdisks)
         else
             if [ "$pci" = "00:1f.2" ] && [ "$HYPERVISOR" = "KVM" ]; then
                 # KVM q35 bogus controller?
-                echo "Reserving and disabling KVM q35 bogus controller"
+                echo "KVM q35 bogus controller detected, mapping it after maxdisks"
                 sataportmap=$sataportmap"1"
                 diskidxmap=$diskidxmap$(printf "%02X" $maxdisks)
             else
-                # handle VMware insane port count
+                # handle VMware virtual SATA controller insane port count
                 if [ "$HYPERVISOR" = "VMware" ] && [ $ports -eq 30 ]; then
-                    echo "Setting 8 VMware virtual ports for compatibility with typical systems"
+                    echo "Defaulting 8 virtual ports for typical system compatibility"
                     ports=8
-                fi
-                echo -n "Override # of ports or ENTER to accept <$ports> "
-                read newports
-                if [ ! -z $newports ]; then
-                    ports=$newports
-                    if ! [ "$ports" -eq "$ports" ] 2>/dev/null; then
-                        echo "Non-numeric, overridden to 0"
-                        ports=0
+                else
+                    # if minmap and not vmware virtual sata, don't update sataportmap/diskidxmap
+                    if [ "$1" = "minmap" ]; then
+                        echo
+                        continue
                     fi
                 fi
+                # ask interactively if not minmap
+                if [ "$1" != "minmap" ]; then
+                    echo -n "Override # of ports or ENTER to accept <$ports> "
+                    read newports
+                    if [ ! -z $newports ]; then
+                        ports=$newports
+                        if ! [ "$ports" -eq "$ports" ] 2>/dev/null; then
+                            echo "Non-numeric, overridden to 0"
+                            ports=0
+                        fi
+                    fi
+                else
+                    echo
+                fi
+                # if badports are in the port range, set the fail flag
+                if [ ! -z "$badports" ]; then
+                  for badport in $badports; do
+                    let badport=$badport-$badportbase+1
+                    [ $ports -ge $badport ] && badportfail=true
+                  done
+                fi
                 if [ $ports -gt 9 ]; then
-                    echo "WARNING: specifying more than 9 ports per controller is unsupported and may affect stability"
+                    echo "WARNING: SataPortMap values >9 are experimental and may affect stability"
                     let ports=$ports+48
                     portchar=$(printf \\$(printf "%o" $ports))
                 else
@@ -1239,22 +1287,35 @@ function satamap() {
                 sataportmap=$sataportmap$portchar
                 diskidxmap=$diskidxmap$(printf "%02x" $diskidxmapidx)
                 let diskidxmapidx=$diskidxmapidx+$ports
-                # warn if exceeding maxdisks
-                [ $diskidxmapidx -gt $maxdisks ] && echo "WARNING: the total number of mapped ports exceeds maxdisks"
             fi
         fi
     done
 
+    # ports > maxdisks?
+    [ $diskidxmapidx -gt $maxdisks ] && echo "WARNING: mapped SATA port count exceeds maxdisks"
+
     # handle no assigned SATA ports affecting SCSI mapping problem
     if [ $diskidxmapidx -eq 0 ]; then
-        echo "No SATA ports mapped. Setup for compatibility with SCSI/SAS controller mapping."
+        echo -e "\nNo AHCI SATA ports mapped. Setting up compatibility for SCSI/SAS controller mappings."
         [ -z $sataportmap ] && sataportmap="1"
         diskidxmap=$diskidxmap"00"
     fi
 
-    echo -e "\nRecommended settings:"
+    # now advise on SCSI drives for user peace of mind
+    # 100 = SCSI, 104 = RAIDHBA, 107 = SAS - none of these honor sataportmap/diskidxmap
+    pcis=$((lspci -d ::100; lspci -d ::104; lspci -d ::107) | awk '{print $1}')
+    [ ! -z $pcis ] && echo
+    # loop through non-SATA controllers
+    for pci in $pcis; do
+        # get attached block devices (exclude CD-ROMs)
+        drives=$(ls -la /sys/block | fgrep "$pci" | grep -v "sr.$" | wc -l)
+        echo "Found SCSI/HBA \""$(lspci -s $pci | sed "s/\ .*://")"\" ($drives drives)"
+    done
+
+    echo -e "\nComputed settings:"
     echo "SataPortMap=$sataportmap"
     echo "DiskIdxMap=$diskidxmap"
+    [ "$badportfail" = true ] && echo -e "\nWARNING: Bad ports are mapped. The DSM installation will fail!"
 
     echo
     echo -n "Should i update the user_config.json with these values ? [Yy/Nn] "

@@ -2642,7 +2642,7 @@ patchdtc)
     ;;
 
 satamap)
-    satamap
+    satamap $2
     ;;
 
 backup)

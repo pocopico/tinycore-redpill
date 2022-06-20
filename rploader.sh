@@ -87,7 +87,7 @@ function getgrubconf() {
     done </tmp/grub.vars | egrep -i "sataportmap|sn|pid|vid|mac|hddhotplug|diskidxmap|netif_num" | sort | uniq >/tmp/known.vars
 
     if [ -f /tmp/known.vars ]; then
-        echo "Sourcing vars, found : "
+        echo "Sourcing vars, found in grub : "
         . /tmp/known.vars
         rows="%-15s| %-15s | %-10s | %-10s | %-10s | %-15s | %-15s %c\n"
         printf "$rows" Serial Mac Netif_num PID VID SataPortMap DiskIdxMap

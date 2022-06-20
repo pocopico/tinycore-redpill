@@ -110,8 +110,6 @@ function getgrubconf() {
             fi
         done
 
-        read answer
-
     else
 
         echo "Could not read variables"

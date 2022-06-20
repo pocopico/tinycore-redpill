@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220607
-# Version : 0.9.0.4
+# Date : 220620
+# Version : 0.9.0.5
 #
 #
 # User Variables :
 
-rploaderver="0.9.0.4"
+rploaderver="0.9.0.5"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -56,8 +56,66 @@ function history() {
     0.9.0.2 Added system monitor function 
     0.9.0.3 Updated satamap to support DUMMY PORT detection 
     0.9.0.4 More satamap fixes
+    0.9.0.5 Added the option to get grub variables into user_config.json
     --------------------------------------------------------------------------------------
 EOF
+
+}
+
+function getgrubconf() {
+
+    tcrpdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+    grubdisk="${tcrpdisk}1"
+
+    echo "Mounting bootloader disk to get grub contents"
+    sudo mount /dev/$grubdisk
+
+    if [ $(df | grep -i $grubdisk | wc -l) -gt 0 ]; then
+        echo -n "Mounted succesfully : $(df -h | grep $grubdisk)"
+        [ -f /mnt/$grubdisk/boot/grub/grub.cfg ] && [ $(cat /mnt/$grubdisk/boot/grub/grub.cfg | wc -l) -gt 0 ] && echo "  -> Grub cfg is accessible and readable"
+    else
+        echo "Couldnt mount device : $grubdisk "
+        exit 99
+    fi
+
+    echo "Getting known loader grub variables"
+
+    grep pid /mnt/$grubdisk/boot/grub/grub.cfg >/tmp/grub.vars
+
+    while IFS=" " read -r -a line; do
+        printf "%s\n" "${line[@]}"
+    done </tmp/grub.vars | egrep -i "sataportmap|sn|pid|vid|mac|hddhotplug|diskidxmap|netif_num" | sort | uniq >/tmp/known.vars
+
+    if [ -f /tmp/known.vars ]; then
+        echo "Sourcing vars, found : "
+        . /tmp/known.vars
+        rows="%-15s| %-15s | %-10s | %-10s | %-10s | %-15s | %-15s %c\n"
+        printf "$rows" Serial Mac Netif_num PID VID SataPortMap DiskIdxMap
+        printf "$rows" $sn $mac1 $netif_num $pid $vid $SataPortMap $DiskIdxMap
+
+        echo "Checking user config against grub vars"
+
+        for var in pid vid sn mac1 SataPortMap DiskIdxMap; do
+            if [ $(jq -r .extra_cmdline.$var user_config.json) == "${!var}" ]; then
+                echo "Grub var $var = ${!var} Matches your user_config.json"
+            else
+                echo "Grub var $var = ${!var} does not match your user_config.json variable which is set to : $(jq -r .extra_cmdline.$var user_config.json) "
+                echo "Should we populate user_config.json with these variables ? [Yy/Nn] "
+                read answer
+                if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+                    json="$(jq --arg newvar "${!var}" '.extra_cmdline.'$var'= $newvar' user_config.json)" && echo -E "${json}" | jq . >user_config.json
+                else
+                    echo "OK, you can edit yourself later"
+                fi
+            fi
+        done
+
+        read answer
+
+    else
+
+        echo "Could not read variables"
+    fi
 
 }
 
@@ -1783,7 +1841,7 @@ Usage: ${0} <action> <platform version> <static or compile module> [extension ma
 
 Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, patchdtc, 
 satamap, backup, backuploader, restoreloader, restoresession, mountdsmroot, postupdate,
-mountshare, version, monitor, help
+mountshare, version, monitor, getgrubconf, help
 
 ----------------------------------------------------------------------------------------
 Available platform versions:
@@ -1877,8 +1935,12 @@ mountshare, version, monitor, help
 
   Valid Options : history, shows rploader release history.
 
-- monitor 
+- monitor :
   Prints system statistics related to TCRP loader 
+
+- getgrubconf :
+  Checks your user_config.json file variables against current grub.cfg variables and updates your
+  user_config.json accordingly
   
 - help:           Show this page
 
@@ -2687,6 +2749,10 @@ help)
     ;;
 monitor)
     monitor
+    exit 0
+    ;;
+getgrubconf)
+    getgrubconf
     exit 0
     ;;
 *)

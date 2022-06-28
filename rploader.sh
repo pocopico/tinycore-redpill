@@ -1123,7 +1123,7 @@ function patchdtc() {
         fi
 
         echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot with portnumber $diskport"
-        if [ "${dtbfile}" == "ds920p" ]; then
+        if [ "${dtbfile}" == "ds920p" ] || [ "${dtbfile}" == "dva1622" ]; then
             sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;n;n;cpcie_root = \"$diskpath\";" ${dtbfile}.dts
             sed -i "/internal_slot\@${diskslot} {/!b;n;n;n;n;n;n;n;n;cata_port = <0x$diskport>;" ${dtbfile}.dts
             let diskslot=$diskslot+1

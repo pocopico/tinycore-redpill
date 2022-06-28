@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220620
-# Version : 0.9.0.5
+# Version : 0.9.0.6
 #
 #
 # User Variables :
 
-rploaderver="0.9.0.5"
+rploaderver="0.9.0.6"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -57,6 +57,7 @@ function history() {
     0.9.0.3 Updated satamap to support DUMMY PORT detection 
     0.9.0.4 More satamap fixes
     0.9.0.5 Added the option to get grub variables into user_config.json
+    0.9.0.6 Experimental DVA1622 (geminilake) addition
     --------------------------------------------------------------------------------------
 EOF
 
@@ -378,6 +379,8 @@ function processpat() {
         SYNOMODEL="dva3221_$TARGET_REVISION" && MODEL="DVA3221"
     elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
         SYNOMODEL="ds920p_$TARGET_REVISION" && MODEL="DS920+"
+    elif [ "${TARGET_PLATFORM}" = "dva1622" ]; then
+        SYNOMODEL="dva1622_$TARGET_REVISION" && MODEL="DVA1622"
     fi
 
     if [ ! -d "${temp_pat_folder}" ]; then
@@ -528,7 +531,7 @@ function addrequiredexts() {
         cd /home/tc/redpill-load/ && ./ext-manager.sh _update_platform_exts ${SYNOMODEL} ${extension}
     done
 
-    if [ ${TARGET_PLATFORM} = "geminilake" ] || [ ${TARGET_PLATFORM} = "v1000" ]; then
+    if [ ${TARGET_PLATFORM} = "geminilake" ] || [ ${TARGET_PLATFORM} = "v1000" ] || [ ${TARGET_PLATFORM} = "dva1622" ]; then
         patchdtc
     fi
 
@@ -1050,6 +1053,8 @@ function patchdtc() {
         dtbfile="ds1621p"
     elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
         dtbfile="ds920p"
+    elif [ "${TARGET_PLATFORM}" = "dva1622" ]; then
+        dtbfile="dva1622"
     else
         echo "${TARGET_PLATFORM} does not require model.dtc patching "
         return
@@ -2026,6 +2031,8 @@ function getstaticmodule() {
         SYNOMODEL="dva3221_$TARGET_REVISION"
     elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
         SYNOMODEL="ds920p_$TARGET_REVISION"
+    elif [ "${TARGET_PLATFORM}" = "dva1622" ]; then
+        SYNOMODEL="dva1622_$TARGET_REVISION"
     fi
 
     echo "Looking for redpill for : $SYNOMODEL "
@@ -2348,7 +2355,7 @@ function getvars() {
         KERNEL_MAJOR="3"
         MODULE_ALIAS_FILE="modules.alias.3.json"
         ;;
-    apollolake | broadwell | broadwellnk | v1000 | denverton | geminilake)
+    apollolake | broadwell | broadwellnk | v1000 | denverton | geminilake | dva1622)
         KERNEL_MAJOR="4"
         MODULE_ALIAS_FILE="modules.alias.4.json"
         ;;
@@ -2368,6 +2375,8 @@ function getvars() {
         SYNOMODEL="dva3221_$TARGET_REVISION" && MODEL="DVA3221"
     elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
         SYNOMODEL="ds920p_$TARGET_REVISION" && MODEL="DS920+"
+    elif [ "${TARGET_PLATFORM}" = "dva1622" ]; then
+        SYNOMODEL="dva1622_$TARGET_REVISION" && MODEL="DVA1622"
     fi
 
     #echo "Platform : $platform_selected"

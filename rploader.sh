@@ -460,8 +460,8 @@ function postupdate() {
 
     echo "Creating temp ramdisk space" && mkdir /home/tc/ramdisk
 
-    echo "Mounting partition ${loaderdisk}1}" && sudo mount /dev/${loaderdisk}1
-    echo "Mounting partition ${loaderdisk}2}" && sudo mount /dev/${loaderdisk}2
+    echo "Mounting partition ${loaderdisk}1" && sudo mount /dev/${loaderdisk}1
+    echo "Mounting partition ${loaderdisk}2" && sudo mount /dev/${loaderdisk}2
 
     cd /home/tc/ramdisk
 

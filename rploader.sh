@@ -364,13 +364,13 @@ function processpat() {
         echo -e "Configdir : $configdir \nConfigfile: $configfile \nPat URL : $pat_url"
         echo "Downloading pat file from URL : ${pat_url} "
 
-        if [ $(df -h /${local_cache} | grep mnt | awk '{print $4}' | cut -c 1-3) -le 370 ]; then
+        if [ $(df -h ${local_cache} | grep mnt | awk '{print $4}' | cut -c 1-3) -le 370 ]; then
             echo "No adequate space on ${local_cache} to download file into cache folder, clean up the space and restart"
             exit 99
         fi
 
-        [ -n $pat_url ] && curl --location ${pat_url} -o "/${local_cache}/${SYNOMODEL}.pat"
-        patfile="/${local_cache}/${SYNOMODEL}.pat"
+        [ -n $pat_url ] && curl --location ${pat_url} -o "${local_cache}/${SYNOMODEL}.pat"
+        patfile="${local_cache}/${SYNOMODEL}.pat"
         if [ -f ${patfile} ]; then
             testarchive ${patfile}
         else

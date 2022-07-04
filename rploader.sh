@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220620
-# Version : 0.9.0.7
+# Version : 0.9.0.8
 #
 #
 # User Variables :
 
-rploaderver="0.9.0.7"
+rploaderver="0.9.0.8"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -59,6 +59,7 @@ function history() {
     0.9.0.5 Added the option to get grub variables into user_config.json
     0.9.0.6 Experimental DVA1622 (geminilake) addition
     0.9.0.7 Experimental DVA1622 serialgen
+    0.9.0.8 Experimental DVA1622 increase disk count to 16
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1118,9 +1119,11 @@ function patchdtc() {
     for disk in $localdisks; do
         diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}' | sed 's/,*$//')
         if [ "$HYPERVISOR" == "VMware" ]; then
-            diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target[1-9]//;p;}' | awk -F: '{print $1}')
+            diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target//;p;}' | awk -F: '{print $1}')
+            diskport=$(($diskport -30)) && diskport=$(printf "%x" $diskport)
         else
             diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target//;p;}' | awk -F: '{print $1}')
+            diskport=$(printf "%x" $diskport)
         fi
 
         echo "Found local disk $disk with path $diskpath, adding into internal_slot $diskslot with portnumber $diskport"

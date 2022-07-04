@@ -19,7 +19,7 @@ b. For virtual gunzip and use the provided vmdk file
 
 5. Check the contents of user_config.json, if satisfied keep or else run :
 
-a. Perform a rploader update by running ./rploader update now
+a. Perform a rploader update by running ./rploader.sh update now
 
 b. Perform a fullupdate to update all local files of your image by running ./rploader.sh fullupgrade now
 

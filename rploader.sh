@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220620
-# Version : 0.9.0.8
+# Date : 220705
+# Version : 0.9.0.9
 #
 #
 # User Variables :
 
-rploaderver="0.9.0.8"
+rploaderver="0.9.0.9"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -60,6 +60,7 @@ function history() {
     0.9.0.6 Experimental DVA1622 (geminilake) addition
     0.9.0.7 Experimental DVA1622 serialgen
     0.9.0.8 Experimental DVA1622 increase disk count to 16
+    0.9.0.9 Fixed missing bspatch
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1120,7 +1121,7 @@ function patchdtc() {
         diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}' | sed 's/,*$//')
         if [ "$HYPERVISOR" == "VMware" ]; then
             diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target//;p;}' | awk -F: '{print $1}')
-            diskport=$(($diskport -30)) && diskport=$(printf "%x" $diskport)
+            diskport=$(($diskport - 30)) && diskport=$(printf "%x" $diskport)
         else
             diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target//;p;}' | awk -F: '{print $1}')
             diskport=$(printf "%x" $diskport)
@@ -2353,6 +2354,17 @@ function getvars() {
     REDPILL_LKM_MAKE_TARGET="$(echo $platform_selected | jq -r -e '.redpill_lkm_make_target')"
     tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
     local_cache="/mnt/${tcrppart}/auxfiles"
+
+    if [ ! -n "$(which bspatch)" ]; then
+
+        echo "bspatch does not exist, bringing over from repo"
+
+        curl --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/bspatch" -O
+
+        chmod 777 bspatch
+        sudo mv bspatch /usr/local/bin/
+
+    fi
 
     [ ! -d ${local_cache} ] && sudo mkdir -p ${local_cache}
     [ -h /home/tc/custom-module ] && unlink /home/tc/custom-module

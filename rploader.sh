@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220705
-# Version : 0.9.0.9
+# Date : 220708
+# Version : 0.9.1.0
 #
 #
 # User Variables :
 
-rploaderver="0.9.0.9"
+rploaderver="0.9.1.0"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -61,6 +61,7 @@ function history() {
     0.9.0.7 Experimental DVA1622 serialgen
     0.9.0.8 Experimental DVA1622 increase disk count to 16
     0.9.0.9 Fixed missing bspatch
+    0.9.1.0 Added dtc depth patch
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1118,7 +1119,15 @@ function patchdtc() {
     echo "Collecting disk paths"
 
     for disk in $localdisks; do
-        diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}' | sed 's/,*$//')
+        diskdepth=$(udevadm info --query path --name $disk | awk -F"/" '{print NF-1}')
+        if [[ $diskdepth = 9 ]]; then
+            diskpath=$(udevadm info --query path --name $disk | awk -F "/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 }')
+        elif [[ $diskdepth = 11 ]]; then
+            diskpath=$(udevadm info --query path --name $disk | awk -F "/" '{print $4 ":" $5 ":" $6 }' | awk -F ":" '{print $2 ":" $3 "," $6 "," $9 }')
+        else
+            diskpath=$(udevadm info --query path --name $disk | awk -F "/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}')
+        fi
+        #diskpath=$(udevadm info --query path --name $disk | awk -F "\/" '{print $4 ":" $5 }' | awk -F ":" '{print $2 ":" $3 "," $6}' | sed 's/,*$//')
         if [ "$HYPERVISOR" == "VMware" ]; then
             diskport=$(udevadm info --query path --name $disk | sed -n '/target/{s/.*target//;p;}' | awk -F: '{print $1}')
             diskport=$(($diskport - 30)) && diskport=$(printf "%x" $diskport)

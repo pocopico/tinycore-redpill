@@ -536,7 +536,8 @@ function addrequiredexts() {
     done
 
     if [ ${TARGET_PLATFORM} = "geminilake" ] || [ ${TARGET_PLATFORM} = "v1000" ] || [ ${TARGET_PLATFORM} = "dva1622" ]; then
-        patchdtc
+        #patchdtc
+        echo "Patch dtc is superceded by dtbpatch"
     fi
 
 }

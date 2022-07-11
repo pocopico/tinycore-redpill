@@ -26,6 +26,8 @@ fullupdatefiles="custom_config.json custom_config_jun.json global_config.json mo
 # END Do not modify after this line
 ######################################################################################################
 
+# extract nano  LD_LIBRARY_PATH=/home/tc/archive/lib /home/tc/archive/synoarchive.nano -xvf ../synology_geminilake_dva1622.pat
+
 function history() {
 
     cat <<EOF
@@ -612,7 +614,7 @@ function postupdate() {
 
             echo "Done"
         else
-
+            echo "Removing temp ramdisk space " && rm -rf ramdisk
             exit 0
 
         fi

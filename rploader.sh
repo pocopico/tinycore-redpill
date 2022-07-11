@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220708
-# Version : 0.9.1.0
+# Version : 0.9.1.1
 #
 #
 # User Variables :
 
-rploaderver="0.9.1.0"
+rploaderver="0.9.1.1"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -62,6 +62,7 @@ function history() {
     0.9.0.8 Experimental DVA1622 increase disk count to 16
     0.9.0.9 Fixed missing bspatch
     0.9.1.0 Added dtc depth patch
+    0.9.1.1 Default action for DTB system is to use the dtbpatch by fbelavenuto
     --------------------------------------------------------------------------------------
 EOF
 
@@ -537,7 +538,7 @@ function addrequiredexts() {
 
     if [ ${TARGET_PLATFORM} = "geminilake" ] || [ ${TARGET_PLATFORM} = "v1000" ] || [ ${TARGET_PLATFORM} = "dva1622" ]; then
         #patchdtc
-        echo "Patch dtc is superceded by dtbpatch"
+        echo "Patch dtc is superseded by fbelavenuto dtbpatch"
     fi
 
 }

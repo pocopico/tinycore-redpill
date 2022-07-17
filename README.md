@@ -1,6 +1,8 @@
 # tinycore-redpill
 This is a testing version. Do not use unless you are certain you have no data to lose.
 
+Minimum system requirements: 2 GB RAM - otherwise build process will fail!
+
 # Instructions 
 
 A normal build process would start with :

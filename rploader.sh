@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220708
-# Version : 0.9.1.1
+# Version : 0.9.1.2
 #
 #
 # User Variables :
 
-rploaderver="0.9.1.1"
+rploaderver="0.9.1.2"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -16,7 +16,7 @@ redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-inde
 modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.4.json.gz"
 modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.3.json.gz"
-dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/dtc"
+dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/tools/dtc"
 dtsfiles="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build"
 timezone="UTC"
 ntpserver="pool.ntp.org"
@@ -65,6 +65,7 @@ function history() {
     0.9.0.9 Fixed missing bspatch
     0.9.1.0 Added dtc depth patch
     0.9.1.1 Default action for DTB system is to use the dtbpatch by fbelavenuto
+    0.9.1.2 Fixed a jq issue in listextension
     --------------------------------------------------------------------------------------
 EOF
 
@@ -650,7 +651,7 @@ function postupdatev1() {
 
         echo "bspatch does not exist, bringing over from repo"
 
-        curl --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/bspatch" -O
+        curl --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/tools/bspatch" -O
 
         chmod 777 bspatch
         sudo mv bspatch /usr/local/bin/
@@ -2372,7 +2373,7 @@ function getvars() {
 
         echo "bspatch does not exist, bringing over from repo"
 
-        curl --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/bspatch" -O
+        curl --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/tools/bspatch" -O
 
         chmod 777 bspatch
         sudo mv bspatch /usr/local/bin/
@@ -2588,7 +2589,7 @@ function listextension() {
 
     if [ ! -z $1 ]; then
         echo "Searching for matching extension for $1"
-        matchingextension=($(jq ". | select(.id | contains(\"${1}\")) .url  " rpext-index.json))
+        matchingextension=($(jq ". | select(.id | endswith(\"${1}\")) .url  " rpext-index.json))
 
         if [ ! -z $matchingextension ]; then
             echo "Found matching extension : "

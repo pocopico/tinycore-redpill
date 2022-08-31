@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220708
-# Version : 0.9.1.2
+# Version : 0.9.1.3
 #
 #
 # User Variables :
 
-rploaderver="0.9.1.2"
+rploaderver="0.9.1.3"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -66,8 +66,28 @@ function history() {
     0.9.1.0 Added dtc depth patch
     0.9.1.1 Default action for DTB system is to use the dtbpatch by fbelavenuto
     0.9.1.2 Fixed a jq issue in listextension
+    0.9.1.3 Fixed bsdiff not found issue
     --------------------------------------------------------------------------------------
 EOF
+
+}
+
+function httpconf() {
+
+    cat >/home/tc/lighttpd.conf <<EOF
+server.document-root = "/home/tc/"
+server.modules  = ( "mod_cgi" . "mod_alias" )
+server.errorlog             = "/var/log/lighttpd/error.log"
+server.pid-file             = "/var/run/lighttpd.pid"
+server.username             = "tc"
+server.groupname            = "staff"
+server.port                 = 80
+alias.url       = ( "/rploader/" => "/home/tc/rploader.sh" )
+cgi.assign = ( ".sh" => "/usr/local/bin/bash" )
+index-file.names           = ( "index.html","index.htm", "index.sh" )
+EOF
+
+    sudo lighttpd -f /home/tc/lighttpd.conf
 
 }
 
@@ -132,7 +152,7 @@ function monitor() {
     mount /dev/${loaderdisk}1
     mount /dev/${loaderdisk}2
 
-    while true; do
+    while [ -z "$GATEWAY_INTERFACE" ]; do
         clear
         echo -e "-------------------------------System Information----------------------------"
         echo -e "Hostname:\t\t"$(hostname) "uptime:\t\t\t"$(uptime | awk '{print $3,$4}' | sed 's/,//')
@@ -1520,7 +1540,7 @@ function usbidentify() {
 
 function serialgen() {
 
-    shift 1
+    [ ! -z "$GATEWAY_INTERFACE" ] && shift 0 || shift 1
 
     [ "$2" == "realmac" ] && let keepmac=1 || let keepmac=0
 
@@ -1528,13 +1548,19 @@ function serialgen() {
         serial="$(generateSerial $1)"
         mac="$(generateMacAddress $1)"
         realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}')
-        echo "Serial Number for Model : $serial"
-        echo "Mac Address for Model $1 : $mac "
+        echo "Serial Number for Model = $serial"
+        echo "Mac Address for Model $1 = $mac "
         [ $keepmac -eq 1 ] && echo "Real Mac Address : $realmac"
         [ $keepmac -eq 1 ] && echo "Notice : realmac option is requested, real mac will be used"
 
-        echo "Should i update the user_config.json with these values ? [Yy/Nn]"
-        read answer
+        if [ -z "$GATEWAY_INTERFACE" ]; then
+
+            echo "Should i update the user_config.json with these values ? [Yy/Nn]"
+            read answer
+        else
+            answer="y"
+        fi
+
         if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
             # sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"," user_config.json
             json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
@@ -2092,14 +2118,6 @@ function getstaticmodule() {
 
 }
 
-function downloadtools() {
-
-    curl -s --progress-bar --location "https://packages.slackonly.com/pub/packages/14.1-x86_64/development/bsdiff/bsdiff-4.3-x86_64-1_slack.txz" --output /home/tc/bsdiff.txz
-    [ ! -f /home/tc/bsdiff.txz ] && echo "bsdiff binary was not downloaded"
-    [ -f /home/tc/bsdiff.txz ] && cd / && sudo tar xf /home/tc/bsdiff.txz && rm -rf /home/tc/bsdiff.txz && cd /home/tc
-
-}
-
 function buildloader() {
 
     tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
@@ -2120,8 +2138,6 @@ function buildloader() {
     fi
 
     removebundledexts
-
-    downloadtools
 
     if [ ! -d /lib64 ]; then
         sudo ln -s /lib /lib64
@@ -2622,190 +2638,198 @@ if [ $# -lt 2 ]; then
     syntaxcheck $@
 fi
 
-case $1 in
+if [ -z "$GATEWAY_INTERFACE" ]; then
 
-download)
-    getvars $2
-    checkinternet
-    gitdownload
-    ;;
+    case $1 in
 
-build)
+    download)
+        getvars $2
+        checkinternet
+        gitdownload
+        ;;
 
-    getvars $2
-    checkinternet
-    getlatestrploader
-    gitdownload
+    build)
 
-    case $3 in
+        getvars $2
+        checkinternet
+        getlatestrploader
+        gitdownload
 
-    compile)
-        prepareforcompile
-        if [ "$COMPILE_METHOD" = "toolkit_dev" ]; then
-            gettoolchain
-            compileredpill
+        case $3 in
+
+        compile)
+            prepareforcompile
+            if [ "$COMPILE_METHOD" = "toolkit_dev" ]; then
+                gettoolchain
+                compileredpill
+                echo "Starting loader creation "
+                buildloader
+            else
+                getsynokernel
+                kernelprepare
+                compileredpill
+                echo "Starting loader creation "
+                buildloader
+            fi
+            ;;
+        manual)
+
+            echo "Using static compiled redpill extension"
+            getstaticmodule
+            echo "Got $REDPILL_MOD_NAME "
+            echo "Manual extension handling,skipping extension auto detection "
             echo "Starting loader creation "
             buildloader
+            [ $? -eq 0 ] && savesession
+            ;;
+
+        jun)
+            echo "Using static compiled redpill extension"
+            getstaticmodule
+            echo "Got $REDPILL_MOD_NAME "
+            listmodules
+            echo "Starting loader creation "
+            buildloader junmod
+            [ $? -eq 0 ] && savesession
+            ;;
+
+        static | *)
+            echo "No extra build option or static specified, using default <static> "
+            echo "Using static compiled redpill extension"
+            getstaticmodule
+            echo "Got $REDPILL_MOD_NAME "
+            listmodules
+            echo "Starting loader creation "
+            buildloader
+            [ $? -eq 0 ] && savesession
+            ;;
+
+        esac
+
+        ;;
+
+    \
+        ext)
+        getvars $2
+        checkinternet
+        gitdownload
+
+        if [ "$3" = "auto" ]; then
+            listmodules
         else
-            getsynokernel
-            kernelprepare
-            compileredpill
-            echo "Starting loader creation "
-            buildloader
+            ext_manager $@ # instead of listmodules
         fi
         ;;
-    manual)
 
-        echo "Using static compiled redpill extension"
+    restoresession)
+        getvars $2
+        checkinternet
+        gitdownload
+        restoresession
+        ;;
+
+    clean)
+        cleanloader
+        ;;
+
+    update)
+        checkinternet
+        getlatestrploader
+        ;;
+
+    listmods)
+        getvars $2
+        checkinternet
+        gitdownload
+        listmodules
+        echo "$extensionslist"
+        ;;
+
+    serialgen)
+        serialgen $@
+        ;;
+
+    interactive)
+        if [ -f interactive.sh ]; then
+            . ./interactive.sh
+        else
+            curl --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/$build/interactive.sh" --output interactive.sh
+            . ./interactive.sh
+            exit 99
+        fi
+        ;;
+
+    identifyusb)
+        usbidentify
+        ;;
+
+    patchdtc)
+        getvars $2
+        checkinternet
+        patchdtc
+        ;;
+
+    satamap)
+        satamap $2
+        ;;
+
+    backup)
+        backup
+        ;;
+
+    backuploader)
+        backuploader
+        ;;
+
+    restoreloader)
+        restoreloader
+        ;;
+    postupdate)
+        getvars $2
+        checkinternet
+        gitdownload
         getstaticmodule
-        echo "Got $REDPILL_MOD_NAME "
-        echo "Manual extension handling,skipping extension auto detection "
-        echo "Starting loader creation "
-        buildloader
+        postupdate
         [ $? -eq 0 ] && savesession
         ;;
 
-    jun)
-        echo "Using static compiled redpill extension"
-        getstaticmodule
-        echo "Got $REDPILL_MOD_NAME "
-        listmodules
-        echo "Starting loader creation "
-        buildloader junmod
-        [ $? -eq 0 ] && savesession
+    mountdsmroot)
+        mountdsmroot
+        ;;
+    fullupgrade)
+        fullupgrade
         ;;
 
-    static | *)
-        echo "No extra build option or static specified, using default <static> "
-        echo "Using static compiled redpill extension"
-        getstaticmodule
-        echo "Got $REDPILL_MOD_NAME "
-        listmodules
-        echo "Starting loader creation "
-        buildloader
-        [ $? -eq 0 ] && savesession
+    mountshare)
+        mountshare
+        ;;
+    installapache)
+        installapache
+        ;;
+    version)
+        version $@
+        ;;
+    help)
+        showhelp
+        exit 99
+        ;;
+    monitor)
+        monitor
+        exit 0
+        ;;
+    getgrubconf)
+        getgrubconf
+        exit 0
+        ;;
+    *)
+        showsyntax
+        exit 99
         ;;
 
     esac
 
-    ;;
+else
 
-\
-    ext)
-    getvars $2
-    checkinternet
-    gitdownload
+    htmlstart
 
-    if [ "$3" = "auto" ]; then
-        listmodules
-    else
-        ext_manager $@ # instead of listmodules
-    fi
-    ;;
-
-restoresession)
-    getvars $2
-    checkinternet
-    gitdownload
-    restoresession
-    ;;
-
-clean)
-    cleanloader
-    ;;
-
-update)
-    checkinternet
-    getlatestrploader
-    ;;
-
-listmods)
-    getvars $2
-    checkinternet
-    gitdownload
-    listmodules
-    echo "$extensionslist"
-    ;;
-
-serialgen)
-    serialgen $@
-    ;;
-
-interactive)
-    if [ -f interactive.sh ]; then
-        . ./interactive.sh
-    else
-        curl --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/$build/interactive.sh" --output interactive.sh
-        . ./interactive.sh
-        exit 99
-    fi
-    ;;
-
-identifyusb)
-    usbidentify
-    ;;
-
-patchdtc)
-    getvars $2
-    checkinternet
-    patchdtc
-    ;;
-
-satamap)
-    satamap $2
-    ;;
-
-backup)
-    backup
-    ;;
-
-backuploader)
-    backuploader
-    ;;
-
-restoreloader)
-    restoreloader
-    ;;
-postupdate)
-    getvars $2
-    checkinternet
-    gitdownload
-    getstaticmodule
-    postupdate
-    [ $? -eq 0 ] && savesession
-    ;;
-
-mountdsmroot)
-    mountdsmroot
-    ;;
-fullupgrade)
-    fullupgrade
-    ;;
-
-mountshare)
-    mountshare
-    ;;
-installapache)
-    installapache
-    ;;
-version)
-    version $@
-    ;;
-help)
-    showhelp
-    exit 99
-    ;;
-monitor)
-    monitor
-    exit 0
-    ;;
-getgrubconf)
-    getgrubconf
-    exit 0
-    ;;
-*)
-    showsyntax
-    exit 99
-    ;;
-
-esac
+fi

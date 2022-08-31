@@ -909,7 +909,7 @@ function downloadextractornew() {
 
     chmod +x synoarchive.*
 
-    cp -r /home/tc/patch-extractor /mnt/sdh3/auxfiles/
+    cp -r /home/tc/patch-extractor /mnt/${tcrppart}/auxfiles/
 
     ## get list of available pat versions from
     curl --silent https://archive.synology.com/download/Os/DSM/ | grep "/download/Os/DSM/7" | awk '{print $2}' | awk -F\/ '{print $5}' | sed -s 's/"//g'

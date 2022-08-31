@@ -850,13 +850,13 @@ function removebundledexts() {
 
 }
 
-function downloadextractornew() {
+function downloadextractor() {
 
     mkdir /home/tc/patch-extractor/
 
     cd /home/tc/patch-extractor/
 
-    curl --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
+    curl --insecure --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
     #[ -f /home/tc/oldpat.tar.gz ] && tar -C${temp_folder} -xf /home/tc/oldpat.tar.gz rd.gz
 
     tar xvf ../oldpat.tar.gz hda1.tgz
@@ -893,23 +893,26 @@ function downloadextractornew() {
     cp usr/lib/libboost_serialization.so* /home/tc/patch-extractor/lib
     cp usr/lib/libmsgpackc.so* /home/tc/patch-extractor/lib
 
-    cp usr/syno/sbin/synoarchive /home/tc/patch-extractor/
+    cp -r usr/syno/sbin/synoarchive /home/tc/patch-extractor/
 
     sudo rm -rf usr
     sudo rm -rf ../oldpat.tar.gz
     sudo rm -rf hda1.tgz
 
-    curl --silent --locationhttps://github.com/pocopico/tinycore-redpill/blob/develop/tools/xxd?raw=true--output xxd
+    curl --silent --location https://github.com/pocopico/tinycore-redpill/blob/develop/tools/xxd?raw=true --output xxd
 
     chmod +x xxd
 
-    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0100/' | ../xxd -r >synoarchive.nano
-    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0a00/' | ../xxd -r >synoarchive.smallpatch
-    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0000/' | ../xxd -r >synoarchive.system
+    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0100/' | ./xxd -r >synoarchive.nano
+    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0a00/' | ./xxd -r >synoarchive.smallpatch
+    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0000/' | ./xxd -r >synoarchive.system
 
     chmod +x synoarchive.*
 
-    cp -r /home/tc/patch-extractor /mnt/${tcrppart}/auxfiles/
+    [ ! -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && mkdir /mnt/${tcrppart}/auxfiles/patch-extractor
+
+    cp -rf /home/tc/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/
+    cp -rf /home/tc/patch-extractor/synoarchive.* /mnt/${tcrppart}/auxfiles/patch-extractor/
 
     ## get list of available pat versions from
     curl --silent https://archive.synology.com/download/Os/DSM/ | grep "/download/Os/DSM/7" | awk '{print $2}' | awk -F\/ '{print $5}' | sed -s 's/"//g'
@@ -926,15 +929,20 @@ function downloadextractornew() {
 
     mkdir temp && cd temp
 
-    LD_LIBRARY_PATH=/home/tc/patch-extractor/lib /home/tc/patch-extractor/synoarchive.nano -xvf /home/tc/patch-extractor/$patfile
-
+    if [ -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && [ -f /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.nano ]; then
+        LD_LIBRARY_PATH=/mnt/${tcrppart}/auxfiles/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.nano -xvf /home/tc/patch-extractor/$patfile
+    else
+        wecho "Extractor not found"
+    fi
     ## Extract ramdisk
 
     flashfile=$(ls flashupdate*s2*)
 
     tar xvf $flashfile && tar xvf content.txz
 
-    mkdir rd.temp && cd rd.temp && unlzma -c ../rd.gz | cpio -idm && cat etc/VERSION
+    mkdir rd.temp
+    cd rd.temp && unlzma -c ../rd.gz | cpio -idm
+    etc/VERSION
 
 }
 

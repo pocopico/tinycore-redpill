@@ -850,6 +850,94 @@ function removebundledexts() {
 
 }
 
+function downloadextractornew() {
+
+    mkdir /home/tc/patch-extractor/
+
+    cd /home/tc/patch-extractor/
+
+    curl --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
+    #[ -f /home/tc/oldpat.tar.gz ] && tar -C${temp_folder} -xf /home/tc/oldpat.tar.gz rd.gz
+
+    tar xvf ../oldpat.tar.gz hda1.tgz
+    tar xf hda1.tgz usr/lib
+    tar xf hda1.tgz usr/syno/sbin
+
+    mkdir /home/tc/patch-extractor/lib/
+
+    cp usr/lib/libicudata.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libicui18n.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libicuuc.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libjson.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_program_options.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_locale.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_filesystem.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_thread.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_coroutine.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_regex.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libapparmor.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libjson-c.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libsodium.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_context.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libsynocrypto.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libsynocredentials.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_iostreams.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libsynocore.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libicuio.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_chrono.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_date_time.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_system.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libsynocodesign.so.7* /home/tc/patch-extractor/lib
+    cp usr/lib/libsynocredential.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libjson-glib-1.0.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libboost_serialization.so* /home/tc/patch-extractor/lib
+    cp usr/lib/libmsgpackc.so* /home/tc/patch-extractor/lib
+
+    cp usr/syno/sbin/synoarchive /home/tc/patch-extractor/
+
+    sudo rm -rf usr
+    sudo rm -rf ../oldpat.tar.gz
+    sudo rm -rf hda1.tgz
+
+    curl --silent --locationhttps://github.com/pocopico/tinycore-redpill/blob/develop/tools/xxd?raw=true--output xxd
+
+    chmod +x xxd
+
+    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0100/' | ../xxd -r >synoarchive.nano
+    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0a00/' | ../xxd -r >synoarchive.smallpatch
+    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0000/' | ../xxd -r >synoarchive.system
+
+    chmod +x synoarchive.*
+
+    cp -r /home/tc/patch-extractor /mnt/sdh3/auxfiles/
+
+    ## get list of available pat versions from
+    curl --silent https://archive.synology.com/download/Os/DSM/ | grep "/download/Os/DSM/7" | awk '{print $2}' | awk -F\/ '{print $5}' | sed -s 's/"//g'
+    ## Get the selected update pats for your platform/version
+    curl --silent https://archive.synology.com/download/Os/DSM/7.1-42661-3 | grep href | grep apollolake | awk '{print $2}'
+    ## Select URL
+    curl --silent https://archive.synology.com/download/Os/DSM/7.1-42661-2 | grep href | grep apollolake | awk '{print $2}' | awk -F= '{print $2}'
+    ## URL
+    url=$(curl --silent https://archive.synology.com/download/Os/DSM/7.1-42661-3 | grep href | grep geminilake | awk '{print $2}' | awk -F= '{print $2}' | sed -s 's/"//g')
+
+    curl --location $url -O
+
+    patfile=$(echo $url | awk -F/ '{print $9}')
+
+    mkdir temp && cd temp
+
+    LD_LIBRARY_PATH=/home/tc/patch-extractor/lib /home/tc/patch-extractor/synoarchive.nano -xvf /home/tc/patch-extractor/$patfile
+
+    ## Extract ramdisk
+
+    flashfile=$(ls flashupdate*s2*)
+
+    tar xvf $flashfile && tar xvf content.txz
+
+    mkdir rd.temp && cd rd.temp && unlzma -c ../rd.gz | cpio -idm && cat etc/VERSION
+
+}
+
 function fullupgrade() {
 
     backupdate="$(date +%Y-%b-%d-%H-%M)"

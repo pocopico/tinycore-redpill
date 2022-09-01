@@ -5,7 +5,7 @@
     "zimghash": "",
     "rdhash": "",
     "usb_line": "",
-    "linux_line": ""
+    "sata_line": ""
   },
   "extra_cmdline": {
     "pid": "0xa4a5",

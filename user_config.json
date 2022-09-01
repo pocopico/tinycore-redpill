@@ -1,25 +1,27 @@
 {
+  "general": {
+    "model": "DS3622xs+",
+    "version": "7.1.1-42951",
+    "zimghash": "",
+    "rdhash": "",
+    "usb_line": "",
+    "linux_line": ""
+  },
   "extra_cmdline": {
     "pid": "0xa4a5",
     "vid": "0x0525",
-    "sn": "1230LWN009033",
-    "mac1": "0011322A46E7",
+    "sn": "2040SQRM4YYWD",
+    "mac1": "001132CBD5B1",
     "SataPortMap": "58",
     "DiskIdxMap": "0A00"
   },
   "synoinfo": {
-
-          "internalportcfg" : "0xffff",
-          "maxdisks" : "16",
-	      "support_bde_internal_10g" : "no",
-	      "support_disk_compatibility" : "no",
-          "support_memory_compatibility" : "no"
-
-
-},
-  "ramdisk_copy": {
-
-    
+    "internalportcfg": "0xffff",
+    "maxdisks": "16",
+    "support_bde_internal_10g": "no",
+    "support_disk_compatibility": "no",
+    "support_memory_compatibility": "no"
+  },
+  "ramdisk_copy": {}
 }
 
-}

@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220708
-# Version : 0.9.1.3
+# Version : 0.9.1.4
 #
 #
 # User Variables :
 
-rploaderver="0.9.1.3"
+rploaderver="0.9.1.4"
 build="develop"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
@@ -67,6 +67,7 @@ function history() {
     0.9.1.1 Default action for DTB system is to use the dtbpatch by fbelavenuto
     0.9.1.2 Fixed a jq issue in listextension
     0.9.1.3 Fixed bsdiff not found issue
+    0.9.1.4 Fixed overlaping downloadextractor processes
     --------------------------------------------------------------------------------------
 EOF
 
@@ -850,7 +851,7 @@ function removebundledexts() {
 
 }
 
-function downloadextractor() {
+function downloadextractorv2() {
 
     mkdir /home/tc/patch-extractor/
 

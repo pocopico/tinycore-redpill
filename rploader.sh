@@ -77,13 +77,13 @@ function httpconf() {
 
     cat >/home/tc/lighttpd.conf <<EOF
 server.document-root = "/home/tc/"
-server.modules  = ( "mod_cgi" . "mod_alias" )
-server.errorlog             = "/var/log/lighttpd/error.log"
-server.pid-file             = "/var/run/lighttpd.pid"
+server.modules  = ( "mod_cgi" , "mod_alias" )
+server.errorlog             = "/home/tc/error.log"
+server.pid-file             = "/home/tc/lighttpd.pid"
 server.username             = "tc"
 server.groupname            = "staff"
 server.port                 = 80
-alias.url       = ( "/rploader/" => "/home/tc/rploader.sh" )
+alias.url       = ( "/rploader/" => "/home/tc/" )
 cgi.assign = ( ".sh" => "/usr/local/bin/bash" )
 index-file.names           = ( "index.html","index.htm", "index.sh" )
 EOF

@@ -28,16 +28,18 @@ jobs:
         run: |
           mkdir /opt/tinycore-redpill
           cd /opt/tinycore-redpill
-          ls -ltr . 
-          cp -rf /home/runner/work/tinycore-redpill/tinycore-redpill/* .
-          #VERSION=`/home/runner/work/tinycore-redpill/tinycore-redpill/rploader.sh version`
+          cp -rfp /home/runner/work/tinycore-redpill/tinycore-redpill/* .
+          cp -rfp /opt/config-files/redpill-load/config /opt/tinycore-redpill
+          sudo find . -type f -name *.sh -exec chmod +x {} \;
+          sudo chmod /opt/tinycore-redpill/tools/*
+          VERSION=`/opt/tinycore-redpill/rploader.sh version`
           echo "Version: ${VERSION}"
-          echo '---start Update---'
+          echo "/opt/tinycore-redpill files" 
           ls -ltr /opt/tinycore-redpill
+          echo "/opt/config-files files" 
           ls -ltr /opt/config-files
-          ls -ltr /home/runner/work/tinycore-redpill/
-
-         
+          echo '---start Update---'
+                   
       - name: Upload buildroot-${{github.event.inputs.branches-tags}}-${{github.event.inputs.board}}
         uses: actions/upload-artifact@v3
         with:

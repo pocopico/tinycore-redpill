@@ -79,7 +79,7 @@ jobs:
           
           cd $workdir/tempmydata/home/tc/
           
-          cp -rp $/opt/tinycore-redpill/* .
+          cp -rp /opt/tinycore-redpill/* .
                     
           rm modules.alias.3.json ; gunzip modules.alias.3.json.gz
           rm modules.alias.4.json ; gunzip modules.alias.4.json.gz

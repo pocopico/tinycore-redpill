@@ -52,9 +52,12 @@ jobs:
 
           workdir="/opt/workdir"
           srcdir="/opt/images"
-          tgtdir="/opt/images"
+          tgtdir="/opt/newimages"
           
           ###########################################################################
+
+          mkdir $tgtdir
+
           cd $workdir
           
           workfile="`ls  $srcdir/*uefi*`"
@@ -182,7 +185,11 @@ jobs:
 
           
           ###########################################################################
-          
+      - name: Upload buildroot-${{github.event.inputs.branches-tags}}-${{github.event.inputs.board}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: tinycore-redpill-${{ steps.updateimages.outputs.VERSION }}
+          path: /opt/newimages         
              
   # Publish a release if is a tag
       - name: Release

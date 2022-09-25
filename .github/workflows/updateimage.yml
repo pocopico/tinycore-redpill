@@ -24,7 +24,8 @@ jobs:
           cd /opt/config-files
           git clone -b develop https://github.com/pocopico/redpill-load.git
           ls -ltr /opt/config-files/redpill-load/config 
-      - name: Build
+      - name: updateimages
+        id: updateimages
         run: |
           mkdir /opt/tinycore-redpill
           cd /opt/tinycore-redpill
@@ -32,16 +33,108 @@ jobs:
           cp -rfp /opt/config-files/redpill-load/config /opt/tinycore-redpill
           sudo find . -type f -name "*.sh" -exec chmod +x {} \;
           sudo chmod +x /opt/tinycore-redpill/tools/*
-          #VERSION=`bash /opt/tinycore-redpill/rploader.sh version`
+          VERSION="`grep "rploaderver=" rploader.sh | awk -F= '{print "v"$2}' | sed -e 's/"//g'`"
           echo "Version: ${VERSION}"
           echo "/opt/tinycore-redpill files" 
           ls -ltr /opt/tinycore-redpill
           echo "/opt/config-files files" 
-          ls -ltr /opt/config-files
+          ls -ltr /opt/tinycore-redpill/config
           echo '---start Update---'
-                   
-      - name: Upload buildroot-${{github.event.inputs.branches-tags}}-${{github.event.inputs.board}}
+          mkdir /opt/images 
+          cd /opt/images/
+          URLS="`curl -s https://api.github.com/repos/pocopico/tinycore-redpill/releases/tags/v0.9.2.2 | jq -r -e .assets[].browser_download_url`"
+          for file in $URLS; do curl --insecure --silent --location "$file" -O ; done
+          ls -ltr 
+          gunzip *.gz
+          ls -ltr 
+          
+          mkdir /opt/workdir
+
+          workdir="/opt/workdir"
+          srcdir="/opt/images"
+          tgtdir="/opt/images"
+          
+          ###########################################################################
+          cd $workdir
+          
+          workfile="`ls  $srcdir/*uefi*`"
+          imgversion="`ls $workfile | cut -c 61-67`"
+          echo "Found workfile : $workfile , imgversion : $imgversion copying from $srcdir to $workdir"
+          mv $workfile $workdir
+          workfile="`ls *uefi*`"
+          imgfile="`echo $workfile | sed -e 's/.gz//g'`"
+          losetup -fP ./$imgfile
+          loopdev=$(losetup -j $imgfile| awk '{print $1}' | sed -e 's/://')
+          echo "Creating mountpoint on $workdir/"
+          mkdir $workdir/partition1
+          mkdir $workdir/partition2
+          mkdir $workdir/partition3
+          mount ${loopdev}p1 $workdir/partition1
+          mount ${loopdev}p2 $workdir/partition2
+          mount ${loopdev}p3 $workdir/partition3
+          
+          mkdir $workdir/tempmydata
+          cd $workdir/tempmydata
+          tar xvfz $workdir/partition3/mydata.tgz
+          
+          cd $workdir/tempmydata/home/tc/
+          
+          cp -rp $/opt/tinycore-redpill/* .
+                    
+          rm modules.alias.3.json ; gunzip modules.alias.3.json.gz
+          rm modules.alias.4.json ; gunzip modules.alias.4.json.gz
+          
+          cd $workdir/tempmydata
+          
+          tar cvfz $workdir/partition3/mydata.tgz *
+          cp $workdir/partition3/mydata.tgz $workdir
+          
+          cd $workdir
+          
+          umount ${loopdev}p1
+          umount ${loopdev}p2
+          umount ${loopdev}p3
+          
+          losetup -d $loopdev
+          
+          newimgfile="`echo $imgfile | sed -e "s/$imgversion/$VERSION/g"`"
+          
+          mv $imgfile $newimgfile
+          
+          gzip -9 $newimgfile
+          
+          rm -rf $workdir/tempmydata
+          tar tvfz mydata.tgz > tar1.output
+          rm $workdir/mydata.tgz
+          echo "Moving file ${newimgfile}.gz"
+          
+          mv ${newimgfile}.gz $tgtdir
+          
+          ###########################################################################
+
+
+      - name: Recreate Images
+        run: |
+          mkdir /opt/output
+          echo "Recreating ramdisk " && cd /opt/updaterootfs/temprd && sudo find . 2>/dev/null | sudo cpio -o -H newc -R root:root | xz -9 --format=lzma >/opt/output/initrd-friend
+          cp /opt/updaterootfs/bzImage-friend /opt/output
+          ls -ltr /opt/output
+          touch /opt/output/chksum
+          echo "VERSION=`cat /home/runner/work/tcrpfriend/tcrpfriend/buildroot/board/tcrpfriend/rootfs-overlay/root/VERSION`" >> /opt/output/chksum
+          sha256sum /opt/output/bzImage-friend >> /opt/output/chksum
+          sha256sum /opt/output/initrd-friend >> /opt/output/chksum
+      - name: Upload FriendFiles-${{ steps.updateimages.outputs.VERSION }}
         uses: actions/upload-artifact@v3
         with:
-          name: buildroot-${{github.event.inputs.branches-tags}}-${{github.event.inputs.board}}
-          path: /opt/tinycore-redpill/rploader.sh
+          name: tcrpfriend-${{ steps.updaterootfs.outputs.VERSION }}
+          path: /opt/output        
+                   
+  # Publish a release if is a tag
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            /opt/images/tinycore-redpill-uefi.${{ steps.updaterootfs.outputs.VERSION }}.img
+            /opt/images/tinycore-redpill.${{ steps.updaterootfs.outputs.VERSION }}.img
+            /opt/images/tinycore-redpill.${{ steps.updaterootfs.outputs.VERSION }}.img.vmdk.gz

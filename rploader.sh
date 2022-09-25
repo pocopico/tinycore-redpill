@@ -2628,6 +2628,8 @@ function buildloader() {
         echo "ERROR: Failed to mount correctly all required partitions"
     fi
 
+    cd /home/tc/redpill-load
+
     echo "Entries in Localdisk bootloader : "
     echo "======================================================================="
     grep menuentry localdiskp1/boot/grub/grub.cfg
@@ -2740,8 +2742,6 @@ function bringoverfriend() {
     else
         echo "Could not find friend files, exiting" && exit 0
     fi
-
-    cd /home/tc/redpill-load
 
 }
 

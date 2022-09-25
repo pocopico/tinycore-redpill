@@ -18,17 +18,25 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libelf-dev qemu
+      - name: Bring over config files from redpill-load
+        run: |
+          mkdir /opt/config-files
+          cd /opt/config-files
+          git clone -b develop https://github.com/pocopico/redpill-load.git
+          ls -ltr /opt/config-files/redpill-load/config 
       - name: Build
         run: |
           mkdir /opt/tinycore-redpill
           cd /opt/tinycore-redpill
-          git checkout ${{github.event.inputs.branches-tags}}
-          git pull origin ${{github.event.inputs.branches-tags}}
           ls -ltr . 
           cp -rf /home/runner/work/tinycore-redpill/* .
           VERSION=`/home/runner/work/tinycore-redpill/rploader.sh version`
           echo "Version: ${VERSION}"
           echo '---start Update---'
+          ls -ltr /opt/tinycore-redpill
+          ls -ltr /opt/config-files
+          ls -ltr cp -rf /home/runner/work/tinycore-redpill/
+
          
       - name: Upload buildroot-${{github.event.inputs.branches-tags}}-${{github.event.inputs.board}}
         uses: actions/upload-artifact@v3

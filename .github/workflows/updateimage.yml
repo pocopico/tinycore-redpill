@@ -185,7 +185,7 @@ jobs:
 
           
           ###########################################################################
-      - name: Upload buildroot-${{github.event.inputs.branches-tags}}-${{github.event.inputs.board}}
+      - name: Upload tinycore-redpill-${{ steps.updateimages.outputs.VERSION }}
         uses: actions/upload-artifact@v3
         with:
           name: tinycore-redpill-${{ steps.updateimages.outputs.VERSION }}

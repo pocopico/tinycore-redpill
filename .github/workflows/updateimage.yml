@@ -58,11 +58,11 @@ jobs:
           cd $workdir
           
           workfile="`ls  $srcdir/*uefi*`"
-          echo "Found workfile : $workfile , imgversion : $imgversion copying from $srcdir to $workdir"
           mv $workfile $workdir
           workfile="`ls *uefi*`"
-          imgversion="`ls $workfile | cut -c 23-30`"
+          imgversion="`ls $workfile | cut -c 23-29`"
           imgfile="`echo $workfile | sed -e 's/.gz//g'`"
+          echo "Found workfile : $workfile , imgversion : $imgversion copying from $srcdir to $workdir"
           sudo losetup -fP ./$imgfile
           loopdev=$(losetup -j $imgfile| awk '{print $1}' | sed -e 's/://')
           echo "Creating mountpoint on $workdir/"
@@ -115,11 +115,11 @@ jobs:
           cd $workdir
           
           workfile="`ls $srcdir/tinycore-redpill.*.img*`"
-          echo "Found workfile : $workfile , imgversion : $imgversion copying from $srcdir to $workdir"
           mv $workfile $workdir
           workfile="`ls tinycore-redpill.*.img*`"
-          imgversion="`ls $workfile | cut -c 18-25`"
+          imgversion="`ls $workfile | cut -c 18-24`"
           imgfile="`echo $workfile | sed -e 's/.gz//g'`"
+          echo "Found workfile : $workfile , imgversion : $imgversion copying from $srcdir to $workdir"
           sudo losetup -fP ./$imgfile
           loopdev=$(losetup -j $imgfile| awk '{print $1}' | sed -e 's/://')
           echo "Creating mountpoint on $workdir/"
@@ -164,6 +164,8 @@ jobs:
           vmdkfile=`echo $newimgfile | sed -e 's/.img/.vmdk/g'`
           #qemu-img convert -O vmdk -o adapter_type=lsilogic $imgfile -o subformat=monolithicFlat $vmdkfile
           qemu-img convert -O vmdk -o adapter_type=lsilogic $newimgfile -o compat6 $vmdkfile
+
+          echo "VMDK File $vmdkfile"
 
           gzip -9 $newimgfile
           gzip -9 $vmdkfile

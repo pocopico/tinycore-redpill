@@ -42,7 +42,7 @@ jobs:
           echo '---start Update---'
           mkdir /opt/images 
           cd /opt/images/
-          URLS="`curl -s https://api.github.com/repos/pocopico/tinycore-redpill/releases/tags/v0.9.2.2 | jq -r -e .assets[].browser_download_url`"
+          URLS="`curl -s https://api.github.com/repos/pocopico/tinycore-redpill/releases/tags/v0.9.2.3 | jq -r -e .assets[].browser_download_url`"
           for file in $URLS; do curl --insecure --silent --location "$file" -O ; done
           ls -ltr 
           gunzip *.gz
@@ -61,7 +61,7 @@ jobs:
           echo "Found workfile : $workfile , imgversion : $imgversion copying from $srcdir to $workdir"
           mv $workfile $workdir
           workfile="`ls *uefi*`"
-          imgversion="`ls $workfile | cut -c 23-29`"
+          imgversion="`ls $workfile | cut -c 23-30`"
           imgfile="`echo $workfile | sed -e 's/.gz//g'`"
           sudo losetup -fP ./$imgfile
           loopdev=$(losetup -j $imgfile| awk '{print $1}' | sed -e 's/://')
@@ -118,6 +118,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            /opt/images/tinycore-redpill-uefi.${{ steps.updaterootfs.outputs.VERSION }}.img
-            /opt/images/tinycore-redpill.${{ steps.updaterootfs.outputs.VERSION }}.img
-            /opt/images/tinycore-redpill.${{ steps.updaterootfs.outputs.VERSION }}.img.vmdk.gz
+            /opt/images/tinycore-redpill-uefi.v${{ steps.updaterootfs.outputs.VERSION }}.img
+            /opt/images/tinycore-redpill.v${{ steps.updaterootfs.outputs.VERSION }}.img
+            /opt/images/tinycore-redpill.v${{ steps.updaterootfs.outputs.VERSION }}.img.vmdk.gz

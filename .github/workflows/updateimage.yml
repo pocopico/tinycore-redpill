@@ -111,6 +111,75 @@ jobs:
           mv ${newimgfile}.gz $tgtdir
           
           ###########################################################################
+          
+          cd $workdir
+          
+          workfile="`ls $srcdir/tinycore-redpill.*.img*`"
+          echo "Found workfile : $workfile , imgversion : $imgversion copying from $srcdir to $workdir"
+          mv $workfile $workdir
+          workfile="`ls tinycore-redpill.*.img*`"
+          imgversion="`ls $workfile | cut -c 18-25`"
+          imgfile="`echo $workfile | sed -e 's/.gz//g'`"
+          sudo losetup -fP ./$imgfile
+          loopdev=$(losetup -j $imgfile| awk '{print $1}' | sed -e 's/://')
+          echo "Creating mountpoint on $workdir/"
+          mkdir $workdir/partition1
+          mkdir $workdir/partition2
+          mkdir $workdir/partition3
+          sudo mount ${loopdev}p1 $workdir/partition1
+          sudo mount ${loopdev}p2 $workdir/partition2
+          sudo mount ${loopdev}p3 $workdir/partition3
+          
+          mkdir $workdir/tempmydata
+          cd $workdir/tempmydata
+          sudo tar xvfz $workdir/partition3/mydata.tgz
+          
+          cd $workdir/tempmydata/home/tc/
+          
+          cp -rf /opt/tinycore-redpill/* .
+                    
+          rm modules.alias.3.json ; gunzip modules.alias.3.json.gz
+          rm modules.alias.4.json ; gunzip modules.alias.4.json.gz
+          
+          cd $workdir/tempmydata
+          
+          sudo tar cvfz $workdir/partition3/mydata.tgz *
+          cp $workdir/partition3/mydata.tgz $workdir
+          
+          cd $workdir
+          
+          sudo umount ${loopdev}p1
+          sudo umount ${loopdev}p2
+          sudo umount ${loopdev}p3
+          
+          sudo losetup -d $loopdev
+          
+          newimgfile="`echo $imgfile | sed -e "s/$imgversion/$VERSION/g"`"
+          
+          mv $imgfile $newimgfile
+ 
+          vmdkfile=`echo $newimgfile | sed -e 's/.img/.vmdk/g'`
+          #qemu-img convert -O vmdk -o adapter_type=lsilogic $imgfile -o subformat=monolithicFlat $vmdkfile
+          qemu-img convert -O vmdk -o adapter_type=lsilogic $newimgfile -o compat6 $vmdkfile
+
+          gzip -9 $newimgfile
+          gzip -9 $vmdkfile
+
+          rm -rf $workdir/tempmydata
+          tar tvfz mydata.tgz > tar2.output
+          rm $workdir/mydata.tgz
+          echo "Moving file ${newimgfile}.gz"
+          
+          mv ${newimgfile}.gz $tgtdir
+
+          echo "Moving file ${vmdkfile}.gz"
+          mv ${vmdkfile}.gz $tgtdir
+
+          
+          ###########################################################################
+          
+
+
              
   # Publish a release if is a tag
       - name: Release

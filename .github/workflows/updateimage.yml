@@ -63,19 +63,19 @@ jobs:
           mv $workfile $workdir
           workfile="`ls *uefi*`"
           imgfile="`echo $workfile | sed -e 's/.gz//g'`"
-          losetup -fP ./$imgfile
+          sudo losetup -fP ./$imgfile
           loopdev=$(losetup -j $imgfile| awk '{print $1}' | sed -e 's/://')
           echo "Creating mountpoint on $workdir/"
           mkdir $workdir/partition1
           mkdir $workdir/partition2
           mkdir $workdir/partition3
-          mount ${loopdev}p1 $workdir/partition1
-          mount ${loopdev}p2 $workdir/partition2
-          mount ${loopdev}p3 $workdir/partition3
+          sudo mount ${loopdev}p1 $workdir/partition1
+          sudo mount ${loopdev}p2 $workdir/partition2
+          sudo mount ${loopdev}p3 $workdir/partition3
           
           mkdir $workdir/tempmydata
           cd $workdir/tempmydata
-          tar xvfz $workdir/partition3/mydata.tgz
+          sudo tar xvfz $workdir/partition3/mydata.tgz
           
           cd $workdir/tempmydata/home/tc/
           
@@ -86,16 +86,16 @@ jobs:
           
           cd $workdir/tempmydata
           
-          tar cvfz $workdir/partition3/mydata.tgz *
+          sudo tar cvfz $workdir/partition3/mydata.tgz *
           cp $workdir/partition3/mydata.tgz $workdir
           
           cd $workdir
           
-          umount ${loopdev}p1
-          umount ${loopdev}p2
-          umount ${loopdev}p3
+          sudo umount ${loopdev}p1
+          sudo umount ${loopdev}p2
+          sudo umount ${loopdev}p3
           
-          losetup -d $loopdev
+          σθδο losetup -d $loopdev
           
           newimgfile="`echo $imgfile | sed -e "s/$imgversion/$VERSION/g"`"
           
@@ -111,24 +111,7 @@ jobs:
           mv ${newimgfile}.gz $tgtdir
           
           ###########################################################################
-
-
-      - name: Recreate Images
-        run: |
-          mkdir /opt/output
-          echo "Recreating ramdisk " && cd /opt/updaterootfs/temprd && sudo find . 2>/dev/null | sudo cpio -o -H newc -R root:root | xz -9 --format=lzma >/opt/output/initrd-friend
-          cp /opt/updaterootfs/bzImage-friend /opt/output
-          ls -ltr /opt/output
-          touch /opt/output/chksum
-          echo "VERSION=`cat /home/runner/work/tcrpfriend/tcrpfriend/buildroot/board/tcrpfriend/rootfs-overlay/root/VERSION`" >> /opt/output/chksum
-          sha256sum /opt/output/bzImage-friend >> /opt/output/chksum
-          sha256sum /opt/output/initrd-friend >> /opt/output/chksum
-      - name: Upload FriendFiles-${{ steps.updateimages.outputs.VERSION }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: tcrpfriend-${{ steps.updaterootfs.outputs.VERSION }}
-          path: /opt/output        
-                   
+             
   # Publish a release if is a tag
       - name: Release
         uses: softprops/action-gh-release@v1

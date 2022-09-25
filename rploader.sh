@@ -8,7 +8,7 @@
 # User Variables :
 
 rploaderver="0.9.2.3"
-build="develop"
+build="main"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
 
@@ -1137,7 +1137,7 @@ function downloadextractorv2() {
     sudo rm -rf ../oldpat.tar.gz
     sudo rm -rf hda1.tgz
 
-    curl --silent --location https://github.com/pocopico/tinycore-redpill/blob/develop/tools/xxd?raw=true --output xxd
+    curl --silent --location https://github.com/pocopico/tinycore-redpill/blob/main/tools/xxd?raw=true --output xxd
 
     chmod +x xxd
 

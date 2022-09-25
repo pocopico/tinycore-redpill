@@ -123,9 +123,9 @@ jobs:
           sudo losetup -fP ./$imgfile
           loopdev=$(losetup -j $imgfile| awk '{print $1}' | sed -e 's/://')
           echo "Creating mountpoint on $workdir/"
-          mkdir $workdir/partition1
-          mkdir $workdir/partition2
-          mkdir $workdir/partition3
+          if [ ! -d $workdir/partition1 ] && mkdir $workdir/partition1
+          if [ ! -d $workdir/partition2 ] && mkdir $workdir/partition2
+          if [ ! -d $workdir/partition3 ] && mkdir $workdir/partition3
           sudo mount ${loopdev}p1 $workdir/partition1
           sudo mount ${loopdev}p2 $workdir/partition2
           sudo mount ${loopdev}p3 $workdir/partition3

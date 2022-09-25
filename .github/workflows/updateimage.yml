@@ -157,7 +157,10 @@ jobs:
           newimgfile="`echo $imgfile | sed -e "s/$imgversion/$VERSION/g"`"
           
           mv $imgfile $newimgfile
+
+          echo "New Image file name : $newimgfile"
  
+
           vmdkfile=`echo $newimgfile | sed -e 's/.img/.vmdk/g'`
           #qemu-img convert -O vmdk -o adapter_type=lsilogic $imgfile -o subformat=monolithicFlat $vmdkfile
           qemu-img convert -O vmdk -o adapter_type=lsilogic $newimgfile -o compat6 $vmdkfile

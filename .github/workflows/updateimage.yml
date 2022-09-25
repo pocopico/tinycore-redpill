@@ -30,7 +30,7 @@ jobs:
           cd /opt/tinycore-redpill
           ls -ltr . 
           cp -rf /home/runner/work/tinycore-redpill/* .
-          VERSION=`/home/runner/work/tinycore-redpill/rploader.sh version`
+          #VERSION=`/home/runner/work/tinycore-redpill/rploader.sh version`
           echo "Version: ${VERSION}"
           echo '---start Update---'
           ls -ltr /opt/tinycore-redpill

@@ -95,7 +95,7 @@ jobs:
           sudo umount ${loopdev}p2
           sudo umount ${loopdev}p3
           
-          σθδο losetup -d $loopdev
+          sudo losetup -d $loopdev
           
           newimgfile="`echo $imgfile | sed -e "s/$imgversion/$VERSION/g"`"
           

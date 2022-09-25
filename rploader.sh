@@ -2234,7 +2234,7 @@ menuentry 'Tiny Core Friend' {
         savedefault
         set root=(hd0,msdos3)
         echo Loading Linux...
-        linux /bzImage-friend loglevel=3 cde waitusb=5 vga=791
+        linux /bzImage-friend loglevel=3 waitusb=5 vga=791 net.ifnames=0 biosdevname=0 
         echo Loading initramfs...
         initrd /initrd-friend
         echo Booting TinyCore Friend

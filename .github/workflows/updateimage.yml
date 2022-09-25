@@ -29,13 +29,13 @@ jobs:
           mkdir /opt/tinycore-redpill
           cd /opt/tinycore-redpill
           ls -ltr . 
-          cp -rf /home/runner/work/tinycore-redpill/* .
-          #VERSION=`/home/runner/work/tinycore-redpill/rploader.sh version`
+          cp -rf /home/runner/work/tinycore-redpill/tinycore-redpill/* .
+          #VERSION=`/home/runner/work/tinycore-redpill/tinycore-redpill/rploader.sh version`
           echo "Version: ${VERSION}"
           echo '---start Update---'
           ls -ltr /opt/tinycore-redpill
           ls -ltr /opt/config-files
-          ls -ltr cp -rf /home/runner/work/tinycore-redpill/
+          ls -ltr /home/runner/work/tinycore-redpill/
 
          
       - name: Upload buildroot-${{github.event.inputs.branches-tags}}-${{github.event.inputs.board}}

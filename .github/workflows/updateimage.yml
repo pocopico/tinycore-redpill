@@ -24,7 +24,7 @@ jobs:
           cd /opt/config-files
           git clone -b develop https://github.com/pocopico/redpill-load.git
           ls -ltr /opt/config-files/redpill-load/config 
-      - name: updateimages
+      - name: Update Tinycore Redpill Images
         id: updateimages
         run: |
           mkdir /opt/tinycore-redpill

@@ -32,7 +32,7 @@ jobs:
           cp -rfp /opt/config-files/redpill-load/config /opt/tinycore-redpill
           sudo find . -type f -name "*.sh" -exec chmod +x {} \;
           sudo chmod +x /opt/tinycore-redpill/tools/*
-          VERSION=`/opt/tinycore-redpill/rploader.sh version`
+          VERSION=`bash /opt/tinycore-redpill/rploader.sh version`
           echo "Version: ${VERSION}"
           echo "/opt/tinycore-redpill files" 
           ls -ltr /opt/tinycore-redpill

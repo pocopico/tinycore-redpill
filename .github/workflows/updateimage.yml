@@ -190,6 +190,6 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            /opt/images/tinycore-redpill-uefi.v${{ steps.updaterootfs.outputs.VERSION }}.img
-            /opt/images/tinycore-redpill.v${{ steps.updaterootfs.outputs.VERSION }}.img
-            /opt/images/tinycore-redpill.v${{ steps.updaterootfs.outputs.VERSION }}.img.vmdk.gz
+            /opt/images/tinycore-redpill-uefi.${{ steps.updateimages.outputs.VERSION }}.img.gz
+            /opt/images/tinycore-redpill.${{ steps.updateimages.outputs.VERSION }}.img.gz
+            /opt/images/tinycore-redpill.${{ steps.updateimages.outputs.VERSION }}.vmdk.gz

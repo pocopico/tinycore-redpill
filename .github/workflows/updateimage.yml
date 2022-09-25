@@ -1,0 +1,37 @@
+name: updateimages
+
+on:
+  push:
+#    branches:
+#      - main
+    tags:
+      - v*
+
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libelf-dev qemu
+      - name: Build
+        run: |
+          mkdir /opt/tinycore-redpill
+          cd /opt/tinycore-redpill
+          git checkout ${{github.event.inputs.branches-tags}}
+          git pull origin ${{github.event.inputs.branches-tags}}
+          ls -ltr . 
+          cp -rf /home/runner/work/tinycore-redpill/* .
+          VERSION=`/home/runner/work/tinycore-redpill/rploader.sh version`
+          echo "Version: ${VERSION}"
+          echo '---start Update---'
+         
+      - name: Upload buildroot-${{github.event.inputs.branches-tags}}-${{github.event.inputs.board}}
+        uses: actions/upload-artifact@v3
+        with:
+          name: buildroot-${{github.event.inputs.branches-tags}}-${{github.event.inputs.board}}
+          path: /opt/tinycore-redpill/rploader.sh

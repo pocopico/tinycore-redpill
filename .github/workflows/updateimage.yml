@@ -35,6 +35,7 @@ jobs:
           sudo chmod +x /opt/tinycore-redpill/tools/*
           VERSION="`grep "rploaderver=" rploader.sh | awk -F= '{print "v"$2}' | sed -e 's/"//g'`"
           echo "Version: ${VERSION}"
+          echo "::set-output name=VERSION::${VERSION}"
           echo "/opt/tinycore-redpill files" 
           ls -ltr /opt/tinycore-redpill
           echo "/opt/config-files files" 

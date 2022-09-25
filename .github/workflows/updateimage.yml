@@ -58,10 +58,10 @@ jobs:
           cd $workdir
           
           workfile="`ls  $srcdir/*uefi*`"
-          imgversion="`ls $workfile | cut -c 61-67`"
           echo "Found workfile : $workfile , imgversion : $imgversion copying from $srcdir to $workdir"
           mv $workfile $workdir
           workfile="`ls *uefi*`"
+          imgversion="`ls $workfile | cut -c 23-29`"
           imgfile="`echo $workfile | sed -e 's/.gz//g'`"
           sudo losetup -fP ./$imgfile
           loopdev=$(losetup -j $imgfile| awk '{print $1}' | sed -e 's/://')

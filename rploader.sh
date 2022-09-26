@@ -2,17 +2,19 @@
 #
 # Author :
 # Date : 220914
-# Version : 0.9.2.3
+# Version : 0.9.2.4
 #
 #
 # User Variables :
 
-rploaderver="0.9.2.3"
+rploaderver="0.9.2.4"
 build="main"
+redpillmake="prod"
+
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
 
-redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
+redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill-${redpillmake}/rpext-index.json"
 modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.4.json.gz"
 modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.3.json.gz"
@@ -78,6 +80,7 @@ function history() {
     0.9.2.1 If TCRP Friend is used then default option will be TCRP Friend
     0.9.2.2 Upgrade your system by adding TCRP Friend with command bringfriend
     0.9.2.3 Adding experimental DS2422+ support
+    0.9.2.4 Added the redpillmake variable to select between prod and dev modules
     --------------------------------------------------------------------------------------
 EOF
 

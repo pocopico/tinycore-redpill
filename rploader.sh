@@ -14,7 +14,7 @@ redpillmake="prod"
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
 
-redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill-${redpillmake}/rpext-index.json"
+redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill${redpillmake}/rpext-index.json"
 modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.4.json.gz"
 modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.3.json.gz"
@@ -606,7 +606,7 @@ function updateuserconfig() {
     if [ "$generalblock" = "null" ] || [ -n "$generalblock" ]; then
         echo "Result=${generalblock}, File does not contain general block, adding block"
 
-        for field in model version zimghash rdhash usb_line sata_line; do
+        for field in model version redpillmake zimghash rdhash usb_line sata_line; do
             jsonfile=$(jq ".general+={\"$field\":\"\"}" $userconfigfile)
             echo $jsonfile | jq . >$userconfigfile
         done
@@ -761,6 +761,7 @@ bringfriend() {
 
             updateuserconfigfield "general" "model" "$MODEL"
             updateuserconfigfield "general" "version" "${VERSION}"
+            updateuserconfigfield "general" "redpillmake" "${redpillmake}"
             zimghash=$(sha256sum /mnt/${loaderdisk}2/zImage | awk '{print $1}')
             updateuserconfigfield "general" "zimghash" "$zimghash"
             rdhash=$(sha256sum /mnt/${loaderdisk}2/rd.gz | awk '{print $1}')
@@ -810,7 +811,7 @@ function postupdate() {
     updateuserconfig
     updateuserconfigfield "general" "model" "$MODEL"
     updateuserconfigfield "general" "version" "${TARGET_VERSION}-${TARGET_REVISION}"
-
+    updateuserconfigfield "general" "redpillmake" "${redpillmake}"
     echo "Creating temp ramdisk space" && mkdir /home/tc/ramdisk
 
     echo "Mounting partition ${loaderdisk}1" && sudo mount /dev/${loaderdisk}1
@@ -2653,6 +2654,7 @@ function buildloader() {
 
     updateuserconfigfield "general" "model" "$MODEL"
     updateuserconfigfield "general" "version" "${TARGET_VERSION}-${TARGET_REVISION}"
+    updateuserconfigfield "general" "redpillmake" "${redpillmake}"
     zimghash=$(sha256sum /home/tc/redpill-load/localdiskp2/zImage | awk '{print $1}')
     updateuserconfigfield "general" "zimghash" "$zimghash"
     rdhash=$(sha256sum /home/tc/redpill-load/localdiskp2/rd.gz | awk '{print $1}')

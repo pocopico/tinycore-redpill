@@ -82,7 +82,7 @@ function history() {
     0.9.2.3 Adding experimental DS2422+ support
     0.9.2.4 Added the redpillmake variable to select between prod and dev modules
     0.9.2.5 Adding experimental RS4021xs+ support
-    0.9.2.5 Added the downloadupgradepat action
+    0.9.2.5 Added the downloadupgradepat action **experimental
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1205,7 +1205,7 @@ function downloadupgradepat() {
 
                 [ -f $updatepat ] && echo "Downloaded Patfile $updatepat "
 
-                extractdownloadpat && return
+                extractdownloadpat "$version" && return
 
             done
 
@@ -1224,9 +1224,18 @@ function extractdownloadpat() {
 
     echo "Upgrade patfile $updatepat will be extracted to $temppat"
 
-    synoarchive.nano -xf ${updatepat}
-    tar xf flashupdate-3622xs+_7.1-42661-s2.tar
-    tar xf content.txz
+    issystempat="$(echo $version | grep -i nano | wc -l)"
+
+    if [ $issystempat -eq 1 ]; then
+        echo "PAT file is a system nanopacked file "
+        synoarchive.system -xf ${updatepat}
+    else
+        echo "PAT file is a smallupdate file "
+        synoarchive.nano -xf ${updatepat}
+        tarfile=$(ls *update* | head -1)
+        tar xf $tarfile
+        tar xf content.txz
+    fi
 
     upgradepatdir="/home/tc/upgradepat"
     [ ! -d $upgradepatdir ] && mkdir $upgradepatdir
@@ -1241,7 +1250,7 @@ function extractdownloadpat() {
         rm -rf $updatepat
         echo "The initrd you need is -> $(ls $upgradepatdir/rd.gz) "
     else
-        echo "Something went wrong "
+        echo "Something went wrong or the update file does not contain rd.gz or zImage"
     fi
 
 }

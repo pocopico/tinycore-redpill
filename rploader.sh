@@ -1232,9 +1232,14 @@ function extractdownloadpat() {
     else
         echo "PAT file is a smallupdate file "
         synoarchive.nano -xf ${updatepat}
-        tarfile=$(ls *update* | head -1)
-        tar xf $tarfile
-        tar xf content.txz
+        tarfile=$(ls flash*update* | head -1)
+        if [ -f $tarfile ]; then
+            tar xf $tarfile
+            tar xf content.txz
+        else
+            echo "update does not contain a flashupdate"
+        fi
+
     fi
 
     upgradepatdir="/home/tc/upgradepat"

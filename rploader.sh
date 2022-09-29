@@ -721,7 +721,9 @@ bringfriend() {
 
             fi
 
-        else
+        fi
+
+        if [ -f /mnt/${loaderdisk}3/initrd-friend ] || [ -f /mnt/${loaderdisk}3/bzImage-friend ]; then
 
             [ $(grep -i "Tiny Core Friend" /mnt/${loaderdisk}1/boot/grub/grub.cfg | wc -l) -eq 1 ] || tcrpfriendentry | sudo tee --append /mnt/${loaderdisk}1/boot/grub/grub.cfg
 

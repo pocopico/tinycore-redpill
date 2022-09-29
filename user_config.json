@@ -12,6 +12,7 @@
     "vid": "0x0525",
     "sn": "2040SQRM4YYWD",
     "mac1": "001132CBD5B1",
+    "netif_num": "1",
     "SataPortMap": "58",
     "DiskIdxMap": "0A00"
   },

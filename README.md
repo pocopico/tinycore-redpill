@@ -1,6 +1,8 @@
 # tinycore-redpill
 This is a testing version. Do not use unless you are certain you have no data to lose.
 
+Please note that minimum recommended memory size for configuring the loader is 2GB
+
 # Instructions 
 
 A normal build process would start with :

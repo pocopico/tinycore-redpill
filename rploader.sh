@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 220914
-# Version : 0.9.2.5
+# Version : 0.9.2.6
 #
 #
 # User Variables :
 
-rploaderver="0.9.2.5"
+rploaderver="0.9.2.6"
 build="main"
 redpillmake="prod"
 
@@ -82,6 +82,7 @@ function history() {
     0.9.2.3 Adding experimental DS2422+ support
     0.9.2.4 Added the redpillmake variable to select between prod and dev modules
     0.9.2.5 Adding experimental RS4021xs+ support
+    0.9.2.5 Added the downloadupgradepat action
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1099,18 +1100,17 @@ function removebundledexts() {
 
 function downloadextractorv2() {
 
-    mkdir /home/tc/patch-extractor/
+    [ ! -d /home/tc/patch-extractor/ ] && mkdir /home/tc/patch-extractor/
 
     cd /home/tc/patch-extractor/
 
-    curl --insecure --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
-    #[ -f /home/tc/oldpat.tar.gz ] && tar -C${temp_folder} -xf /home/tc/oldpat.tar.gz rd.gz
+    [ -f /home/tc/oldpat.tar.gz ] || curl --insecure --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
 
-    tar xvf ../oldpat.tar.gz hda1.tgz
+    tar xf ../oldpat.tar.gz hda1.tgz
     tar xf hda1.tgz usr/lib
     tar xf hda1.tgz usr/syno/sbin
 
-    mkdir /home/tc/patch-extractor/lib/
+    [ ! -d /home/tc/patch-extractor/lib/ ] && mkdir /home/tc/patch-extractor/lib/
 
     cp usr/lib/libicudata.so* /home/tc/patch-extractor/lib
     cp usr/lib/libicui18n.so* /home/tc/patch-extractor/lib
@@ -1159,37 +1159,90 @@ function downloadextractorv2() {
     [ ! -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && mkdir /mnt/${tcrppart}/auxfiles/patch-extractor
 
     cp -rf /home/tc/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/
-    cp -rf /home/tc/patch-extractor/synoarchive.* /mnt/${tcrppart}/auxfiles/patch-extractor/
+    cp -rf /home/tc/patch-extractor/synoarchive* /mnt/${tcrppart}/auxfiles/patch-extractor/
 
-    ## get list of available pat versions from
-    curl --silent https://archive.synology.com/download/Os/DSM/ | grep "/download/Os/DSM/7" | awk '{print $2}' | awk -F\/ '{print $5}' | sed -s 's/"//g'
-    ## Get the selected update pats for your platform/version
-    curl --silent https://archive.synology.com/download/Os/DSM/7.1-42661-3 | grep href | grep apollolake | awk '{print $2}'
-    ## Select URL
-    curl --silent https://archive.synology.com/download/Os/DSM/7.1-42661-2 | grep href | grep apollolake | awk '{print $2}' | awk -F= '{print $2}'
-    ## URL
-    url=$(curl --silent https://archive.synology.com/download/Os/DSM/7.1-42661-3 | grep href | grep geminilake | awk '{print $2}' | awk -F= '{print $2}' | sed -s 's/"//g')
+    sudo cp -rf /home/tc/patch-extractor/lib /lib
+    sudo cp -rf /home/tc/patch-extractor/synoarchive.* /bin
 
-    curl --location $url -O
+}
 
-    patfile=$(echo $url | awk -F/ '{print $9}')
+function downloadupgradepat() {
 
-    mkdir temp && cd temp
+    loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+    tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
 
-    if [ -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && [ -f /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.nano ]; then
-        LD_LIBRARY_PATH=/mnt/${tcrppart}/auxfiles/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.nano -xvf /home/tc/patch-extractor/$patfile
+    if [ ! -d /mnt/${tcrppart}/auxfiles/patch-extractor ] || [ ! -f /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.nano ]; then
+        downloadextractorv2
     else
-        wecho "Extractor not found"
+        echo "Found locally cached extractor"
+        [ ! -h /lib64 ] && sudo ln -s /lib /lib64
+        sudo cp -f /mnt/${tcrppart}/auxfiles/patch-extractor/lib/* /lib/
+        sudo cp -f /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive* /bin
     fi
-    ## Extract ramdisk
 
-    flashfile=$(ls flashupdate*s2*)
+    cd /home/tc
 
-    tar xvf $flashfile && tar xvf content.txz
+    PS3="Select Model : "
 
-    mkdir rd.temp
-    cd rd.temp && unlzma -c ../rd.gz | cpio -idm
-    etc/VERSION
+    select model in $(ls /home/tc/redpill-load/config | grep -v common); do
+
+        echo "Selected model : ${model} "
+
+        PS3="Select update version : "
+        select version in $(curl --insecure --silent https://archive.synology.com/download/Os/DSM/ | grep "/download/Os/DSM/7" | awk '{print $2}' | awk -F\/ '{print $5}' | sed -s 's/"//g'); do
+            echo "Selected version : $version"
+            selectedmodel=$(echo $model | sed -e 's/DS//g' | sed -e 's/RS//g' | sed -e 's/DVA//g' | sed -e 's/+//g')
+            PS3="Select pat file URL : "
+            select patfile in $(curl --insecure --silent "https://archive.synology.com/download/Os/DSM/${version}" | grep href | grep -i $selectedmodel | awk '{print $2}' | sed -e 's/href=//g'); do
+
+                patfile="$(echo $patfile | sed -e 's/"//g')"
+                echo "Selected patfile :  $patfile "
+                patfilever="$(echo $patfile | awk -F\/ '{print $8}')"
+                updatepat="/home/tc/${model}_${patfilever}.pat"
+
+                echo "Downloading PAT file "
+                curl --insecure --progress-bar -L "$patfile" -o $updatepat
+
+                [ -f $updatepat ] && echo "Downloaded Patfile $updatepat "
+
+                extractdownloadpat && return
+
+            done
+
+        done
+
+    done
+
+}
+
+function extractdownloadpat() {
+
+    echo "Extracting pat file to find your files..."
+    temppat="/home/tc/temppat"
+    [ ! -d $temppat ] && mkdir $temppat
+    cd $temppat
+
+    echo "Upgrade patfile $updatepat will be extracted to $temppat"
+
+    synoarchive.nano -xf ${updatepat}
+    tar xf flashupdate-3622xs+_7.1-42661-s2.tar
+    tar xf content.txz
+
+    upgradepatdir="/home/tc/upgradepat"
+    [ ! -d $upgradepatdir ] && mkdir $upgradepatdir
+
+    [ -f rd.gz ] && echo "Copying rd.gz to $upgradepatdir" && cp rd.gz $upgradepatdir
+    [ -f zImage ] && echo "Copying zImage to $upgradepatdir" && cp zImage $upgradepatdir
+
+    if [ -f $upgradepatdir/rd.gz ] && [ -f $upgradepatdir/zImage ]; then
+        cd /home/tc
+        echo "Cleaning up "
+        rm -rf $temppat
+        rm -rf $updatepat
+        echo "The initrd you need is -> $(ls $upgradepatdir/rd.gz) "
+    else
+        echo "Something went wrong "
+    fi
 
 }
 
@@ -2291,7 +2344,7 @@ Usage: ${0} <action> <platform version> <static or compile module> [extension ma
 
 Actions: build, ext, download, clean, update, listmod, serialgen, identifyusb, patchdtc, 
 satamap, backup, backuploader, restoreloader, restoresession, mountdsmroot, postupdate, 
-mountshare, version, monitor, help 
+mountshare, version, monitor, bringfriend, downloadupgradepat, help 
 
 - build <platform> <option> : 
   Build the 💊 RedPill LKM and update the loader image for the specified platform version and update
@@ -2382,18 +2435,16 @@ mountshare, version, monitor, help
   automated patching after an upgrade. No postupgrade actions will be required anymore, if TCRP
   friend is left as the default boot option.
 
+- downloadupgradepat
+  Downloads a specific upgade pat that can be used for various troubleshooting purposes
+
 - removefriend
   Reverse bringfriend actions and remove TCRP from your loader 
 
 - help:           Show this page
 
+----------------------------------------------------------------------------------------
 Version : $rploaderver
-----------------------------------------------------------------------------------------
-Available platform versions:
-----------------------------------------------------------------------------------------
-$(getPlatforms)
-----------------------------------------------------------------------------------------
-Check custom_config.json for platform settings.
 EOF
 
 }
@@ -3321,6 +3372,10 @@ if [ -z "$GATEWAY_INTERFACE" ]; then
         ;;
     removefriend)
         removefriend
+        exit 0
+        ;;
+    downloadupgradepat)
+        downloadupgradepat
         exit 0
         ;;
     *)

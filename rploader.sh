@@ -1217,8 +1217,13 @@ function downloadupgradepat() {
 
 function extractdownloadpat() {
 
-    echo "Extracting pat file to find your files..."
+    upgradepatdir="/home/tc/upgradepat"
     temppat="/home/tc/temppat"
+
+    rm -rf $upgradepatdir
+    rm -rf $temppat
+
+    echo "Extracting pat file to find your files..."
     [ ! -d $temppat ] && mkdir $temppat
     cd $temppat
 
@@ -1232,8 +1237,8 @@ function extractdownloadpat() {
     else
         echo "PAT file is a smallupdate file "
         synoarchive.nano -xf ${updatepat}
-        tarfile=$(ls flash*update* | head -1)
-        if [ -f $tarfile ]; then
+        tarfile="$(ls flash*update* | head -1 2>/dev/null)"
+        if [ ! -z $tarfile ]; then
             tar xf $tarfile
             tar xf content.txz
         else
@@ -1242,7 +1247,6 @@ function extractdownloadpat() {
 
     fi
 
-    upgradepatdir="/home/tc/upgradepat"
     [ ! -d $upgradepatdir ] && mkdir $upgradepatdir
 
     [ -f rd.gz ] && echo "Copying rd.gz to $upgradepatdir" && cp rd.gz $upgradepatdir
@@ -1275,7 +1279,7 @@ function fullupgrade() {
 
         [ -f ${updatefile} ] && sudo mv $updatefile old/${updatefile}.${backupdate}
         sudo curl --insecure --silent --location "${rploaderrepo}/${updatefile}" -O
-        [ ! -f ${updatefile} ] && cp old/${updatefile}.${backupdate} $updatefile
+        [ ! -f ${updatefile}] && mv old/${updatefile}.${backupdate} $updatefile
 
     done
 

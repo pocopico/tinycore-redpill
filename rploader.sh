@@ -1267,7 +1267,7 @@ function fullupgrade() {
     echo "Performing a full TCRP upgrade"
     echo "Warning some of your local files will be moved to /home/tc/old/xxxx.${backupdate}"
 
-    [ ! -d /home/tc/old ] && mkdir /home/tc/old
+    mkdir -p /home/tc/old
 
     for updatefile in ${fullupdatefiles}; do
 
@@ -1275,6 +1275,7 @@ function fullupgrade() {
 
         [ -f ${updatefile} ] && sudo mv $updatefile old/${updatefile}.${backupdate}
         sudo curl --insecure --silent --location "${rploaderrepo}/${updatefile}" -O
+        [ ! -f ${updatefile}] && mv old/${updatefile}.${backupdate} $updatefile
 
     done
 

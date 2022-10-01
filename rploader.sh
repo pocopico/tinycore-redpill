@@ -1279,7 +1279,7 @@ function fullupgrade() {
 
         [ -f ${updatefile} ] && sudo mv $updatefile old/${updatefile}.${backupdate}
         sudo curl --insecure --silent --location "${rploaderrepo}/${updatefile}" -O
-        [ ! -f ${updatefile}] && mv old/${updatefile}.${backupdate} $updatefile
+        [ ! -f ${updatefile} ] && mv old/${updatefile}.${backupdate} $updatefile
 
     done
 

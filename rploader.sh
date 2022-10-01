@@ -82,7 +82,7 @@ function history() {
     0.9.2.3 Adding experimental DS2422+ support
     0.9.2.4 Added the redpillmake variable to select between prod and dev modules
     0.9.2.5 Adding experimental RS4021xs+ support
-    0.9.2.5 Added the downloadupgradepat action **experimental
+    0.9.2.6 Added the downloadupgradepat action **experimental
     --------------------------------------------------------------------------------------
 EOF
 

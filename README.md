@@ -21,17 +21,17 @@ b. For virtual gunzip and use the provided vmdk file
 
 5. Check the contents of user_config.json, if satisfied keep or else run :
 
-a. Perform a rploader update by running ./rploader update now
+a. Perform a rploader update by running ./rploader update 
 
-b. Perform a fullupdate to update all local files of your image by running ./rploader.sh fullupgrade now
+b. Perform a fullupdate to update all local files of your image by running ./rploader.sh fullupgrade
 
 c. Change you serial and mac address by running ./rploader.sh serialgen DS3615xs, if you want to use WoL you can use realmac option here e.g. ./rploader.sh serialgen DS3515xs realmac
 
-d. Update user_config.json with your VID:PID of your usb stick by running ./rploader.sh identifyusb now
+d. Update user_config.json with your VID:PID of your usb stick by running ./rploader.sh identifyusb
 
-e. Update user_config.json with your SataPortMap and DiskIdxMap by running ./rploader.sh satamap now 
+e. Update user_config.json with your SataPortMap and DiskIdxMap by running ./rploader.sh satamap 
 
-f. Backup your changes to local loader disk by running  ./rploader.sh backup now
+f. Backup your changes to local loader disk by running  ./rploader.sh backup
 
 
 6. ./rploader.sh build bromolow-7.0.1-42218

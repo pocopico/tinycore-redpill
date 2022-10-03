@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 220914
-# Version : 0.9.2.6
+# Date : 221003
+# Version : 0.9.2.7
 #
 #
 # User Variables :
 
-rploaderver="0.9.2.6"
+rploaderver="0.9.2.7"
 build="main"
 redpillmake="prod"
 
@@ -83,8 +83,31 @@ function history() {
     0.9.2.4 Added the redpillmake variable to select between prod and dev modules
     0.9.2.5 Adding experimental RS4021xs+ support
     0.9.2.6 Added the downloadupgradepat action **experimental
+    0.9.2.7 Added setting the static network configuration for TCRP Friend
     --------------------------------------------------------------------------------------
 EOF
+
+}
+
+function setnetwork() {
+
+    if [ -f /opt/eth*.sh ] && [ "$(grep dhcp /opt/eth*.sh | wc -l)" -eq 0 ]; then
+
+        ipset="static"
+        ipgw="$(route | grep default | head -1 | awk '{print $2}')"
+        ipprefix="$(grep ifconfig /opt/eth*.sh | head -1 | awk '{print "ipcalc -p " $3 " " $5 }' | sh - | awk -F= '{print $2}')"
+        myip="$(grep ifconfig /opt/eth*.sh | head -1 | awk '{print $3 }')"
+        ipaddr="${myip}/${ipprefix}"
+        ipgw="$(grep route /opt/eth*.sh | head -1 | awk '{print  $5 }')"
+        ipdns="$(grep nameserver /opt/eth*.sh | head -1 | awk '{print  $3 }')"
+        ipproxy="$(env | grep -i http | awk -F= '{print $2}' | uniq)"
+
+        for field in ipset ipaddr ipgw ipdns ipproxy; do
+            jsonfile=$(jq ".ipsettings+={\"$field\":\"${!field}\"}" $userconfigfile)
+            echo $jsonfile | jq . >$userconfigfile
+        done
+
+    fi
 
 }
 
@@ -612,8 +635,8 @@ function updateuserconfig() {
             echo $jsonfile | jq . >$userconfigfile
         done
     fi
-}
 
+}
 function updateuserconfigfield() {
 
     block="$1"
@@ -761,6 +784,7 @@ bringfriend() {
             cp -f /mnt/${loaderdisk}1/zImage /mnt/${loaderdisk}3/zImage-dsm
 
             updateuserconfig
+            setnetwork
 
             updateuserconfigfield "general" "model" "$MODEL"
             updateuserconfigfield "general" "version" "${VERSION}"
@@ -812,6 +836,8 @@ function postupdate() {
     cd /home/tc
 
     updateuserconfig
+    setnetwork
+
     updateuserconfigfield "general" "model" "$MODEL"
     updateuserconfigfield "general" "version" "${TARGET_VERSION}-${TARGET_REVISION}"
     updateuserconfigfield "general" "redpillmake" "${redpillmake}"

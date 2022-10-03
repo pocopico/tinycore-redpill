@@ -6,12 +6,19 @@
     "rdhash": "",
     "usb_line": "",
     "sata_line": ""
+  }, 
+  "ipsettings": {
+    "ipset": "",
+    "ipaddr": "",
+    "ipgw": "",
+    "ipdns": "",
+    "ipproxy": ""
   },
   "extra_cmdline": {
     "pid": "0xa4a5",
     "vid": "0x0525",
-    "sn": "2040SQRM4YYWD",
-    "mac1": "001132CBD5B1",
+    "sn": "",
+    "mac1": "",
     "netif_num": "1",
     "SataPortMap": "58",
     "DiskIdxMap": "0A00"

@@ -13,7 +13,7 @@ rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
-modextention="https://github.com/pocopico/rp-ext/raw/$build/rpext-index.json"
+modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
 modalias4="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.4.json.gz"
 modalias3="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/modules.alias.3.json.gz"
 dtcbin="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/dtc"

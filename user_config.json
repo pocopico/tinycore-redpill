@@ -5,7 +5,8 @@
     "zimghash": "",
     "rdhash": "",
     "usb_line": "",
-    "sata_line": ""
+    "sata_line": "",
+    "redpillmake" : ""
   }, 
   "ipsettings": {
     "ipset": "",

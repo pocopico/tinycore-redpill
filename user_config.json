@@ -6,7 +6,8 @@
     "rdhash": "",
     "usb_line": "",
     "sata_line": "",
-    "redpillmake" : ""
+    "redpillmake" : "",
+    "friendautoupd" : "true"
   }, 
   "ipsettings": {
     "ipset": "",

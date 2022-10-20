@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 221003
-# Version : 0.9.2.7
+# Version : 0.9.2.8
 #
 #
 # User Variables :
 
-rploaderver="0.9.2.7"
+rploaderver="0.9.2.8"
 build="main"
 redpillmake="prod"
 
@@ -84,6 +84,7 @@ function history() {
     0.9.2.5 Adding experimental RS4021xs+ support
     0.9.2.6 Added the downloadupgradepat action **experimental
     0.9.2.7 Added setting the static network configuration for TCRP Friend
+    0.9.2.8 Changed all curl calls to use the --insecure flag to avoid expired certificate issues
     --------------------------------------------------------------------------------------
 EOF
 
@@ -113,20 +114,28 @@ function setnetwork() {
 
 function httpconf() {
 
+    tce-load -iw lighttpd 2>&1 >/dev/null
+
     cat >/home/tc/lighttpd.conf <<EOF
-server.document-root = "/home/tc/"
+server.document-root = "/home/tc/html"
 server.modules  = ( "mod_cgi" , "mod_alias" )
-server.errorlog             = "/home/tc/error.log"
-server.pid-file             = "/home/tc/lighttpd.pid"
+server.errorlog             = "/home/tc/html/error.log"
+server.pid-file             = "/home/tc/html/lighttpd.pid"
 server.username             = "tc"
 server.groupname            = "staff"
 server.port                 = 80
-alias.url       = ( "/rploader/" => "/home/tc/" )
+alias.url       = ( "/rploader/" => "/home/tc/html/" )
 cgi.assign = ( ".sh" => "/usr/local/bin/bash" )
 index-file.names           = ( "index.html","index.htm", "index.sh" )
+
 EOF
 
     sudo lighttpd -f /home/tc/lighttpd.conf
+
+    [ $(sudo netstat -an 2>/dev/null | grep LISTEN | grep ":80" 2>/dev/null | wc -l) -eq 1 ] && echo "Server started succesfully"
+
+    # Add entry to bootlocal and backup
+    # cat /opt/bootlocal.sh
 
 }
 
@@ -384,7 +393,7 @@ function downloadextractor() {
             echo "Processing old pat file to extract required files for extraction"
             tar -C${temp_folder} -xf /${patfile} rd.gz
         else
-            curl --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
+            curl --insecure --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
             [ -f /home/tc/oldpat.tar.gz ] && tar -C${temp_folder} -xf /home/tc/oldpat.tar.gz rd.gz
         fi
 
@@ -539,7 +548,7 @@ function processpat() {
             exit 99
         fi
 
-        [ -n $pat_url ] && curl --location ${pat_url} -o "/${local_cache}/${SYNOMODEL}.pat"
+        [ -n $pat_url ] && curl --insecure --location ${pat_url} -o "/${local_cache}/${SYNOMODEL}.pat"
         patfile="/${local_cache}/${SYNOMODEL}.pat"
         if [ -f ${patfile} ]; then
             testarchive ${patfile}
@@ -945,7 +954,7 @@ function postupdatev1() {
 
         echo "bspatch does not exist, bringing over from repo"
 
-        curl --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/tools/bspatch" -O
+        curl --insecure --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/tools/bspatch" -O
 
         chmod 777 bspatch
         sudo mv bspatch /usr/local/bin/
@@ -1114,7 +1123,7 @@ function removebundledexts() {
 
     echo "Removing bundled exts directories"
     for bundledext in $(grep ":" bundled-exts.json | awk '{print $2}' | sed -e 's/"//g' | sed -e 's/,/\n/g'); do
-        bundledextdir=$(curl --location -s "$bundledext" | jq -r -e '.id')
+        bundledextdir=$(curl --insecure --location -s "$bundledext" | jq -r -e '.id')
         if [ -d /home/tc/redpill-load/custom/extensions/${bundledextdir} ]; then
             echo "Removing : ${bundledextdir}"
             sudo rm -rf /home/tc/redpill-load/custom/extensions/${bundledextdir}
@@ -1172,7 +1181,7 @@ function downloadextractorv2() {
     sudo rm -rf ../oldpat.tar.gz
     sudo rm -rf hda1.tgz
 
-    curl --silent --location https://github.com/pocopico/tinycore-redpill/blob/main/tools/xxd?raw=true --output xxd
+    curl --insecure --silent --location https://github.com/pocopico/tinycore-redpill/blob/main/tools/xxd?raw=true --output xxd
 
     chmod +x xxd
 
@@ -1329,7 +1338,7 @@ function backuploader() {
         return
     fi
 
-    if [ $(df -h /mnt/${tcrppart} | grep mnt | awk '{print $4}' | cut -c 1-3) -le 50 ]; then
+    if [ $(df -h /mnt/${tcrppart} | grep mnt | awk '{print $4}' | cut -c 1-3 | sed -e 's/M//g' | sed -e 's/G//g') -le 50 ]; then
         echo "No adequate space on TCRP loader partition  /mnt/${tcrppart} "
         return
     fi
@@ -1536,7 +1545,7 @@ function patchdtc() {
     fi
 
     echo "Downloading dtc binary"
-    curl --location --progress-bar "$dtcbin" -O
+    curl --insecure --location --progress-bar "$dtcbin" -O
     chmod 700 dtc
 
     if [ -f /home/tc/custom-module/${dtbfile}.dts ] && [ ! -f /home/tc/custom-module/${dtbfile}.dtb ]; then
@@ -1578,7 +1587,7 @@ function patchdtc() {
 
     if [ ! -f ${dtbfile}.dts ]; then
         echo "dts file for ${dtbfile} not found, trying to download"
-        curl --location --progress-bar -O "${dtsfiles}/${dtbfile}.dts"
+        curl --insecure --location --progress-bar -O "${dtsfiles}/${dtbfile}.dts"
     fi
 
     echo "Found $(echo $localdisks | wc -w) disks and $(echo $localnvme | wc -w) nvme"
@@ -2194,7 +2203,7 @@ function gettoolchain() {
         echo "File already cached"
     else
         echo "Downloading and caching toolchain"
-        curl --progress-bar --location "${TOOLKIT_URL}" --output dsm-toolchain.7.0.txz
+        curl --insecure --progress-bar --location "${TOOLKIT_URL}" --output dsm-toolchain.7.0.txz
     fi
 
     echo -n "Checking file -> "
@@ -2263,7 +2272,7 @@ function getsynokernel() {
         rm -rf synokernel.txz
     else
         echo "Downloading and caching synokernel"
-        cd /home/tc && curl --progress-bar --location ${SYNOKERNEL_URL} --output synokernel.txz
+        cd /home/tc && curl --insecure --progress-bar --location ${SYNOKERNEL_URL} --output synokernel.txz
         checkfilechecksum synokernel.txz ${SYNOKERNEL_SHA}
         echo "OK, file matches sha256sum, extracting"
         echo "Extracting synokernel"
@@ -2551,7 +2560,7 @@ function getstaticmodule() {
     echo "Removing any old redpill.ko modules"
     [ -f /home/tc/redpill.ko ] && rm -f /home/tc/redpill.ko
 
-    extension=$(curl -s --location "$redpillextension")
+    extension=$(curl --insecure -s --location "$redpillextension")
 
     if [ "${TARGET_PLATFORM}" = "apollolake" ]; then
         SYNOMODEL="ds918p_$TARGET_REVISION"
@@ -2579,11 +2588,11 @@ function getstaticmodule() {
 
     #release=`echo $extension |  jq -r '.releases .${SYNOMODEL}_{$TARGET_REVISION}'`
     release=$(echo $extension | jq -r -e --arg SYNOMODEL $SYNOMODEL '.releases[$SYNOMODEL]')
-    files=$(curl -s --location "$release" | jq -r '.files[] .url')
+    files=$(curl --insecure -s --location "$release" | jq -r '.files[] .url')
 
     for file in $files; do
         echo "Getting file $file"
-        curl -s -O $file
+        curl --insecure -s -O $file
         if [ -f redpill*.tgz ]; then
             echo "Extracting module"
             tar xf redpill*.tgz
@@ -2816,7 +2825,7 @@ function buildloader() {
     sudo losetup -D
 
     echo "Cleaning up files"
-    sudo rm -rf /home/tc/rd.temp /home/tc/friend /home/tc/redpill-load/loader.img
+    sudo rm -rf /home/tc/rd.temp /home/tc/friend /home/tc/redpill-load/loader.img /home/tc/cache/*pat
 
     echo "Caching files for future use"
     [ ! -d ${local_cache} ] && mkdir ${local_cache}
@@ -2902,10 +2911,10 @@ function getlatestrploader() {
 
     echo -n "Checking if a newer version exists on the $build repo -> "
 
-    curl -s --location "$rploaderfile" --output latestrploader.sh
-    curl -s --location "$modalias3" --output modules.alias.3.json.gz
+    curl --insecure -s --location "$rploaderfile" --output latestrploader.sh
+    curl --insecure -s --location "$modalias3" --output modules.alias.3.json.gz
     [ -f modules.alias.3.json.gz ] && gunzip -f modules.alias.3.json.gz
-    curl -s --location "$modalias4" --output modules.alias.4.json.gz
+    curl --insecure -s --location "$modalias4" --output modules.alias.4.json.gz
     [ -f modules.alias.4.json.gz ] && gunzip -f modules.alias.4.json.gz
 
     CURRENTSHA="$(sha256sum rploader.sh | awk '{print $1}')"
@@ -2941,7 +2950,7 @@ function getvars() {
     CONFIG=$(readConfig)
     selectPlatform $1
 
-    GETTIME=$(curl -v --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
+    GETTIME=$(curl --insecure -v --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
     INTERNETDATE=$(date +"%d%m%Y" -d "$GETTIME")
     LOCALDATE=$(date +"%d%m%Y")
 
@@ -2973,7 +2982,7 @@ function getvars() {
 
         echo "bspatch does not exist, bringing over from repo"
 
-        curl --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/tools/bspatch" -O
+        curl --insecure --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/tools/bspatch" -O
 
         chmod 777 bspatch
         sudo mv bspatch /usr/local/bin/
@@ -3185,7 +3194,7 @@ function listmodules() {
 function listextension() {
 
     if [ ! -f rpext-index.json ]; then
-        curl --progress-bar --location "${modextention}" --output rpext-index.json
+        curl --insecure --progress-bar --location "${modextention}" --output rpext-index.json
     fi
 
     ## Get extension author rpext-index.json and then parse for extension download with :
@@ -3343,7 +3352,7 @@ if [ -z "$GATEWAY_INTERFACE" ]; then
         if [ -f interactive.sh ]; then
             . ./interactive.sh
         else
-            curl --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/$build/interactive.sh" --output interactive.sh
+            curl --insecure --location --progress-bar "https://github.com/pocopico/tinycore-redpill/raw/$build/interactive.sh" --output interactive.sh
             . ./interactive.sh
             exit 99
         fi

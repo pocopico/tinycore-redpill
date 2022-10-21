@@ -85,7 +85,7 @@ function history() {
     0.9.2.6 Added the downloadupgradepat action **experimental
     0.9.2.7 Added setting the static network configuration for TCRP Friend
     0.9.2.8 Changed all curl calls to use the --insecure flag to avoid expired certificate issues
-    0.9.2.9 Added the smallfixnumber key in user_config.json
+    0.9.2.9 Added the smallfixnumber key in user_config.json and changed the platform ids to model ids
     --------------------------------------------------------------------------------------
 EOF
 
@@ -442,27 +442,7 @@ function processpat() {
     local_cache="/mnt/${tcrppart}/auxfiles"
     temp_pat_folder="/tmp/pat"
 
-    if [ "${TARGET_PLATFORM}" = "apollolake" ]; then
-        SYNOMODEL="ds918p_$TARGET_REVISION" && MODEL="DS918+"
-    elif [ "${TARGET_PLATFORM}" = "bromolow" ]; then
-        SYNOMODEL="ds3615xs_$TARGET_REVISION" && MODEL="DS3615xs"
-    elif [ "${TARGET_PLATFORM}" = "broadwell" ]; then
-        SYNOMODEL="ds3617xs_$TARGET_REVISION" && MODEL="DS3617xs"
-    elif [ "${TARGET_PLATFORM}" = "broadwellnk" ]; then
-        SYNOMODEL="ds3622xsp_$TARGET_REVISION" && MODEL="DS3622xs+"
-    elif [ "${TARGET_PLATFORM}" = "v1000" ]; then
-        SYNOMODEL="ds1621p_$TARGET_REVISION" && MODEL="DS1621+"
-    elif [ "${TARGET_PLATFORM}" = "denverton" ]; then
-        SYNOMODEL="dva3221_$TARGET_REVISION" && MODEL="DVA3221"
-    elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
-        SYNOMODEL="ds920p_$TARGET_REVISION" && MODEL="DS920+"
-    elif [ "${TARGET_PLATFORM}" = "dva1622" ]; then
-        SYNOMODEL="dva1622_$TARGET_REVISION" && MODEL="DVA1622"
-    elif [ "${TARGET_PLATFORM}" = "ds2422p" ]; then
-        SYNOMODEL="ds2422p_$TARGET_REVISION" && MODEL="DS2422+"
-    elif [ "${TARGET_PLATFORM}" = "rs4021xsp" ]; then
-        SYNOMODEL="rs4021xsp_$TARGET_REVISION" && MODEL="RS4021xs+"
-    fi
+    setplatform
 
     if [ ! -d "${temp_pat_folder}" ]; then
         echo "Creating temp folder ${temp_pat_folder} "
@@ -544,7 +524,7 @@ function processpat() {
         echo -e "Configdir : $configdir \nConfigfile: $configfile \nPat URL : $pat_url"
         echo "Downloading pat file from URL : ${pat_url} "
 
-        if [ $(df -h /${local_cache} | grep mnt | awk '{print $4}' | cut -c 1-3) -le 370 ]; then
+        if [ $(df -h /${local_cache} | grep mnt | awk '{print $4}' | sed -e 's/M//g' -e 's/G//g' | cut -c 1-3) -le 370 ]; then
             echo "No adequate space on ${local_cache} to download file into cache folder, clean up the space and restart"
             exit 99
         fi
@@ -1341,7 +1321,7 @@ function backuploader() {
         return
     fi
 
-    if [ $(df -h /mnt/${tcrppart} | grep mnt | awk '{print $4}' | cut -c 1-3 | sed -e 's/M//g' | sed -e 's/G//g') -le 50 ]; then
+    if [ $(df -h /mnt/${tcrppart} | grep mnt | awk '{print $4}' | sed -e 's/M//g' -e 's/G//g' | cut -c 1-3) -le 50 ]; then
         echo "No adequate space on TCRP loader partition  /mnt/${tcrppart} "
         return
     fi
@@ -2565,27 +2545,7 @@ function getstaticmodule() {
 
     extension=$(curl --insecure -s --location "$redpillextension")
 
-    if [ "${TARGET_PLATFORM}" = "apollolake" ]; then
-        SYNOMODEL="ds918p_$TARGET_REVISION"
-    elif [ "${TARGET_PLATFORM}" = "bromolow" ]; then
-        SYNOMODEL="ds3615xs_$TARGET_REVISION"
-    elif [ "${TARGET_PLATFORM}" = "broadwell" ]; then
-        SYNOMODEL="ds3617xs_$TARGET_REVISION"
-    elif [ "${TARGET_PLATFORM}" = "broadwellnk" ]; then
-        SYNOMODEL="ds3622xsp_$TARGET_REVISION"
-    elif [ "${TARGET_PLATFORM}" = "v1000" ]; then
-        SYNOMODEL="ds1621p_$TARGET_REVISION"
-    elif [ "${TARGET_PLATFORM}" = "denverton" ]; then
-        SYNOMODEL="dva3221_$TARGET_REVISION"
-    elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
-        SYNOMODEL="ds920p_$TARGET_REVISION"
-    elif [ "${TARGET_PLATFORM}" = "dva1622" ]; then
-        SYNOMODEL="dva1622_$TARGET_REVISION"
-    elif [ "${TARGET_PLATFORM}" = "ds2422p" ]; then
-        SYNOMODEL="ds2422p_$TARGET_REVISION" && MODEL="DS2422+"
-    elif [ "${TARGET_PLATFORM}" = "rs4021xsp" ]; then
-        SYNOMODEL="rs4021xsp_$TARGET_REVISION" && MODEL="RS4021xs+"
-    fi
+    setplatform
 
     echo "Looking for redpill for : $SYNOMODEL "
 
@@ -2834,7 +2794,7 @@ function buildloader() {
     echo "Caching files for future use"
     [ ! -d ${local_cache} ] && mkdir ${local_cache}
 
-    if [ $(df -h /mnt/${tcrppart} | grep mnt | awk '{print $4}' | cut -c 1-3 | sed -e 's/M//g' | sed -e 's/G//g') -le 400 ]; then
+    if [ $(df -h /mnt/${tcrppart} | grep mnt | awk '{print $4}' | sed -e 's/M//g' -e 's/G//g' | cut -c 1-3) -le 400 ]; then
         echo "No adequate space on TCRP loader partition /mnt/${tcrppart} to cache pat file"
         echo "Found $(ls /mnt/${tcrppart}/auxfiles/*pat) file"
         echo "Removing older cached pat files to cache current"
@@ -2879,11 +2839,11 @@ function kernelprepare() {
 
     cd /home/tc/linux-kernel
     cp synoconfigs/${TARGET_PLATFORM} .config
-    if [ ${TARGET_PLATFORM} = "apollolake" ]; then
+    if [ ${TARGET_PLATFORM} = "apollolake" ] || [ ${TARGET_PLATFORM} = "ds918p" ]; then
         echo '+' >.scmversion
     fi
 
-    if [ ${TARGET_PLATFORM} = "bromolow" ]; then
+    if [ ${TARGET_PLATFORM} = "bromolow" ] || [ ${TARGET_PLATFORM} = "ds3615xs" ]; then
 
         cat <<EOF >patch-reloc
 --- arch/x86/tools/relocs.c
@@ -2949,6 +2909,32 @@ function getlatestrploader() {
 
 }
 
+function setplatform() {
+
+    if [ "${TARGET_PLATFORM}" = "apollolake" ] || [ "${TARGET_PLATFORM}" = "ds918p" ]; then
+        SYNOMODEL="ds918p_$TARGET_REVISION" && MODEL="DS918+"
+    elif [ "${TARGET_PLATFORM}" = "bromolow" ] || [ "${TARGET_PLATFORM}" = "ds3615xs" ]; then
+        SYNOMODEL="ds3615xs_$TARGET_REVISION" && MODEL="DS3615xs"
+    elif [ "${TARGET_PLATFORM}" = "broadwell" ] || [ "${TARGET_PLATFORM}" = "ds3617xs" ]; then
+        SYNOMODEL="ds3617xs_$TARGET_REVISION" && MODEL="DS3617xs"
+    elif [ "${TARGET_PLATFORM}" = "broadwellnk" ] || [ "${TARGET_PLATFORM}" = "ds3622xsp" ]; then
+        SYNOMODEL="ds3622xsp_$TARGET_REVISION" && MODEL="DS3622xs+"
+    elif [ "${TARGET_PLATFORM}" = "v1000" ] || [ "${TARGET_PLATFORM}" = "ds1621p" ]; then
+        SYNOMODEL="ds1621p_$TARGET_REVISION" && MODEL="DS1621+"
+    elif [ "${TARGET_PLATFORM}" = "denverton" ] || [ "${TARGET_PLATFORM}" = "dva3221" ]; then
+        SYNOMODEL="dva3221_$TARGET_REVISION" && MODEL="DVA3221"
+    elif [ "${TARGET_PLATFORM}" = "geminilake" ] || [ "${TARGET_PLATFORM}" = "ds920p" ]; then
+        SYNOMODEL="ds920p_$TARGET_REVISION" && MODEL="DS920+"
+    elif [ "${TARGET_PLATFORM}" = "dva1622" ]; then
+        SYNOMODEL="dva1622_$TARGET_REVISION" && MODEL="DVA1622"
+    elif [ "${TARGET_PLATFORM}" = "ds2422p" ]; then
+        SYNOMODEL="ds2422p_$TARGET_REVISION" && MODEL="DS2422+"
+    elif [ "${TARGET_PLATFORM}" = "rs4021xsp" ]; then
+        SYNOMODEL="rs4021xsp_$TARGET_REVISION" && MODEL="RS4021xs+"
+    fi
+
+}
+
 function getvars() {
 
     CONFIG=$(readConfig)
@@ -3009,33 +2995,13 @@ function getvars() {
         KERNEL_MAJOR="3"
         MODULE_ALIAS_FILE="modules.alias.3.json"
         ;;
-    apollolake | broadwell | broadwellnk | v1000 | denverton | geminilake | dva1622 | ds2422p | rs4021xsp)
+    apollolake | broadwell | broadwellnk | v1000 | denverton | geminilake | dva1622 | ds2422p | rs4021xsp | *)
         KERNEL_MAJOR="4"
         MODULE_ALIAS_FILE="modules.alias.4.json"
         ;;
     esac
 
-    if [ "${TARGET_PLATFORM}" = "apollolake" ]; then
-        SYNOMODEL="ds918p_$TARGET_REVISION" && MODEL="DS918+"
-    elif [ "${TARGET_PLATFORM}" = "bromolow" ]; then
-        SYNOMODEL="ds3615xs_$TARGET_REVISION" && MODEL="DS3615xs"
-    elif [ "${TARGET_PLATFORM}" = "broadwell" ]; then
-        SYNOMODEL="ds3617xs_$TARGET_REVISION" && MODEL="DS3617xs"
-    elif [ "${TARGET_PLATFORM}" = "broadwellnk" ]; then
-        SYNOMODEL="ds3622xsp_$TARGET_REVISION" && MODEL="DS3622xs+"
-    elif [ "${TARGET_PLATFORM}" = "v1000" ]; then
-        SYNOMODEL="ds1621p_$TARGET_REVISION" && MODEL="DS1621+"
-    elif [ "${TARGET_PLATFORM}" = "denverton" ]; then
-        SYNOMODEL="dva3221_$TARGET_REVISION" && MODEL="DVA3221"
-    elif [ "${TARGET_PLATFORM}" = "geminilake" ]; then
-        SYNOMODEL="ds920p_$TARGET_REVISION" && MODEL="DS920+"
-    elif [ "${TARGET_PLATFORM}" = "dva1622" ]; then
-        SYNOMODEL="dva1622_$TARGET_REVISION" && MODEL="DVA1622"
-    elif [ "${TARGET_PLATFORM}" = "ds2422p" ]; then
-        SYNOMODEL="ds2422p_$TARGET_REVISION" && MODEL="DS2422+"
-    elif [ "${TARGET_PLATFORM}" = "rs4021xsp" ]; then
-        SYNOMODEL="rs4021xsp_$TARGET_REVISION" && MODEL="RS4021xs+"
-    fi
+    setplatform
 
     #echo "Platform : $platform_selected"
     echo "Rploader Version : ${rploaderver}"

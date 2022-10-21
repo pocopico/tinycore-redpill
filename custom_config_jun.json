@@ -2,8 +2,8 @@
   "docker": {},
   "build_configs": [
     {
-      "id": "bromolow-7.0.1-42218-JUN",
-      "platform_version": "bromolow-7.0.1-42218",
+      "id": "ds3615xs-7.0.1-42218-JUN",
+      "platform_version": "ds3615xs-7.0.1-42218",
       "user_config_json": "bromolow_user_config.json",
       "docker_base_image": "debian:8-slim",
       "compile_with": "toolkit_dev",
@@ -33,8 +33,8 @@
       ]
     },
     {
-      "id": "apollolake-7.0.1-42218-JUN",
-      "platform_version": "apollolake-7.0.1-42218",
+      "id": "ds918p-7.0.1-42218-JUN",
+      "platform_version": "ds918p-7.0.1-42218",
       "user_config_json": "apollolake_user_config.json",
       "docker_base_image": "debian:8-slim",
       "compile_with": "toolkit_dev",
@@ -64,8 +64,8 @@
       ]
     },
     {
-      "id": "geminilake-7.0.1-42218-JUN",
-      "platform_version": "geminilake-7.0.1-42218",
+      "id": "ds920p-7.0.1-42218-JUN",
+      "platform_version": "ds920p-7.0.1-42218",
       "user_config_json": "geminilake_user_config.json",
       "docker_base_image": "debian:8-slim",
       "compile_with": "toolkit_dev",
@@ -96,8 +96,8 @@
       ]
     },
     {
-      "id": "broadwell-7.0.1-42218-JUN",
-      "platform_version": "broadwell-7.0.1-42218",
+      "id": "ds3617xs-7.0.1-42218-JUN",
+      "platform_version": "ds3617xs-7.0.1-42218",
       "user_config_json": "broadwell_user_config-test.json",
       "docker_base_image": "debian:8-slim",
       "redpill_lkm_make_target": "dev-v7",
@@ -127,8 +127,8 @@
       ]
     },
     {
-      "id": "broadwellnk-7.0.1-42218-JUN",
-      "platform_version": "broadwellnk-7.0.1-42218",
+      "id": "ds3622xsp-7.0.1-42218-JUN",
+      "platform_version": "ds3622xsp-7.0.1-42218",
       "user_config_json": "broadwellnk_user_config-test.json",
       "docker_base_image": "debian:8-slim",
       "redpill_lkm_make_target": "dev-v7",
@@ -158,8 +158,8 @@
       ]
     },
     {
-      "id": "v1000-7.0.1-42218-JUN",
-      "platform_version": "v1000-7.0.1-42218",
+      "id": "ds1621p-7.0.1-42218-JUN",
+      "platform_version": "ds1621p-7.0.1-42218",
       "user_config_json": "v1000_user_config-test.json",
       "docker_base_image": "debian:8-slim",
       "redpill_lkm_make_target": "dev-v7",
@@ -190,8 +190,8 @@
       ]
     },
     {
-      "id": "denverton-7.0.1-42218-JUN",
-      "platform_version": "denverton-7.0.1-42218",
+      "id": "dva3221-7.0.1-42218-JUN",
+      "platform_version": "dva3221-7.0.1-42218",
       "user_config_json": "denverton_user_config-test.json",
       "docker_base_image": "debian:8-slim",
       "redpill_lkm_make_target": "dev-v7",

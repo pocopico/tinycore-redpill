@@ -8,7 +8,8 @@
     "usb_line": "",
     "sata_line": "",
     "redpillmake" : "",
-    "friendautoupd" : "true"
+    "friendautoupd" : "true",
+    "hidesensitive" : "false"
   }, 
   "ipsettings": {
     "ipset": "",

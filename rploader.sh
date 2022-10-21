@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 221003
-# Version : 0.9.2.8
+# Date : 221020
+# Version : 0.9.2.9
 #
 #
 # User Variables :
 
-rploaderver="0.9.2.8"
+rploaderver="0.9.2.9"
 build="main"
 redpillmake="prod"
 
@@ -85,6 +85,7 @@ function history() {
     0.9.2.6 Added the downloadupgradepat action **experimental
     0.9.2.7 Added setting the static network configuration for TCRP Friend
     0.9.2.8 Changed all curl calls to use the --insecure flag to avoid expired certificate issues
+    0.9.2.9 Added the smallfixnumber key in user_config.json
     --------------------------------------------------------------------------------------
 EOF
 
@@ -639,7 +640,7 @@ function updateuserconfig() {
     if [ "$generalblock" = "null" ] || [ -n "$generalblock" ]; then
         echo "Result=${generalblock}, File does not contain general block, adding block"
 
-        for field in model version redpillmake zimghash rdhash usb_line sata_line; do
+        for field in model version smallfixnumber redpillmake zimghash rdhash usb_line sata_line; do
             jsonfile=$(jq ".general+={\"$field\":\"\"}" $userconfigfile)
             echo $jsonfile | jq . >$userconfigfile
         done
@@ -797,6 +798,7 @@ bringfriend() {
 
             updateuserconfigfield "general" "model" "$MODEL"
             updateuserconfigfield "general" "version" "${VERSION}"
+            updateuserconfigfield "general" "smallfixnumber" "${smallfixnumber}"
             updateuserconfigfield "general" "redpillmake" "${redpillmake}"
             zimghash=$(sha256sum /mnt/${loaderdisk}2/zImage | awk '{print $1}')
             updateuserconfigfield "general" "zimghash" "$zimghash"
@@ -849,6 +851,7 @@ function postupdate() {
 
     updateuserconfigfield "general" "model" "$MODEL"
     updateuserconfigfield "general" "version" "${TARGET_VERSION}-${TARGET_REVISION}"
+    updateuserconfigfield "general" "smallfixnumber" "${smallfixnumber}"
     updateuserconfigfield "general" "redpillmake" "${redpillmake}"
     echo "Creating temp ramdisk space" && mkdir /home/tc/ramdisk
 
@@ -2762,6 +2765,7 @@ function buildloader() {
     updateuserconfigfield "general" "model" "$MODEL"
     updateuserconfigfield "general" "version" "${TARGET_VERSION}-${TARGET_REVISION}"
     updateuserconfigfield "general" "redpillmake" "${redpillmake}"
+    updateuserconfigfield "general" "smallfixnumber" "${smallfixnumber}"
     zimghash=$(sha256sum /home/tc/redpill-load/localdiskp2/zImage | awk '{print $1}')
     updateuserconfigfield "general" "zimghash" "$zimghash"
     rdhash=$(sha256sum /home/tc/redpill-load/localdiskp2/rd.gz | awk '{print $1}')

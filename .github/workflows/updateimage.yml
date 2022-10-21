@@ -64,7 +64,7 @@ jobs:
           workfile="`ls  $srcdir/*uefi*`"
           mv $workfile $workdir
           workfile="`ls *uefi*`"
-          imgversion="`ls $workfile | cut -c 23-29`"
+          imgversion="`ls $workfile | cut -c 23-30`"
           imgfile="`echo $workfile | sed -e 's/.gz//g'`"
           echo "Found workfile : $workfile , imgversion : $imgversion copying from $srcdir to $workdir"
           sudo losetup -fP ./$imgfile
@@ -121,7 +121,7 @@ jobs:
           workfile="`ls $srcdir/tinycore-redpill.*.img*`"
           mv $workfile $workdir
           workfile="`ls tinycore-redpill.*.img*`"
-          imgversion="`ls $workfile | cut -c 18-24`"
+          imgversion="`ls $workfile | cut -c 18-25`"
           imgfile="`echo $workfile | sed -e 's/.gz//g'`"
           echo "Found workfile : $workfile , imgversion : $imgversion copying from $srcdir to $workdir"
           sudo losetup -fP ./$imgfile

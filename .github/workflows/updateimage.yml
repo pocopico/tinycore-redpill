@@ -43,7 +43,7 @@ jobs:
           echo '---start Update---'
           mkdir /opt/images 
           cd /opt/images/
-          URLS="`curl -s https://api.github.com/repos/pocopico/tinycore-redpill/releases/tags/v0.9.2.3 | jq -r -e .assets[].browser_download_url`"
+          URLS="`curl -s https://api.github.com/repos/pocopico/tinycore-redpill/releases/tags/v0.9.2.8 | jq -r -e .assets[].browser_download_url`"
           for file in $URLS; do curl --insecure --silent --location "$file" -O ; done
           ls -ltr 
           gunzip *.gz

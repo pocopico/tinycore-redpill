@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 221020
-# Version : 0.9.2.9
+# Date : 221115
+# Version : 0.9.3.0
 #
 #
 # User Variables :
 
-rploaderver="0.9.2.9"
+rploaderver="0.9.3.0"
 build="main"
 redpillmake="prod"
 
@@ -86,6 +86,7 @@ function history() {
     0.9.2.7 Added setting the static network configuration for TCRP Friend
     0.9.2.8 Changed all curl calls to use the --insecure flag to avoid expired certificate issues
     0.9.2.9 Added the smallfixnumber key in user_config.json and changed the platform ids to model ids
+    0.9.3.0 Changed set root entry to search for FS UUID
     --------------------------------------------------------------------------------------
 EOF
 
@@ -2322,7 +2323,7 @@ function tinyentry() {
     cat <<EOF
 menuentry 'Tiny Core Image Build' {
         savedefault
-        set root=(hd0,msdos3)
+        search --set=root --fs-uuid $usbpart3uuid --hint hd0,msdos3
         echo Loading Linux...
         linux /vmlinuz64 loglevel=3 cde waitusb=5 vga=791
         echo Loading initramfs...
@@ -2338,7 +2339,7 @@ function tcrpfriendentry() {
     cat <<EOF
 menuentry 'Tiny Core Friend' {
         savedefault
-        set root=(hd0,msdos3)
+        search --set=root --fs-uuid $usbpart3uuid --hint hd0,msdos3
         echo Loading Linux...
         linux /bzImage-friend loglevel=3 waitusb=5 vga=791 net.ifnames=0 biosdevname=0 
         echo Loading initramfs...
@@ -2673,27 +2674,19 @@ function buildloader() {
     sudo umount /dev/${loaderdisk}1
     sudo umount /dev/${loaderdisk}2
 
-    if [ -d localdiskp1 ]; then
-        sudo mount /dev/${loaderdisk}1 localdiskp1
-        echo "Mounting /dev/${loaderdisk}1 to localdiskp1 "
-    else
-        mkdir localdiskp1
-        sudo mount /dev/${loaderdisk}1 localdiskp1
-        echo "Mounting /dev/${loaderdisk}1 to localdiskp1 "
-    fi
+    mkdir -p localdisk1
+    sudo mount /dev/${loaderdisk}1 localdiskp1
+    echo "Mounting /dev/${loaderdisk}1 to localdiskp1 "
 
-    if [ -d localdiskp2 ]; then
-        sudo mount /dev/${loaderdisk}2 localdiskp2
-        echo "Mounting /dev/${loaderdisk}2 to localdiskp2 "
-    else
-        mkdir localdiskp2
-        sudo mount /dev/${loaderdisk}2 localdiskp2
-        echo /dev/${loaderdisk}2 localdiskp2
-    fi
+    mkdir -p localdisk2
+    sudo mount /dev/${loaderdisk}2 localdiskp2
+    echo "Mounting /dev/${loaderdisk}2 to localdiskp2 "
 
     if [ $(mount | grep -i part1 | wc -l) -eq 1 ] && [ $(mount | grep -i part2 | wc -l) -eq 1 ] && [ $(mount | grep -i localdiskp1 | wc -l) -eq 1 ] && [ $(mount | grep -i localdiskp2 | wc -l) -eq 1 ]; then
         sudo cp -rf part1/* localdiskp1/
         sudo cp -rf part2/* localdiskp2/
+        echo "Replacing set root with filesystem UUID instead"
+        sudo sed -i "s/set root=(hd0,msdos1)/search --set=root --fs-uuid $usbpart1uuid --hint hd0,msdos1/" localdiskp1/boot/grub/grub.cfg
         echo "Creating tinycore entry"
         tinyentry | sudo tee --append localdiskp1/boot/grub/grub.cfg
 
@@ -2961,8 +2954,11 @@ function getvars() {
     TARGET_VERSION="$(echo $platform_selected | jq -r -e '.platform_version | split("-")' | jq -r -e .[1])"
     TARGET_REVISION="$(echo $platform_selected | jq -r -e '.platform_version | split("-")' | jq -r -e .[2])"
     REDPILL_LKM_MAKE_TARGET="$(echo $platform_selected | jq -r -e '.redpill_lkm_make_target')"
-    tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+    tcrpdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+    tcrppart="${tcrpdisk}3"
     local_cache="/mnt/${tcrppart}/auxfiles"
+    usbpart1uuid=$(blkid /dev/${tcrpdisk}1 | awk '{print $3}' | sed -e "s/\"//g" -e "s/UUID=//g")
+    usbpart3uuid=$(blkid /dev/${tcrpdisk}3 | awk '{print $2}' | sed -e "s/\"//g" -e "s/UUID=//g")
 
     [ ! -h /lib64 ] && sudo ln -s /lib /lib64
 

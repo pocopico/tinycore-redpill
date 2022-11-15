@@ -2674,11 +2674,11 @@ function buildloader() {
     sudo umount /dev/${loaderdisk}1
     sudo umount /dev/${loaderdisk}2
 
-    mkdir -p localdisk1
+    mkdir -p localdiskp1
     sudo mount /dev/${loaderdisk}1 localdiskp1
     echo "Mounting /dev/${loaderdisk}1 to localdiskp1 "
 
-    mkdir -p localdisk2
+    mkdir -p localdiskp2
     sudo mount /dev/${loaderdisk}2 localdiskp2
     echo "Mounting /dev/${loaderdisk}2 to localdiskp2 "
 

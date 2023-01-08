@@ -226,7 +226,7 @@ function serialgen() {
 
   [ "$2" == "realmac" ] && let keepmac=1 || let keepmac=0
 
-  if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "FS6400" ]; then
+  if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "SA6400" ] ; then
     serial="$(generateSerial $1)"
     mac="$(generateMacAddress $1)"
     realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}')
@@ -260,7 +260,7 @@ function serialgen() {
     fi
   else
     echo "Error : $1 is not an available model for serial number generation. "
-    echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622"
+    echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 SA6400"
   fi
 
 }
@@ -297,6 +297,10 @@ function beginArray() {
     serialstart="2080"
     ;;
   FS6400)
+    permanent="PSN"
+    serialstart="1960"
+    ;;
+  SA6400)
     permanent="PSN"
     serialstart="1960"
     ;;
@@ -377,6 +381,9 @@ function generateSerial() {
   FS6400)
     serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
     ;;
+  SA6400)
+    serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
+    ;; 
   DS920+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
@@ -509,7 +516,7 @@ function checkextractor() {
   if [ -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && [ -f /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.nano ]; then
     extractorcached="yes"
   else
-    extractorcached="yes"
+    extractorcached="no"
   fi
 
 }

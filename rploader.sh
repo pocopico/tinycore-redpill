@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 221122
-# Version : 0.9.4.0
+# Date : 230108
+# Version : 0.9.4.1
 #
 #
 # User Variables :
 
-rploaderver="0.9.4.0"
+rploaderver="0.9.4.1"
 build="main"
 redpillmake="prod"
 
@@ -88,6 +88,7 @@ function history() {
     0.9.2.9 Added the smallfixnumber key in user_config.json and changed the platform ids to model ids
     0.9.3.0 Changed set root entry to search for FS UUID
     0.9.4.0 Added experimental DS923+ model, added new extensions handler functions
+    0.9.4.1 Fixed missing serian and mac if user has not taken that into account. 
     --------------------------------------------------------------------------------------
 EOF
 
@@ -2820,6 +2821,20 @@ function buildloader() {
     else
         echo "Error : Problem found in user_config.json"
         exit 99
+    fi
+
+    sn=$(cat user_config.json | jq -r -e '.extra_cmdline .sn')
+    mac=$(cat user_config.json | jq -r -e '.extra_cmdline .mac1')
+
+    if [ -z "$sn" ] || [ -z "$mac" ]; then
+
+        echo "Missing serial and/or mac in userconfig.json , generating random"
+        serial="$(generateSerial $MODEL)"
+        macaddress="$(generateMacAddress $MODEL | sed -e 's/://g')"
+        echo "Randon serial = $serial, macaddress = $macaddress"
+        json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
+        json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
+
     fi
 
     removebundledexts

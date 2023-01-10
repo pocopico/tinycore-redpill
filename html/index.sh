@@ -807,7 +807,40 @@ function cleanbuild() {
 
 }
 
+function addextensions() {
+
+  cd $HOMEPATH/
+
+  # extadd URL PLATFORM
+  BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]')"
+  platform_selected="$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq ".build_configs[] | select(.id==\"${BUILDMODEL}-${VERSION}\")")"
+  EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
+  EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -s 's/,//g')"
+  BUILDVERSION="$(echo $VERSION | awk -F- '{print $2}')"
+
+  wecho "PLATFORM SELECTED : $platform_selected"
+  wecho "EXTENSIONS_SOURCE_URL : $EXTENSIONS_SOURCE_URL"
+
+  wecho "Adding extensions for ${BUILDMODEL}_${BUILDVERSION}"
+
+  for EXT in $EXTENSIONS_SOURCE_URL; do
+    wecho "Adding required extension $EXT for ${BUILDMODEL}_${BUILDVERSION}"
+    wecho "extadd $EXT ${BUILDMODEL}_${BUILDVERSION}"
+
+    $HOMEPATH/include/extmgr.sh extadd "$EXT" "${BUILDMODEL}_${BUILDVERSION}"
+
+  done
+
+  $HOMEPATH/include/listmodules.sh "${BUILDMODEL}_${BUILDVERSION}"
+
+  wecho "Processing extensions"
+  $HOMEPATH/include/extmgr.sh processexts
+
+}
+
 function patchramdisk() {
+
+  addextensions
 
   temprd="${TEMPPAT}/rd.temp/"
   wecho "Patching RamDisk"

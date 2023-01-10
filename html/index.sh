@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sudo bash
 
 #. ./rploader.sh
 
@@ -226,7 +226,7 @@ function serialgen() {
 
   [ "$2" == "realmac" ] && let keepmac=1 || let keepmac=0
 
-  if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "SA6400" ] ; then
+  if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "SA6400" ]; then
     serial="$(generateSerial $1)"
     mac="$(generateMacAddress $1)"
     realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}')
@@ -383,7 +383,7 @@ function generateSerial() {
     ;;
   SA6400)
     serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
-    ;; 
+    ;;
   DS920+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
@@ -445,6 +445,24 @@ function buildform() {
 
 </form>
 EOF
+  checkcached
+
+}
+
+function checkcached() {
+
+  patfile="$(find /mnt/sdb3/auxfiles/ | grep -i $OS_ID)"
+  #patfile="/mnt/${tcrppart}/auxfiles/sa6400_42962.pat"
+
+  [ -z "$patfile" ] && patfile="$(find /home/tc/html/ | grep -i $OS_ID)"
+
+  if [ ! -z "$patfile" ] && [ -f "$patfile" ]; then
+    iscached="yes"
+    echo "PATFILE for ${MODEL}_${VERSION} is CACHED as file ${patfile}" >>${BUILDLOG}
+  else
+    iscached="no"
+    echo "PATFILE for ${MODEL}_${VERSION} is NOT CACHED" >>${BUILDLOG}
+  fi
 
 }
 
@@ -620,7 +638,7 @@ function downloadextractor() {
 function getstaticmodule() {
 
   #SYNOMODEL="$(echo $MODEL | sed -s 's/+/p/g' | tr '[:upper:]' '[:lower:]')_${REVISION}"
-  SYNOMODEL="$(echo $MODEL | sed -s 's/+/p/g' | tr '[:upper:]' '[:lower:]')_42218"
+  SYNOMODEL="$(echo $OS_ID | sed -s 's/+/p/g' | tr '[:upper:]' '[:lower:]')"
 
   cd ${HOMEPATH}
 
@@ -706,6 +724,10 @@ function _set_conf_kv() {
 
 function downloadpat() {
 
+  checkcached
+
+  [ "$iscached" = "yes" ] && echo "Found cached PAT file $patfile" && cp $patfile ./$FILENAME
+
   if [ ! -f $FILENAME ]; then
     wecho "Downloading PAT file $FILENAME for MODEL=$MODEL, Version=$VERSION, SHA256=$PAT_SHA"
     curl --insecure --silent "$PAT_URL" --output "$FILENAME" | tee -a ${BUILDLOG}
@@ -742,16 +764,23 @@ function downloadtools() {
 
 }
 
-function extractencryptedpat() {
+function extractpat() {
 
   FILENAME="$1"
+  mkdir -p $TEMPPAT
 
-  checkextractor && [ "$extractorcached" = "yes" ] && wecho "Extractor Cached, proceeding..."
-  wecho "Extracting PAT file $FILENAME"
-  [ ! -d ${TEMPPAT} ] && mkdir -p ${TEMPPAT}
+  if [ "$isencrypted" = "yes" ]; then
+    checkextractor && [ "$extractorcached" = "yes" ] && wecho "Extractor Cached, proceeding..."
+    wecho "Extracting encrypted PAT file $FILENAME"
+    [ ! -d ${TEMPPAT} ] && mkdir -p ${TEMPPAT}
 
-  LD_LIBRARY_PATH=/mnt/${tcrppart}/auxfiles/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.system -C ${TEMPPAT} -xf $FILENAME
+    LD_LIBRARY_PATH=/mnt/${tcrppart}/auxfiles/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.system -C ${TEMPPAT} -xf $FILENAME
+  else
+    wecho "Extracting unencrypted PAT file $FILENAME to $TEMPPAT"
+    tar xf $FILENAME -C ${TEMPPAT}
+  fi
 
+  [ ! -f ${TEMPPAT}/VERSION ] && echo "FAILED to extract" && exit 99
   [ -f ${TEMPPAT}/VERSION ] && . ${TEMPPAT}/VERSION && wecho "Extracted PAT file, VERSION Found : ${major}.${minor}.${micro}_${buildnumber}"
   extractedzImagesha="$(sha256sum ${TEMPPAT}/zImage | awk '{print $1}')"
   extractedrdsha="$(sha256sum ${TEMPPAT}/rd.gz | awk '{print $1}')"
@@ -774,7 +803,6 @@ function patchkernel() {
 function cleanbuild() {
 
   wecho "Cleaning build directory"
-
   rm -rf ${TEMPPAT}
 
 }
@@ -1062,9 +1090,11 @@ function build() {
   cleanbuild
   testarchive $FILENAME
   checkextractor
+  checkcached
 
   [ "$isencrypted" = "yes" ] && [ "$extractorcached" = "no" ] && downloadextractor
-  [ "$isencrypted" = "yes" ] && [ "$extractorcached" = "yes" ] && extractencryptedpat "$FILENAME"
+
+  extractpat "$FILENAME"
 
   [ "$extractedzImagesha" = "$ZIMAGE_SHA" ] && wecho "zImage sha256sum matches expected sha256sum, patching kernel" && patchkernel
   [ "$extractedrdsha" = "$RD_SHA" ] && wecho "ramdisk sha256sum matches expected sha256sum, patching kernel" && patchramdisk

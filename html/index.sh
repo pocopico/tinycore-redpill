@@ -10,6 +10,7 @@ CONFIGFILES="${HOMEPATH}/redpill-load/config"
 PATCHEXTRACTOR="${HOMEPATH}/patch-extractor"
 THISURL="index.sh"
 BUILDLOG="/home/tc/html/buildlog.txt"
+USERCONFIGFILE="/home/tc/user_config.json"
 
 ############################################
 
@@ -245,7 +246,7 @@ function serialgen() {
 
     if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
       # sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"," user_config.json
-      json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
+      json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
 
       if [ $keepmac -eq 1 ]; then
         macaddress=$(echo $realmac | sed -s 's/://g')
@@ -253,10 +254,10 @@ function serialgen() {
         macaddress=$(echo $mac | sed -s 's/://g')
       fi
 
-      json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
+      json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
       # sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"," user_config.json
     else
-      echo "OK remember to update manually by editing user_config.json file"
+      echo "OK remember to update manually by editing $USERCONFIGFILE file"
     fi
   else
     echo "Error : $1 is not an available model for serial number generation. "
@@ -416,8 +417,8 @@ function generateSerial() {
 
 function buildform() {
 
-  json=$(jq --arg var "$MODEL" '.general.model = $var' user_config.json) && echo -E "${json}" | jq . >user_config.json
-  json=$(jq --arg var "$VERSION" '.general.version = $var' user_config.json) && echo -E "${json}" | jq . >user_config.json
+  json=$(jq --arg var "$MODEL" '.general.model = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
+  json=$(jq --arg var "$VERSION" '.general.version = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
 
   serialgen "$MODEL" | awk -F= '{print $2}' | sed -e 'N;s/\n/ /' | read serial macaddress
   serialgen "$MODEL" >/dev/null
@@ -514,7 +515,7 @@ function getvars() {
   RAMDISK_PATCH=$(cat ${CONFIGFILES}/$MODEL/$VERSION/config.json | jq -r -e ' .patches .ramdisk')
   SYNOINFO_PATCH=$(cat ${CONFIGFILES}/$MODEL/$VERSION/config.json | jq -r -e ' .synoinfo')
   RAMDISK_COPY=$(cat ${CONFIGFILES}/$MODEL/$VERSION/config.json | jq -r -e ' .extra .ramdisk_copy')
-  SYNOINFO_USER=$(cat ${HOMEPATH}/user_config.json | jq -r -e ' .synoinfo')
+  SYNOINFO_USER=$(cat $USERCONFIGFILE | jq -r -e ' .synoinfo')
   RD_COMPRESSED=$(cat ${CONFIGFILES}/$MODEL/$VERSION/config.json | jq -r -e ' .extra .compress_rd')
   redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
   FILENAME="${OS_ID}.pat"
@@ -726,7 +727,11 @@ function downloadpat() {
 
   checkcached
 
-  [ "$iscached" = "yes" ] && echo "Found cached PAT file $patfile" && cp $patfile ./$FILENAME
+  if [ "$iscached" = "yes" ]; then
+    echo "Found cached PAT file $patfile"
+    cp $patfile ./$FILENAME
+    return
+  fi
 
   if [ ! -f $FILENAME ]; then
     wecho "Downloading PAT file $FILENAME for MODEL=$MODEL, Version=$VERSION, SHA256=$PAT_SHA"
@@ -736,7 +741,7 @@ function downloadpat() {
   else
     wecho "$(sha256sum $FILENAME | awk '{print $1}')" = "$PAT_SHA"
     wecho "File $FILENAME is already downloaded"
-
+    return
     if [ "$(sha256sum $FILENAME | awk '{print $1}')" = "$PAT_SHA" ]; then
       wecho "File downloaded and matches expected sha256sum"
     else
@@ -784,8 +789,8 @@ function extractpat() {
   [ -f ${TEMPPAT}/VERSION ] && . ${TEMPPAT}/VERSION && wecho "Extracted PAT file, VERSION Found : ${major}.${minor}.${micro}_${buildnumber}"
   extractedzImagesha="$(sha256sum ${TEMPPAT}/zImage | awk '{print $1}')"
   extractedrdsha="$(sha256sum ${TEMPPAT}/rd.gz | awk '{print $1}')"
-  wecho "zImage sha256sum : $extractedzImagesha" && json=$(jq --arg var "${extractedzImagesha}" '.general.zimghash = $var' user_config.json) && echo -E "${json}" | jq . >user_config.json
-  wecho "rd sha256sum : $extractedrdsha" && json=$(jq --arg var "${extractedrdsha}" '.general.rdhash = $var' user_config.json) && echo -E "${json}" | jq . >user_config.json
+  wecho "zImage sha256sum : $extractedzImagesha" && json=$(jq --arg var "${extractedzImagesha}" '.general.zimghash = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
+  wecho "rd sha256sum : $extractedrdsha" && json=$(jq --arg var "${extractedrdsha}" '.general.rdhash = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
 
 }
 
@@ -815,7 +820,7 @@ function addextensions() {
   BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]')"
   platform_selected="$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq ".build_configs[] | select(.id==\"${BUILDMODEL}-${VERSION}\")")"
   EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
-  EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -s 's/,//g')"
+  EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
   BUILDVERSION="$(echo $VERSION | awk -F- '{print $2}')"
 
   wecho "PLATFORM SELECTED : $platform_selected"
@@ -827,14 +832,14 @@ function addextensions() {
     wecho "Adding required extension $EXT for ${BUILDMODEL}_${BUILDVERSION}"
     wecho "extadd $EXT ${BUILDMODEL}_${BUILDVERSION}"
 
-    $HOMEPATH/include/extmgr.sh extadd "$EXT" "${BUILDMODEL}_${BUILDVERSION}"
+    $HOMEPATH/include/extmgr.sh extadd $EXT "${BUILDMODEL}_${BUILDVERSION}"
 
   done
 
   $HOMEPATH/include/listmodules.sh "${BUILDMODEL}_${BUILDVERSION}"
 
   wecho "Processing extensions"
-  $HOMEPATH/include/extmgr.sh processexts
+  $HOMEPATH/include/extmgr.sh processexts "${BUILDMODEL}_${BUILDVERSION}"
 
 }
 
@@ -880,8 +885,13 @@ function patchramdisk() {
     cp -f $SRC $DST
   done <<<$(echo $RAMDISK_COPY | jq . | grep "COMMON" | sed -s 's/"//g' | sed -s 's/,//g' | sed -s 's/@@@COMMON@@@/\/home\/tc\/redpill-load\/config\/_common/')
 
-  wecho "Adding precompiled redpill module"
-  getstaticmodule
+  #wecho "Adding precompiled redpill module"
+  #getstaticmodule
+
+  cd $HOMEPATH
+  $HOMEPATH/include/extmgr.sh createcustominitfile "${BUILDMODEL}_${BUILDVERSION}"
+  cd $temprd
+  cp -rpf $HOMEPATH/customtemp/* .
 
   # Reassembly ramdisk
   wecho "Reassempling ramdisk"
@@ -894,6 +904,7 @@ function patchramdisk() {
 
   wecho "Copying file to ${tcrppart}"
 
+  cp -f $HOMEPATH/custom.gz /mnt/${tcrppart}/
   cp -f ${TEMPPAT}/zImage-dsm /mnt/${tcrppart}/
   cp -f ${TEMPPAT}/initrd-dsm /mnt/${tcrppart}/
 
@@ -1118,6 +1129,10 @@ function build() {
 
   #window.open("index.sh&monitor");
 
+  wecho "Starting build"
+  wecho "Buildling loader for $model, $version, with serial number : $serial and macaddress : $macaddress"
+  wecho "extracommans : $extracmdline"
+
   getvars
 
   cleanbuild
@@ -1129,44 +1144,48 @@ function build() {
 
   extractpat "$FILENAME"
 
-  [ "$extractedzImagesha" = "$ZIMAGE_SHA" ] && wecho "zImage sha256sum matches expected sha256sum, patching kernel" && patchkernel
-  [ "$extractedrdsha" = "$RD_SHA" ] && wecho "ramdisk sha256sum matches expected sha256sum, patching kernel" && patchramdisk
+  [ "$extractedzImagesha" = "$ZIMAGE_SHA" ] && wecho "zImage sha256sum matches expected sha256sum, patching kernel" && patchkernel || wecho "zImage does not match sha256sum : $extractedzImagesha"
+  [ "$extractedrdsha" = "$RD_SHA" ] && wecho "ramdisk sha256sum matches expected sha256sum, patching kernel" && patchramdisk || wecho "rd.gz  does not match sha256sum : $extractedrdsha"
 
   [ -n "${extracmdline}" ] && wecho "Extra User built defined command line parameters ${extracmdline}"
 
   while IFS="=" read KEY VALUE; do
     #wecho "User cmdline Key :$KEY Value: $VALUE"
-    #_set_conf_kv $KEY $VALUE user_config.json
-    #wecho "Debug : ${KEY} : $(json_has_field '${HOMEPATH}/user_config.json' '.extra_cmdline.$KEY')"
+    #_set_conf_kv $KEY $VALUE $USERCONFIGFILE
+    #wecho "Debug : ${KEY} : $(json_has_field '$USERCONFIGFILE' '.extra_cmdline.$KEY')"
     if [ ! -z $KEY ] && [ ! -z $VALUE ]; then
-      /usr/local/bin/jq -e -r ".extra_cmdline.${KEY}|select(0)" "${HOMEPATH}/user_config.json" >/dev/null 2>&1 >/dev/null
+      /usr/local/bin/jq -e -r ".extra_cmdline.${KEY}|select(0)" "$USERCONFIGFILE" >/dev/null 2>&1 >/dev/null
       rtncode=$?
       if [ $rtncode -eq 0 ]; then
         #wecho "Field exists, updating"
-        json=$(jq --arg var "${VALUE}" ".extra_cmdline.${KEY}"' = $var' user_config.json) && echo -E "${json}" | jq . >user_config.json
+        json=$(jq --arg var "${VALUE}" ".extra_cmdline.${KEY}"' = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
       else
         #wecho "Field does not exist, adding "
-        json=$(jq ".extra_cmdline +={\"${KEY}\":\"$VALUE\"}" user_config.json) && echo -E "${json}" | jq . >user_config.json
+        json=$(jq ".extra_cmdline +={\"${KEY}\":\"$VALUE\"}" $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
       fi
     fi
   done <<<$(echo $extracmdline | sed -s 's/ /\n/g')
 
-  wecho "Clearing and testing user_config.json"
-  json=$(cat ${HOMEPATH}/user_config.json | sed -s 's/\\r//g' | jq .) && echo -E "${json}" | jq . >user_config.json
+  wecho "Clearing and testing $USERCONFIGFILE"
+  json=$(cat $USERCONFIGFILE | sed -s 's/\\r//g' | jq .) && echo -E "${json}" | jq . >$USERCONFIGFILE
 
   wecho "Building CMD Line"
 
-  USB_LINE=$(getcmdline ${CONFIGFILES}/$MODEL/$VERSION/config.json ${HOMEPATH}/user_config.json 2>&1 | grep linux | head -1 | cut -c 16-999)
-  SATA_LINE=$(getcmdline ${CONFIGFILES}/$MODEL/$VERSION/config.json ${HOMEPATH}/user_config.json 2>&1 | grep linux | tail -1 | cut -c 16-999)
+  USB_LINE=$(getcmdline ${CONFIGFILES}/$MODEL/$VERSION/config.json $USERCONFIGFILE 2>&1 | grep linux | head -1 | cut -c 16-999)
+  SATA_LINE=$(getcmdline ${CONFIGFILES}/$MODEL/$VERSION/config.json $USERCONFIGFILE 2>&1 | grep linux | tail -1 | cut -c 16-999)
+
+  wecho "Updating user_config with serial : $serial and macaddress : $macaddress"
+  json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
 
   wecho "Updated user_config with USB Command Line : $USB_LINE"
-  json=$(jq --arg var "${USB_LINE}" '.general.usb_line = $var' user_config.json) && echo -E "${json}" | jq . >user_config.json
+  json=$(jq --arg var "${USB_LINE}" '.general.usb_line = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
   wecho "Updated user_config with SATA Command Line : $SATA_LINE"
-  json=$(jq --arg var "${SATA_LINE}" '.general.sata_line = $var' user_config.json) && echo -E "${json}" | jq . >user_config.json
+  json=$(jq --arg var "${SATA_LINE}" '.general.sata_line = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
 
-  wecho "Copying user_config.json to boot partition"
-  cp -f ${HOMEPATH}/user_config.json /mnt/${tcrppart}/
-  [ "$(sha256sum ${HOMEPATH}/user_config.json | awk '{print $1}')" = "$(sha256sum /mnt/${tcrppart}/user_config.json | awk '{print $1}')" ] && wecho "File copied succesfully" || wecho "User config file is corrupted "
+  wecho "Copying $USERCONFIGFILE to boot partition"
+  cp -f $USERCONFIGFILE /mnt/${tcrppart}/
+  [ "$(sha256sum $USERCONFIGFILE | awk '{print $1}')" = "$(sha256sum /mnt/${tcrppart}/user_config.json | awk '{print $1}')" ] && wecho "File copied succesfully" || wecho "User config file is corrupted "
 
 }
 

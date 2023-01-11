@@ -1,7 +1,48 @@
 #!/bin/bash
 
+HOMEPATH="/home/tc"
+CONFIGFILES="${HOMEPATH}/redpill-load/config"
+
+function getstaticmodule() {
+        redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill${redpillmake}/rpext-index.json"
+        SYNOMODEL="$(cat /home/tc/payload/platform)"
+
+        echo "Removing any old redpill.ko modules"
+        [ -f redpill.ko ] && rm -f redpill.ko
+
+        extension=$(curl --insecure --silent --location "$redpillextension")
+
+        echo "Looking for redpill for : $SYNOMODEL"
+
+        release=$(echo $extension | jq -r -e --arg SYNOMODEL $SYNOMODEL '.releases[$SYNOMODEL]')
+        files=$(curl --insecure --silent --location "$release" | jq -r '.files[] .url' | grep -v ".sh")
+
+        for file in $files; do
+                echo "Getting file $file"
+                curl --insecure --silent -O $file
+                if [ -f redpill*.tgz ]; then
+                        echo "Extracting module"
+                        gunzip redpill*.tgz
+                        tar xf redpill*.tar
+                        rm redpill*.tar
+                        strip --strip-debug redpill.ko
+                fi
+        done
+
+        if [ -f redpill.ko ] && [ -n $(strings redpill.ko | grep -i $model) ]; then
+                echo "Copying redpill.ko module to ramdisk"
+                cp redpill.ko usr/lib/modules/rp.ko
+        else
+                echo "Module does not contain platform information for ${model}"
+        fi
+
+        [ -f usr/lib/modules/rp.ko ] && echo "Redpill module is in place" && rm redpill.ko
+
+}
+
 function extadd() {
 
+        shift 1
         extvars $1 $2
 
         [ ! -d payload ] && mkdir payload
@@ -21,6 +62,8 @@ function extadd() {
 }
 
 function extremove() {
+
+        shift 1
 
         extvars $1 $2
 
@@ -119,11 +162,38 @@ function processexts() {
                 fi
         done
 
-        chmod 777 *.sh */*.sh
+        find . -type f -name "*.sh" -exec chmod 777 {} \;
+        #[ $(ls -ltr *.sh | wc -l) -gt 0 ] && chmod 777 *.sh
+        #[ -f "*/*.sh" ] && [ $(ls -ltr */*.sh | wc -l) -gt 0 ] && chmod 777 */*.sh
+
+}
+
+function readconfig() {
+
+        userconfigfile=/home/tc/user_config.json
+
+        if [ -f $userconfigfile ]; then
+                model="$(jq -r -e '.general .model' $userconfigfile)"
+                version="$(jq -r -e '.general .version' $userconfigfile)"
+                smallfixnumber="$(jq -r -e '.general .smallfixnumber' $userconfigfile)"
+                redpillmake="$(jq -r -e '.general .redpillmake' $userconfigfile)"
+                friendautoupd="$(jq -r -e '.general .friendautoupd' $userconfigfile)"
+                hidesensitive="$(jq -r -e '.general .hidesensitive' $userconfigfile)"
+                serial="$(jq -r -e '.extra_cmdline .sn' $userconfigfile)"
+                rdhash="$(jq -r -e '.general .rdhash' $userconfigfile)"
+                zimghash="$(jq -r -e '.general .zimghash' $userconfigfile)"
+                mac1="$(jq -r -e '.extra_cmdline .mac1' $userconfigfile)"
+        else
+                echo "ERROR ! User config file : $userconfigfile not found"
+        fi
+
+        [ -z "$redpillmake" ] || [ "$redpillmake" = "null" ] && echo "redpillmake setting not found while reading $userconfigfile, defaulting to dev" && redpillmake="dev"
 
 }
 
 function createcustominitfile() {
+
+        readconfig
 
         echo "Creating custom initrd structure"
 
@@ -133,24 +203,13 @@ function createcustominitfile() {
 
         #### CREATE modprobe file
 
-        cat <<EOF >usr/sbin/modprobe
-#!/usr/bin/sh
-for arg in "\$@"
-do
-  if [ "\$arg" = "elevator-iosched" ]; then
-    /sbin/insmod /usr/lib/modules/rp.ko
-    rm /usr/lib/modules/rp.ko
-    rm /sbin/modprobe
-    exit 0
-  fi
-done
-exit 1
-EOF
+        MODPROBE=$(cat ${CONFIGFILES}/${model}/${version}/config.json | jq -r -e ' .extra .ramdisk_copy' | sed -e 's/"//g' | grep modprobe | sed -s 's/@@@COMMON@@@/\/home\/tc\/redpill-load\/config\/_common/' | awk -F: '{print $1}')
+
+        cat $MODPROBE >usr/sbin/modprobe
 
         chmod 777 usr/sbin/modprobe
 
-        echo "getredpillmodule and place it under usr/lib/modules/"
-        cp /home/tc/redpill.ko usr/lib/modules
+        getstaticmodule $2
 
         mkdir -p exts && cp -arfp /home/tc/payload/* exts/
 
@@ -214,11 +273,72 @@ EOF
 
         chmod 777 exts/exec.sh
 
-        echo "Creating custom.gz file and placing it in place"
+        echo "Changing execute permission on scripts"
+        find . -type f -name "*.sh" -exec chmod 777 {} \;
 
-        sudo find . | sudo cpio -o -H newc -R root:root >../custom.gz
+        echo "I'm in $PWD and i'm Creating custom.gz file and placing it in place /home/tc/custom.gz"
+
+        find . | cpio -o -H newc -R root:root >/home/tc/custom.gz
+
+        ls -ltr "/home/tc/custom.gz"
+
+}
+
+function syntaxcheck() {
+
+        if [ "$1" == "extadd" ] || [ "$1" == "extremove" ] || [ "$1" == "processexts" ] || [ "$1" == "createcustominitfile" ]; then
+
+                echo "Error : $0 Insufficient number of arguments : $#, command $1, option $2"
+
+                case $1 in
+                extadd)
+                        echo "example : $0 extadd https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/rpext-index.json ds3622xsp_42962"
+                        ;;
+                extremove)
+                        echo "example : $0 extremove https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/rpext-index.json ds3622xsp_42962"
+                        ;;
+                processexts)
+                        echo "example : $0 $1 ds3622xsp_42962"
+                        ;;
+                createcustominitfile)
+                        echo "example : $0 createcustominitfile ds3622xsp_42962"
+                        ;;
+                esac
+        else
+                echo "$0, $1 is an invalid command. Valid commands are : extadd, extremove, processexts, createcustominitfile"
+
+        fi
+
+        exit 1
 
 }
 
 # ./newcustom.sh extadd https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/rpext-index.json ds3622xsp_42951
-$1 $2 $3
+#$1 $2 $3
+
+case $1 in
+
+extadd)
+        [ $# -lt 3 ] && syntaxcheck $@
+        extadd $@
+        ;;
+
+extremove)
+        [ $# -lt 2 ] && syntaxcheck $@
+        extremove $@
+        ;;
+
+createcustominitfile)
+        [ $# -lt 2 ] && syntaxcheck $@
+        createcustominitfile $@
+        ;;
+
+processexts)
+        [ $# -lt 2 ] && syntaxcheck $@
+        processexts $@
+        ;;
+
+*)
+        syntaxcheck $@
+        ;;
+esac

@@ -66,7 +66,7 @@ VMLINUX_MOD=${1}
 ZIMAGE_MOD=${2}
 
 if [ ${KVER:0:1} -eq 4 ]; then
-
+echo "Kernel version 4"
   # Kernel version 4.x
   #zImage_head           16494
   #payload(
@@ -94,12 +94,12 @@ if [ ${KVER:0:1} -eq 4 ]; then
   size_le $(($((16#$(crc32 "${ZIMAGE_MOD}" | awk '{print$1}'))) ^ 0xFFFFFFFF)) | dd of="${ZIMAGE_MOD}" conv=notrunc oflag=append >"${LOG_FILE}" 2>&1 || dieLog
 
 else
-
+echo "Kernel version 5"
   # Kernel version 5.x
   gzip -cd "${SCRIPT_DIR}/bzImage-template-v5.gz" >"${ZIMAGE_MOD}"
 
-  lzma -9c ${VMLINUX_MOD} >${TMP_PATH}/vmlinux-mod.lzma
-  dd if="${TMP_PATH}/vmlinux-mod.lzma" of="${ZIMAGE_MOD}" bs=15377 seek=1 conv=notrunc >"${LOG_FILE}" 2>&1 || dieLog
+  lzma -9c ${VMLINUX_MOD} >vmlinux-mod.lzma
+  dd if="vmlinux-mod.lzma" of="${ZIMAGE_MOD}" bs=15377 seek=1 conv=notrunc >"${LOG_FILE}" 2>&1 || dieLog
   file_size_le "${VMLINUX_MOD}" | dd of="${ZIMAGE_MOD}" bs=8377991 seek=1 conv=notrunc >"${LOG_FILE}" 2>&1 || dieLog
   file_size_le "${VMLINUX_MOD}" | dd of="${ZIMAGE_MOD}" bs=8420412 seek=1 conv=notrunc >"${LOG_FILE}" 2>&1 || dieLog
 

@@ -499,9 +499,10 @@ function recho() {
 
 function getvars() {
 
-  sudo ln -s /lib /lib64
+  ln -s /lib /lib64
 
   tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+  tcrpdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
   local_cache="/mnt/${tcrppart}/auxfiles"
   GETTIME=$(curl -v --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
   INTERNETDATE=$(date +"%d%m%Y" -d "$GETTIME")
@@ -521,6 +522,9 @@ function getvars() {
   FILENAME="${OS_ID}.pat"
 
   mount ${tcrppart}
+  mount ${tcrpdisk}1
+  mount ${tcrpdisk}2
+  
 
   #wecho "tcrppart            :   $tcrppart    local_cache         :   $local_cache        INTERNETDATE        :   $INTERNETDATE     \  LOCALDATE           :   $LOCALDATE
   #OS_ID               :   $OS_ID              PAT_URL             :   $PAT_URL            PAT_SHA             :   $PAT_SHA          \
@@ -902,11 +906,23 @@ function patchramdisk() {
   fi
   [ -f ${TEMPPAT}/initrd-dsm ] && wecho "Patched ramdisk created $(ls -l ${TEMPPAT}/initrd-dsm)"
 
-  wecho "Copying file to ${tcrppart}"
+  wecho "Copying files to ${tcrppart}"
 
   cp -f $HOMEPATH/custom.gz /mnt/${tcrppart}/
   cp -f ${TEMPPAT}/zImage-dsm /mnt/${tcrppart}/
   cp -f ${TEMPPAT}/initrd-dsm /mnt/${tcrppart}/
+
+  cp -f ${TEMPPAT}/zImage /mnt/${tcrppart}1/
+  cp -f ${TEMPPAT}/rd.gz /mnt/${tcrppart}1/
+  cp -f $HOMEPATH/custom.gz /mnt/${tcrppart}1/
+
+  cp -f ${TEMPPAT}/zImage /mnt/${tcrppart}2/
+  cp -f ${TEMPPAT}/rd.gz /mnt/${tcrppart}2/
+
+
+rm -rf $HOMEPATH/html/$patfile
+rm -rf $HOMEPATH/temppat
+
 
 }
 

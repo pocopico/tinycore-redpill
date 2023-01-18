@@ -322,9 +322,18 @@ function beginArray() {
     serialstart="2080"
     ;;
   RS4021xs+)
-    permanent="SQR"
-    serialstart="2030 2040 20C0 2150"
+    permanent="T2R"
+    serialstart="2250"
     ;;
+  DS1522xs+)
+    permanent="TRR"
+    serialstart="2270"
+    ;;
+  DS923+)
+    permanent="TQR"
+    serialstart="2270"
+    ;;
+
   esac
 
 }
@@ -356,9 +365,14 @@ function toupper() {
 }
 
 function generateMacAddress() {
-  #toupper "Mac Address: 00:11:32:$(randomhex):$(randomhex):$(randomhex)"
-  printf '00:11:32:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
 
+  #toupper "Mac Address: 00:11:32:$(randomhex):$(randomhex):$(randomhex)"
+  if [ "$1" = "DS923+" ] || [ "$1" = "DS1522xs+" ] || [ "$1" = "RS4021xs+" ]; then
+    # DS1522xs+ and DS923+ Mac starts with 90:09:d0
+    printf '90:09:d0:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
+  else
+    printf '00:11:32:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
+  fi
 }
 
 function generateSerial() {
@@ -407,6 +421,12 @@ function generateSerial() {
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
   RS4021xs+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  DS923+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  DS1522xs+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
   esac
@@ -524,7 +544,6 @@ function getvars() {
   mount ${tcrppart}
   mount ${tcrpdisk}1
   mount ${tcrpdisk}2
-  
 
   #wecho "tcrppart            :   $tcrppart    local_cache         :   $local_cache        INTERNETDATE        :   $INTERNETDATE     \  LOCALDATE           :   $LOCALDATE
   #OS_ID               :   $OS_ID              PAT_URL             :   $PAT_URL            PAT_SHA             :   $PAT_SHA          \
@@ -919,10 +938,8 @@ function patchramdisk() {
   cp -f ${TEMPPAT}/zImage /mnt/${tcrppart}2/
   cp -f ${TEMPPAT}/rd.gz /mnt/${tcrppart}2/
 
-
-rm -rf $HOMEPATH/html/$patfile
-rm -rf $HOMEPATH/temppat
-
+  rm -rf $HOMEPATH/html/$patfile
+  rm -rf $HOMEPATH/temppat
 
 }
 

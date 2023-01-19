@@ -325,7 +325,7 @@ function beginArray() {
     permanent="T2R"
     serialstart="2250"
     ;;
-  DS1522xs+)
+  DS1522+)
     permanent="TRR"
     serialstart="2270"
     ;;
@@ -367,8 +367,8 @@ function toupper() {
 function generateMacAddress() {
 
   #toupper "Mac Address: 00:11:32:$(randomhex):$(randomhex):$(randomhex)"
-  if [ "$1" = "DS923+" ] || [ "$1" = "DS1522xs+" ] || [ "$1" = "RS4021xs+" ]; then
-    # DS1522xs+ and DS923+ Mac starts with 90:09:d0
+  if [ "$1" = "DS923+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "RS4021xs+" ]; then
+    # DS1522+ and DS923+ Mac starts with 90:09:d0
     printf '90:09:d0:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
   else
     printf '00:11:32:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
@@ -426,7 +426,7 @@ function generateSerial() {
   DS923+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
-  DS1522xs+)
+  DS1522+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
   esac

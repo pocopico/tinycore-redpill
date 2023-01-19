@@ -53,7 +53,7 @@ function beginArray() {
 		permanent="T2R"
 		serialstart="2250"
 		;;
-	DS1522xs+)
+	DS1522+)
 		permanent="TRR"
 		serialstart="2270"
 		;;
@@ -95,8 +95,8 @@ function toupper() {
 function generateMacAddress() {
 
 	#toupper "Mac Address: 00:11:32:$(randomhex):$(randomhex):$(randomhex)"
-	if [ "$1" = "DS923+" ] || [ "$1" = "DS1522xs+" ] || [ "$1" = "RS4021xs+" ]; then
-		# DS1522xs+ and DS923+ Mac starts with 90:09:d0
+	if [ "$1" = "DS923+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "RS4021xs+" ]; then
+		# DS1522+ and DS923+ Mac starts with 90:09:d0
 		printf '90:09:d0:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
 	else
 		printf '00:11:32:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
@@ -149,7 +149,7 @@ function generateSerial() {
 	DS923+)
 		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 		;;
-	DS1522xs+)
+	DS1522+)
 		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 		;;
 	esac
@@ -168,7 +168,7 @@ Usage: ${0} <platform>
 
 Available platforms :
 ----------------------------------------------------------------------------------------
-DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xsp FS6400 DVA3219 DVA3221 DS1621+ DVA1622 RS4021xs+ DS923+ SD1522xs+
+DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xsp FS6400 DVA3219 DVA3221 DS1621+ DVA1622 RS4021xs+ DS923+ DS1522+
 
 e.g. $(basename ${0}) DS3615xs
 ----------------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ EOF
 if [ -z "$1" ]; then
 	showhelp
 else
-	if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xsp" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "DS923+" ] || [ "$1" = "DS1522xs+" ]; then
+	if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xsp" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "DS923+" ] || [ "$1" = "DS1522+" ]; then
 		echo "Generating a random mac address : " $(generateMacAddress $1)
 		echo "Generating a Serial Number for Model $1: " $(generateSerial $1)
 	else

@@ -1,30 +1,29 @@
 #!/bin/bash
 platform="$1"
 modextension="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
-
-
-        MODULE_ALIAS_FILE="modules.alias.4.json"
-
+HOMEPATH="/home/tc"
+MODULE_ALIAS_FILE="${HOMEPATH}/modules.alias.4.json"
+RPEXTFILE="${HOMEPATH}/rpext-index.json"
 
 function listextension() {
 
-  if [ ! -f rpext-index.json ]; then
-#    curl --insecure --progress-bar --location ${modextension} --output rpext-index.json
-	echo "rpext-index.json not found"
+  if [ ! -f ${RPEXTFILE} ]; then
+    #    curl --insecure --progress-bar --location ${modextension} --output ${RPEXTFILE}
+    echo "${RPEXTFILE} not found"
   fi
 
-  ## Get extension author rpext-index.json and then parse for extension download with :
-  #       jq '. | select(.id | contains("vxge")) .url  ' rpext-index.json
+  ## Get extension author ${RPEXTFILE} and then parse for extension download with :
+  #       jq '. | select(.id | contains("vxge")) .url  ' ${RPEXTFILE}
 
   if [ ! -z $1 ]; then
     echo "Searching for matching extension for $1"
-    matchingextension="$(jq -r -e ". | select(.id | endswith(\"${1}\")) .url  " rpext-index.json)"
+    matchingextension="$(jq -r -e ". | select(.id | endswith(\"${1}\")) .url  " ${RPEXTFILE})"
 
     if [ ! -z "$matchingextension" ]; then
       echo "Found matching extension : "
       echo $matchingextension
       echo "Adding extension "
-      /home/tc/tools/extmgr.sh extadd $matchingextension $platform
+      /home/tc/include/extmgr.sh extadd $matchingextension $platform
     fi
 
     extensionslist+="${matchingextension} "
@@ -112,5 +111,3 @@ function listmodules() {
 }
 
 listmodules
-
-

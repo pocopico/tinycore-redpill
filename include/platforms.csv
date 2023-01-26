@@ -1,0 +1,23 @@
+Model,Series,CPU,Cores,Threads,Platform,RAM
+FS6400,FS Series,Intel Xeon Silver 4110 x 2,Eight Core x 2,16 x 2,Purley,DDR4 ECC RDIMM 32 GB
+SA6400,SA Series,AMD EPYC 7272,Twelve Core,24,Epyc7002,DDR4 ECC RDIMM 32 GB
+DS923+,x23 Series,AMD Ryzen R1600,Dual Core,4,R1000,DDR4 ECC SODIMM 4 GB
+DVA1622,x22 Series,Intel Celeron J4125,Quad Core,4,Geminilake,DDR4 6 GB
+DS2422+,x22 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC SODIMM 4 GB
+DS3622xs+,x22 Series,Intel Xeon D-1531,Six Core,12,Broadwellnk,DDR4 ECC SODIMM 16 GB
+DS1522+,x22 Series,AMD Ryzen R1600,Dual Core,4,R1000,DDR4 ECC SODIMM 8 GB
+RS4021xs+,x21 Series,Intel Xeon D-1541,Eight Core,16,Broadwellnk,DDR4 ECC UDIMM 16 GB
+DVA3221,x21 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC SODIMM 8 GB
+DS1520+,x20 Series,Intel Celeron J4125,Quad Core,4,Geminilake,DDR4 8 GB
+DS920+,x20 Series,Intel Celeron J4125,Quad Core,4,Geminilake,DDR4 4 GB
+DS3617xs+,x17 Series,Intel Xeon D-1531,Six Core,12,Broadwell,DDR4 ECC UDIMM 8 GB
+DS3615xs,x15 Series,Intel Core i3-4130,Dual Core,4,Bromolow,DDR3 ECC 4 GB
+RS3618xs,x18 Series,Intel Xeon D-1521,Quad Core,8,Broadwell,DDR4 ECC UDIMM 8 GB
+RS3413xs+,x13 Series,Intel Xeon E3-1230 v2,Quad Core,8,Bromolow,DDR3 ECC 8 GB
+FS2500,FS Series,AMD Ryzen V1780B,Quad Core,8,V1000,DDR4 ECC UDIMM 8 GB
+DVA3219,x19 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC SODIMM 4 GB
+DS918+,x18 Series,Intel Celeron J3455,Quad Core,4,Apollolake,DDR3L SODIMM 4 GB
+DS1621+,x21 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC SODIMM 4 GB
+DS1621xs+,x21 Series,Intel Xeon D-1527,Quad Core,8,Broadwellnk,DDR4 ECC SODIMM 8 GB
+DS1019+,x19 Series,Intel Celeron J3455,Quad Core,4,Apollolake,DDR3L SODIMM 8 GB
+

@@ -34,6 +34,7 @@ function pagehead() {
       }
     </style>
     <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="assets/css/tcrp.css" rel="stylesheet">
     
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -74,6 +75,8 @@ EOF
 }
 
 function selectversion() {
+
+  getvars
 
   cat <<EOF
 <form id="myversion" method=POST action="/${THISURL}?action=build&mymodel=$MODEL&myversion=$VERSION">
@@ -121,24 +124,27 @@ function pagebody() {
               <ul class="dropdown-menu">
                 <li><a class=" dropdown-item" href="${THISURL}?action=backuploader">Backup Loader</a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=cleanloader">Clean Loader </a></li>
-                <li><a class=" dropdown-item" href="${THISURL}?action=backuploader">Another action</a><li>
+                <li><a class=" dropdown-item" href="${THISURL}?action=listplatforms">List Platforms</a><li>
+                <li><a class=" dropdown-item" href="${THISURL}?action=extensions">Extension Management</a><li>
                 <hr class="dropdown-divider">
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                <li><a class="dropdown-item" href="${THISURL}?action=resetmodel">Reset Model</a></li>
               </ul>
               </li>
               <li><a href="https://github.com/pocopico/tinycore-redpill">Tinycore Redpill Repo</a></li>
               <li><a href="https://xpenology.com/forum/topic/53817-redpill-tinycore-loader/">Contact</a></li>
+              <li><a href="#">Version $(version)</a></li>
+             
             </ul>
              
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
-    <div class="container">
- 
-      <h1>TinyCore Redpill, Version $(version)</h1>
-	  
+    <div class="container">   
 EOF
+
+  [ ! -z "$MODEL" ] && [ ! -z "$VERSION" ] && breadcrumb
+
 }
 
 function pagefooter() {
@@ -153,6 +159,7 @@ function pagefooter() {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 
 
+
     <script src="assets/js/bootstrap-transition.js"></script>
     <script src="assets/js/bootstrap-alert.js"></script>
     <script src="assets/js/bootstrap-modal.js"></script>
@@ -165,12 +172,15 @@ function pagefooter() {
     <script src="assets/js/bootstrap-collapse.js"></script>
     <script src="assets/js/bootstrap-carousel.js"></script>
     <script src="assets/js/bootstrap-typeahead.js"></script>
-
-
+    <script src="assets/js/bootstrap-confirmation.js"></script>
+    
 <script>
-\$(document).ready(function() {
+
+\$(document).ready(function () {
+  console.log("document loaded");
+ 
   \$('#myform').val("$MODEL");
-   \$('#mymodel').change( function() {
+  \$('#mymodel').change( function() {
      \$('#myform').submit();
        \$.ajax({ // create an AJAX call...
            data: \$(this).serialize(), // get the form data
@@ -178,12 +188,14 @@ function pagefooter() {
            url: \$(this).attr('action'), // the file to call
            success: function(response) { // on success..
                \$('#output').html(response); // update the DIV
-           }
-       });
+         }
+        });
+        console.log("form myform changed");
        return false; // cancel original event to prevent form submitting
-    });
-     \$('#myversion').val("$VERSION");
-   \$('#myversion').change( function() {
+   });
+  
+  \$('#myversion').val("$VERSION");
+  \$('#myversion').change( function() {
      \$('#myversion').submit();
        \$.ajax({ // create an AJAX call...
            data: \$(this).serialize(), // get the form data
@@ -193,21 +205,72 @@ function pagefooter() {
                \$('#output').html(response); // update the DIV
            }
        });
+             console.log("form myversion changed");
        return false; // cancel original event to prevent form submitting
-    });
+   });
+  
+  \$('#addextbutton').click(function(){
+
+         \$.ajax({
+          data: \$(this).serialize(), // get the form data
+           data:  { "exturl" : \$('#extensionlist').val(), "action" : "extadd"},
+           type: 'POST',
+           //   type: \$(this).attr('post'), // GET or POST
+           //url: "/actions.sh?action=extadd&ext=" + \$('#extensionlist').val() + "&url=\$exturl&platform=\$MODEL", // the file to call
+           url: "/actions.sh?action=extadd&ext=" + \$('#extensionlist').val() + "&url=\$exturl&platform=\$MODEL", // the file to call
+             success: function(data) {
+             console.log("Button addextbutton pressed loading : \${location.href}  " + \$('#extensionlist').val()) ;
+          
+               \$("extensionmanagement").text(data);
+               location.reload();
+             }
+         });
+      
+  });
+  \$('#remextbutton').click(function(){
+
+         \$.ajax({
+          data: \$(this).serialize(), // get the form data
+           data:  { "exturl" : \$('#extensionpayloadlist').val(), "action" : "extrem"},
+           type: 'POST',
+           //   type: \$(this).attr('post'), // GET or POST
+           //url: "/actions.sh?action=extadd&ext=" + \$('#extensionlist').val() + "&url=\$exturl&platform=\$MODEL", // the file to call
+           url: "/actions.sh?action=extrem&ext=" + \$('#extensionlist').val() + "&url=\$exturl&platform=\$MODEL", // the file to call
+             success: function(data) {
+             console.log("Button remextbutton pressed removing : \${location.href} " + \$('#extensionlist').val()) ;
+                 //alert(data);
+               \$("extensionmanagement").text(data);
+               location.reload();
+             }
+         });
+      
+      });
+
+      \$('#autoextbutton').click(function(){
+
+         \$.ajax({
+          data: \$(this).serialize(), // get the form data
+           data:  { "action" : "autoaddexts"},
+           type: 'POST',
+           url: "/index.sh?action=autoaddexts", // the file to call
+             success: function(data) {    
+              console.log("Button autoaddextbutton pressed");
+               \$("extensionmanagement").text(data);
+               location.reload();
+             }
+         });
+      
+      });
+  
 });
+
 
 function onModelChange() {
   var x = document.getElementById("myModel").value;
   document.getElementById("model").innerHTML = "You selected: " + x;
 }
 
-\$('#mybuild input[id=model]').val(input.model).prop('readonly', true);
-
-
 </script>
-<p id="model"></p>
-
 EOF
 
   chartinit
@@ -218,6 +281,18 @@ EOF
   </body>
 </html>
 EOF
+
+}
+
+function breadcrumb() {
+
+  echo "<nav aria-label=\"breadcrumb\">  <ol class=\"breadcrumb\">"
+
+  [ ! -z "$MODEL" ] && echo "<li class=\"breadcrumb-item\"><a href=\"#\">$MODEL\</a></li>"
+  [ ! -z "$VERSION" ] && echo "<li class=\"breadcrumb-item\"><a href=\"index.sh?action=setversion\">$VERSION\</a></li>"
+  echo "<li class=\"breadcrumb-item active\" aria-current=\"page\">Build</li>"
+
+  echo "</ol></nav>"
 
 }
 
@@ -322,18 +397,9 @@ function beginArray() {
     serialstart="2080"
     ;;
   RS4021xs+)
-    permanent="T2R"
-    serialstart="2250"
+    permanent="SQR"
+    serialstart="2030 2040 20C0 2150"
     ;;
-  DS1522+)
-    permanent="TRR"
-    serialstart="2270"
-    ;;
-  DS923+)
-    permanent="TQR"
-    serialstart="2270"
-    ;;
-
   esac
 
 }
@@ -365,14 +431,9 @@ function toupper() {
 }
 
 function generateMacAddress() {
-
   #toupper "Mac Address: 00:11:32:$(randomhex):$(randomhex):$(randomhex)"
-  if [ "$1" = "DS923+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "RS4021xs+" ]; then
-    # DS1522+ and DS923+ Mac starts with 90:09:d0
-    printf '90:09:d0:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
-  else
-    printf '00:11:32:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
-  fi
+  printf '00:11:32:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
+
 }
 
 function generateSerial() {
@@ -423,12 +484,6 @@ function generateSerial() {
   RS4021xs+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
-  DS923+)
-    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
-    ;;
-  DS1522+)
-    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
-    ;;
   esac
 
   echo $serialnum
@@ -437,36 +492,84 @@ function generateSerial() {
 
 function buildform() {
 
-  json=$(jq --arg var "$MODEL" '.general.model = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
-  json=$(jq --arg var "$VERSION" '.general.version = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
+  getvars
 
-  serialgen "$MODEL" | awk -F= '{print $2}' | sed -e 'N;s/\n/ /' | read serial macaddress
-  serialgen "$MODEL" >/dev/null
+  json="$(jq --arg var "$MODEL" '.general.model = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  json="$(jq --arg var "$VERSION" '.general.version = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+
+  if [ -z "$serial" ] || [ -z "$macaddress" ]; then
+    serialgen "$MODEL" | awk -F= '{print $2}' | sed -e 'N;s/\n/ /' | read serial macaddress
+    serialgen "$MODEL" >/dev/null
+    json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+    json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  fi
 
   cat <<EOF
-<form id="mybuild" action="/${THISURL}" method="POST">
-  <label for="mymodel">Model</label>
+<form id="mybuild" action="/${THISURL}"  class="form-horizontal" align="left" method="POST">
+  <div class="control-group">
+  <label class="control-label" for="mymodel">Model</label>
+  <div class="controls">
   <input id="mymodel" name="mymodel" value="$MODEL" required readonly/>
-  <label for="myversion">Version</label>
+   </div>
+  </div>
+  <div class="control-group">
+  <label class="control-label" for="myversion">Version</label>
+  <div class="controls">
   <input id="myversion" name="myversion" value="$VERSION" required readonly />
-  <label for="serial">Serial</label>
+   </div>
+  </div>
+  <div class="control-group">
+  <label class="control-label" for="serial">Serial</label>
+  <div class="controls">
   <input id="serial" name="serial" value="$serial" required />
-  <label for="macaddress">Macaddress</label>
+   </div>
+  </div>
+  <div class="control-group">
+  <label  class="control-label" for="macaddress">Macaddress</label>
+  <div class="controls">
   <input id="macaddress" name="macaddress" value="$macaddress" required />
-  <label class="form-check-label" for="addexts">Automatically add extensions)</label>
+   </div>
+  </div>
+  <div class="control-group">
+  <label class="control-label"  class="form-check-label" for="addexts">Automatically add extensions</label>
+  <div class="controls">
   <input class="form-check-input" type="checkbox" name="addexts" id="addexts" value="auto" checked>
-  <label class="form-check-label" for="withfriend">With Friend</label>
+   </div>
+  </div>
+  <div class="control-group">
+  <label class="control-label"  class="form-check-label" for="withfriend">With Friend</label>
+  <div class="controls">
   <input class="form-check-input" type="checkbox" name="withfriend" id="withfriend" value="withfriend" checked>
-  <input id="action" name="action" value="build" hidden required />
-  <input id="buildit" name="buildit" value="yes" hidden required />
-  <label for="extracmdline">Extra Command Line Options (e.g SataPortMap, DiskIdxMap etc</label>
-  <textarea id="extracmdline" name="extracmdline" value=" "> </textarea>
+   </div>
+  </div>
   
-  <br><br><button type="submit">Build</button>
+  <div class="control-group">
+  <label class="control-label"  for="extracmdline">Extra Command Line Options (e.g SataPortMap, DiskIdxMap etc</label>
+  <div class="controls">
+  <textarea id="extracmdline" name="extracmdline" value=" "> </textarea>
+   </div>
+  </div>
+  
+  <input id="action" class="hidden" name="action" value="build" hidden required />
+  <input id="buildit" class="hidden" name="buildit" value="yes" hidden required />
+
+  <br><br><button type="submit"  class="btn btn-lg btn-success">Build</button>
 
 </form>
 EOF
   checkcached
+
+  if [ "$iscached" = "yes" ]; then
+    cat <<EOF
+<button type="button" id="patfilecached" class="btn btn-lg btn-success position-absolute top-0 start-0 translate-middle" data-toggle="popover" title="Found Cached" data-content="Patfile $patfile is cached">Patfile cached</button>
+EOF
+  else
+    cat <<EOF
+<button type="button" id="patfilecached" class="btn btn-lg btn-danger position-absolute top-0 start-0 translate-middle" data-toggle="popover" title="Found Cached" data-content="Patfile $patfile is cached">Patfile not cached</button>
+EOF
+  fi
+
+  extmanagement
 
 }
 
@@ -491,9 +594,16 @@ function getpost() {
   echo ""
 }
 
-function startover() {
+function resetmodel() {
 
-  echo "<button type=\"button\" class=\"btn btn-primary btn-lg btn-block\" onclick="window.location.href=\'/${THISURL}\'">START OVER</button>"
+  getvars
+
+  #wecho "Reseting model from : $MODEL to NULL" && json="$(jq '. .general.model=""' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  #wecho "Reseting version from : $VERSION to NULL" && json="$(jq '. .general.version=""' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  #wecho "Reseting sn from : $serial to NULL" && json="$(jq '. .extra_cmdline.sn=""' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  #wecho "Reseting mac1 from : $macaddress to NULL" && json="$(jq '. .extra_cmdline.mac1=""' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  wecho "Clearing $USERCONFIGFILE" && cp ${HOMEPATH}/include/user_config.json $USERCONFIGFILE
+  wecho "Removing extension payload" && rm -rf ${HOMEPATH}/payload
 
 }
 
@@ -522,7 +632,6 @@ function getvars() {
   ln -s /lib /lib64
 
   tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
-  tcrpdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
   local_cache="/mnt/${tcrppart}/auxfiles"
   GETTIME=$(curl -v --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
   INTERNETDATE=$(date +"%d%m%Y" -d "$GETTIME")
@@ -542,14 +651,17 @@ function getvars() {
   FILENAME="${OS_ID}.pat"
 
   mount ${tcrppart}
-  mount ${tcrpdisk}1
-  mount ${tcrpdisk}2
 
   #wecho "tcrppart            :   $tcrppart    local_cache         :   $local_cache        INTERNETDATE        :   $INTERNETDATE     \  LOCALDATE           :   $LOCALDATE
   #OS_ID               :   $OS_ID              PAT_URL             :   $PAT_URL            PAT_SHA             :   $PAT_SHA          \
   #ZIMAGE_SHA          :   $ZIMAGE_SHA         RD_SHA              :   $RD_SHA             RAMDISK_PATCH       :   $RAMDISK_PATCH    \
   #SYNOINFO_PATCH      :   $SYNOINFO_PATCH     RAMDISK_COPY        :   $RAMDISK_COPY       SYNOINFO_USER       :   $SYNOINFO_USER    \
   #RD_COMPRESSED       :   $RD_COMPRESSED      redpillextension    :   $redpillextension   FILENAME            :   $FILENAME         "
+
+  [ -z "$MODEL" ] && MODEL="$(jq -r -e '.general .model' $USERCONFIGFILE)"
+  [ -z "$VERSION" ] && VERSION="$(jq -r -e '.general .version' $USERCONFIGFILE)"
+  [ -z "$serial" ] && serial="$(jq -r -e '.extra_cmdline .sn' $USERCONFIGFILE)"
+  [ -z "$macaddress" ] && macaddress="$(jq -r -e '.extra_cmdline .mac1' $USERCONFIGFILE)"
 
 }
 
@@ -812,8 +924,8 @@ function extractpat() {
   [ -f ${TEMPPAT}/VERSION ] && . ${TEMPPAT}/VERSION && wecho "Extracted PAT file, VERSION Found : ${major}.${minor}.${micro}_${buildnumber}"
   extractedzImagesha="$(sha256sum ${TEMPPAT}/zImage | awk '{print $1}')"
   extractedrdsha="$(sha256sum ${TEMPPAT}/rd.gz | awk '{print $1}')"
-  wecho "zImage sha256sum : $extractedzImagesha" && json=$(jq --arg var "${extractedzImagesha}" '.general.zimghash = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
-  wecho "rd sha256sum : $extractedrdsha" && json=$(jq --arg var "${extractedrdsha}" '.general.rdhash = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
+  wecho "zImage sha256sum : $extractedzImagesha" && json="$(jq --arg var "${extractedzImagesha}" '.general.zimghash = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  wecho "rd sha256sum : $extractedrdsha" && json="$(jq --arg var "${extractedrdsha}" '.general.rdhash = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
 
 }
 
@@ -925,21 +1037,11 @@ function patchramdisk() {
   fi
   [ -f ${TEMPPAT}/initrd-dsm ] && wecho "Patched ramdisk created $(ls -l ${TEMPPAT}/initrd-dsm)"
 
-  wecho "Copying files to ${tcrppart}"
+  wecho "Copying file to ${tcrppart}"
 
   cp -f $HOMEPATH/custom.gz /mnt/${tcrppart}/
   cp -f ${TEMPPAT}/zImage-dsm /mnt/${tcrppart}/
   cp -f ${TEMPPAT}/initrd-dsm /mnt/${tcrppart}/
-
-  cp -f ${TEMPPAT}/zImage /mnt/${tcrppart}1/
-  cp -f ${TEMPPAT}/rd.gz /mnt/${tcrppart}1/
-  cp -f $HOMEPATH/custom.gz /mnt/${tcrppart}1/
-
-  cp -f ${TEMPPAT}/zImage /mnt/${tcrppart}2/
-  cp -f ${TEMPPAT}/rd.gz /mnt/${tcrppart}2/
-
-  rm -rf $HOMEPATH/html/$patfile
-  rm -rf $HOMEPATH/temppat
 
 }
 
@@ -1191,32 +1293,32 @@ function build() {
       rtncode=$?
       if [ $rtncode -eq 0 ]; then
         #wecho "Field exists, updating"
-        json=$(jq --arg var "${VALUE}" ".extra_cmdline.${KEY}"' = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
+        json="$(jq --arg var "${VALUE}" ".extra_cmdline.${KEY}"' = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
       else
         #wecho "Field does not exist, adding "
-        json=$(jq ".extra_cmdline +={\"${KEY}\":\"$VALUE\"}" $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
+        json="$(jq ".extra_cmdline +={\"${KEY}\":\"$VALUE\"}" $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
       fi
     fi
   done <<<$(echo $extracmdline | sed -s 's/ /\n/g')
 
-  wecho "Clearing and testing $USERCONFIGFILE"
-  json=$(cat $USERCONFIGFILE | sed -s 's/\\r//g' | jq .) && echo -E "${json}" | jq . >$USERCONFIGFILE
+  #wecho "Clearing and testing $USERCONFIGFILE"
+  json="$(cat $USERCONFIGFILE | sed -s 's/\\r//g' | jq .)" && echo -E "${json}" | jq . >$USERCONFIGFILE
 
-  wecho "Building CMD Line"
+  #wecho "Building CMD Line"
 
   USB_LINE=$(getcmdline ${CONFIGFILES}/$MODEL/$VERSION/config.json $USERCONFIGFILE 2>&1 | grep linux | head -1 | cut -c 16-999)
   SATA_LINE=$(getcmdline ${CONFIGFILES}/$MODEL/$VERSION/config.json $USERCONFIGFILE 2>&1 | grep linux | tail -1 | cut -c 16-999)
 
-  wecho "Updating user_config with serial : $serial and macaddress : $macaddress"
+  #wecho "Updating user_config with serial : $serial and macaddress : $macaddress"
   json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
   json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
 
-  wecho "Updated user_config with USB Command Line : $USB_LINE"
-  json=$(jq --arg var "${USB_LINE}" '.general.usb_line = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
-  wecho "Updated user_config with SATA Command Line : $SATA_LINE"
-  json=$(jq --arg var "${SATA_LINE}" '.general.sata_line = $var' $USERCONFIGFILE) && echo -E "${json}" | jq . >$USERCONFIGFILE
+  #wecho "Updated user_config with USB Command Line : $USB_LINE"
+  json="$(jq --arg var "${USB_LINE}" '.general.usb_line = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  #wecho "Updated user_config with SATA Command Line : $SATA_LINE"
+  json="$(jq --arg var "${SATA_LINE}" '.general.sata_line = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
 
-  wecho "Copying $USERCONFIGFILE to boot partition"
+  #wecho "Copying $USERCONFIGFILE to boot partition"
   cp -f $USERCONFIGFILE /mnt/${tcrppart}/
   [ "$(sha256sum $USERCONFIGFILE | awk '{print $1}')" = "$(sha256sum /mnt/${tcrppart}/user_config.json | awk '{print $1}')" ] && wecho "File copied succesfully" || wecho "User config file is corrupted "
 
@@ -1350,6 +1452,105 @@ EOF
 
 }
 
+function listplatforms() {
+
+  models="$(ls ${HOMEPATH}/redpill-load/config | grep -v comm | sed -e 's/\///g')"
+  echo "<h3>Available Platforms Hardware Information</h3>"
+  cat <<EOF
+<table class="table table-dark">
+<thead><tr><th title="Field #1">Model</th>
+<th title="Field #2">Series</th>
+<th title="Field #3">CPU</th>
+<th title="Field #4">Cores</th>
+<th title="Field #5">Threads</th>
+<th title="Field #6">Platform</th>
+<th title="Field #7">RAM</th>
+</tr></thead>
+<tbody><tr>
+EOF
+
+  for model in $models; do
+    echo "<td> $(jq -r -e ".[] | select(.Model | contains(\"$model\"))" ${HOMEPATH}/include/platforms.json | jq -r -e .Model) </td>"
+    echo "<td> $(jq -r -e ".[] | select(.Model | contains(\"$model\"))" ${HOMEPATH}/include/platforms.json | jq -r -e .Series) </td>"
+    echo "<td> $(jq -r -e ".[] | select(.Model | contains(\"$model\"))" ${HOMEPATH}/include/platforms.json | jq -r -e .CPU) </td>"
+    echo "<td> $(jq -r -e ".[] | select(.Model | contains(\"$model\"))" ${HOMEPATH}/include/platforms.json | jq -r -e .Cores) </td>"
+    echo "<td> $(jq -r -e ".[] | select(.Model | contains(\"$model\"))" ${HOMEPATH}/include/platforms.json | jq -r -e .Threads) </td>"
+    echo "<td> $(jq -r -e ".[] | select(.Model | contains(\"$model\"))" ${HOMEPATH}/include/platforms.json | jq -r -e .Platform) </td>"
+    echo "<td> $(jq -r -e ".[] | select(.Model | contains(\"$model\"))" ${HOMEPATH}/include/platforms.json | jq -r -e .RAM) </td>"
+    echo "</tr>"
+  done
+
+  echo "</tr></tbody></table>"
+
+}
+
+function autoaddexts() {
+
+  getvars
+
+  wecho "Automatically detecting the required extensions"
+  BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]')"
+  platform_selected="$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq ".build_configs[] | select(.id==\"${BUILDMODEL}-${VERSION}\")")"
+  EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
+  EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
+  BUILDVERSION="$(echo $VERSION | awk -F- '{print $2}')"
+
+  wecho "Autoadding, executing : ${HOMEPATH}/include/listmodules.sh for ${BUILDMODEL}_${BUILDVERSION}" | tee -a ${BUILDLOG}
+  ${HOMEPATH}/include/listmodules.sh ${BUILDMODEL}_${BUILDVERSION} | tee -a ${BUILDLOG}
+
+}
+
+function extmanagement() {
+
+  getvars
+
+  BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]')"
+  platform_selected="$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq ".build_configs[] | select(.id==\"${BUILDMODEL}-${VERSION}\")")"
+  EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
+  EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
+  BUILDVERSION="$(echo $VERSION | awk -F- '{print $2}')"
+  wecho "Please note that for MODEL ${BUILDMODEL}_${BUILDVERSION}, $EXTENSIONS are added automatically"
+  for exturl in $EXTENSIONS_SOURCE_URL; do
+    ${HOMEPATH}/include/extmgr.sh extadd $exturl ${BUILDMODEL}_${BUILDVERSION} | tee -a ${BUILDLOG} >/dev/null
+  done
+
+  #listplaforms
+
+  extensionpayload="$(
+    for ext in $(cat /home/tc/payload/extensions); do
+      cat /home/tc/payload/$ext/*json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq
+    done
+  )"
+  extensionlist="$(curl -L https://github.com/pocopico/rp-ext/raw/main/rpext-index.json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq)"
+  #echo "<div id=\"extmanagement\"><textarea rows=\"10\" cols=\"40\" id=\"extensionpayloadlist\" name=\"extensionpayload\" value=\"\">$extensionpayload</textarea>"
+  #echo "<textarea rows=\"10\" cols=\"40\" id=\"extensionlist\" name=\"extensionlist\" value=\"\">$extensionlist</textarea>"
+
+  echo "<div id=\"extmanagement\">"
+
+  echo "<select rows=\"10\" id=\"extensionlist\" name=\"extensionlist\" class=\"form-select\" size=\"3\" aria-label=\"size 3 select example\">"
+  while IFS=" " read -r extension exturl; do
+
+    echo "<option value=\"$exturl\">$extension</option>"
+  done < <(printf '%s\n' "$extensionlist")
+
+  echo "</select>"
+
+  echo "<button id=\"addextbutton\" name=\"addextbutton\" onclick=\"\" type=\"button\" class=\"btn btn-primary btn-sm\">Add extension</button></div>"
+
+  echo "<select rows=\"10\" id=\"extensionpayloadlist\" name=\"extensionpayload\" class=\"form-select\" size=\"3\" aria-label=\"size 3 select example\">"
+  while IFS=" " read -r extension exturl; do
+
+    echo "<option value=\"$exturl\">$extension</option>"
+  done < <(printf '%s\n' "$extensionpayload")
+
+  echo "</select>"
+
+  echo "<button id=\"remextbutton\" name=\"remextbutton\" onclick=\"\" type=\"button\" class=\"btn btn-danger btn-sm\">Remove extension</button></div>"
+
+  echo "<button id=\"autoextbutton\" name=\"autoextbutton\" onclick=\"\" type=\"button\" class=\"btn btn-info btn-sm\">Auto add extensions</button></div>"
+
+}
+
 function readlog() {
 
   cat <<EOF
@@ -1439,6 +1640,9 @@ else
       echo "${post[extracmdline]}" | sed -s "s/'//g" | sed -s 's/ /\n/g' | sed -s 's/%3D/=/g'
     )"
     buildit="$(echo "${post[buildit]}" | sed -s "s/'//g")"
+    if [ "$action" == "extadd" ]; then
+      exturl="$(echo "${post[exturl]}" | sed -s "s/'//g")"
+    fi
 
   fi
 
@@ -1448,8 +1652,14 @@ else
   #echo "<br>Build VARS : MODEL :$MODEL VERSION: $VERSION SN: $serial MAC: $macaddress BUILDIT: $buildit"
 
   [ "$action" == "backuploader" ] && wecho "Backing up loader " && result=$(yes | ${HOMEPATH}/rploader.sh backuploader) && recho "$result" | tee -a ${BUILDLOG}
-  [ "$action" == "listplatforms" ] && wecho "Listing available platforms" && result=$(listmods) && recho "$result" | tee -a buildlog.log
+  [ "$action" == "listplatforms" ] && result=$(listplatforms) && wecho "$result" | tee -a buildlog.log
   [ "$action" == "cleanloader" ] && wecho "Cleaning loader home space" && result=$(${HOMEPATH}/rploader.sh clean) && recho "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "extensions" ] && wecho "Extension Management" && result=$(extmanagement) && wecho "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "extadd" ] && wecho "Extadd" && result=$($HOMEPATH/include/extmgr.sh extadd $exturl sa6400_42962) && wecho "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "setversion" ] && result=$(selectversion) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "resetmodel" ] && result=$(resetmodel) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "autoaddexts" ] && result=$(autoaddexts) && echo "$result" | tee -a ${BUILDLOG}
+
   [ "$action" == "none" ] && loaderstatus
 
   if [ "$action" == "build" ]; then
@@ -1469,8 +1679,6 @@ else
       #result="$(cd ${HOMEPATH} && ./rploader.sh build v1000-7.1.0-42661 withfriend)"
       #recho "$result" | tee -a buildlog.log
 
-      startover
-
     fi
 
     if [ -z "$MODEL" ]; then
@@ -1481,13 +1689,13 @@ else
       selectversion
     fi
 
-    if [ ! -z "$MODEL" ] && [ ! -z "$VERSION" ] && [ -z "$serial" ] && [ -z "$macaddress" ] && [ -z "$buildit" ]; then
+    if [ ! -z "$MODEL" ] && [ ! -z "$VERSION" ] && [ -z "$buildit" ]; then
 
       #selectversion
       #echo "<br></h1>Selected Model = $MODEL <br> Selected Version = $VERSION</h1><br>"
-
+      breadcrumb
       buildform
-      startover
+
     fi
 
   fi

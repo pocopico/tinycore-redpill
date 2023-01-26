@@ -1,0 +1,191 @@
+[
+  {
+    "Model": "FS6400",
+    "Series": "FS Series",
+    "CPU": "Intel Xeon Silver 4110 x 2",
+    "Cores": "Eight Core x 2",
+    "Threads": "16 x 2",
+    "Platform": "Purley",
+    "RAM": "DDR4 ECC RDIMM 32 GB"
+  },
+  {
+    "Model": "SA6400",
+    "Series": "SA Series",
+    "CPU": "AMD EPYC 7272",
+    "Cores": "Twelve Core",
+    "Threads": 24,
+    "Platform": "Epyc7002",
+    "RAM": "DDR4 ECC RDIMM 32 GB"
+  },
+  {
+    "Model": "DS923+",
+    "Series": "x23 Series",
+    "CPU": "AMD Ryzen R1600",
+    "Cores": "Dual Core",
+    "Threads": 4,
+    "Platform": "R1000",
+    "RAM": "DDR4 ECC SODIMM 4 GB"
+  },
+  {
+    "Model": "DVA1622",
+    "Series": "x22 Series",
+    "CPU": "Intel Celeron J4125",
+    "Cores": "Quad Core",
+    "Threads": 4,
+    "Platform": "Geminilake",
+    "RAM": "DDR4 6 GB"
+  },
+  {
+    "Model": "DS2422+",
+    "Series": "x22 Series",
+    "CPU": "AMD Ryzen V1500B",
+    "Cores": "Quad Core",
+    "Threads": 8,
+    "Platform": "V1000",
+    "RAM": "DDR4 ECC SODIMM 4 GB"
+  },
+  {
+    "Model": "DS3622xs+",
+    "Series": "x22 Series",
+    "CPU": "Intel Xeon D-1531",
+    "Cores": "Six Core",
+    "Threads": 12,
+    "Platform": "Broadwellnk",
+    "RAM": "DDR4 ECC SODIMM 16 GB"
+  },
+  {
+    "Model": "DS1522+",
+    "Series": "x22 Series",
+    "CPU": "AMD Ryzen R1600",
+    "Cores": "Dual Core",
+    "Threads": 4,
+    "Platform": "R1000",
+    "RAM": "DDR4 ECC SODIMM 8 GB"
+  },
+  {
+    "Model": "RS4021xs+",
+    "Series": "x21 Series",
+    "CPU": "Intel Xeon D-1541",
+    "Cores": "Eight Core",
+    "Threads": 16,
+    "Platform": "Broadwellnk",
+    "RAM": "DDR4 ECC UDIMM 16 GB"
+  },
+  {
+    "Model": "DVA3221",
+    "Series": "x21 Series",
+    "CPU": "Intel Atom C3538",
+    "Cores": "Quad Core",
+    "Threads": 4,
+    "Platform": "Denverton",
+    "RAM": "DDR4 Non-ECC SODIMM 8 GB"
+  },
+  {
+    "Model": "DS1520+",
+    "Series": "x20 Series",
+    "CPU": "Intel Celeron J4125",
+    "Cores": "Quad Core",
+    "Threads": 4,
+    "Platform": "Geminilake",
+    "RAM": "DDR4 8 GB"
+  },
+  {
+    "Model": "DS920+",
+    "Series": "x20 Series",
+    "CPU": "Intel Celeron J4125",
+    "Cores": "Quad Core",
+    "Threads": 4,
+    "Platform": "Geminilake",
+    "RAM": "DDR4 4 GB"
+  },
+  {
+    "Model": "DS3617xs+",
+    "Series": "x17 Series",
+    "CPU": "Intel Xeon D-1531",
+    "Cores": "Six Core",
+    "Threads": 12,
+    "Platform": "Broadwell",
+    "RAM": "DDR4 ECC UDIMM 8 GB"
+  },
+  {
+    "Model": "DS3615xs",
+    "Series": "x15 Series",
+    "CPU": "Intel Core i3-4130",
+    "Cores": "Dual Core",
+    "Threads": 4,
+    "Platform": "Bromolow",
+    "RAM": "DDR3 ECC 4 GB"
+  },
+  {
+    "Model": "RS3618xs",
+    "Series": "x18 Series",
+    "CPU": "Intel Xeon D-1521",
+    "Cores": "Quad Core",
+    "Threads": 8,
+    "Platform": "Broadwell",
+    "RAM": "DDR4 ECC UDIMM 8 GB"
+  },
+  {
+    "Model": "RS3413xs+",
+    "Series": "x13 Series",
+    "CPU": "Intel Xeon E3-1230 v2",
+    "Cores": "Quad Core",
+    "Threads": 8,
+    "Platform": "Bromolow",
+    "RAM": "DDR3 ECC 8 GB"
+  },
+  {
+    "Model": "FS2500",
+    "Series": "FS Series",
+    "CPU": "AMD Ryzen V1780B",
+    "Cores": "Quad Core",
+    "Threads": 8,
+    "Platform": "V1000",
+    "RAM": "DDR4 ECC UDIMM 8 GB"
+  },
+  {
+    "Model": "DVA3219",
+    "Series": "x19 Series",
+    "CPU": "Intel Atom C3538",
+    "Cores": "Quad Core",
+    "Threads": 4,
+    "Platform": "Denverton",
+    "RAM": "DDR4 Non-ECC SODIMM 4 GB"
+  },
+  {
+    "Model": "DS918+",
+    "Series": "x18 Series",
+    "CPU": "Intel Celeron J3455",
+    "Cores": "Quad Core",
+    "Threads": 4,
+    "Platform": "Apollolake",
+    "RAM": "DDR3L SODIMM 4 GB"
+  },
+  {
+    "Model": "DS1621+",
+    "Series": "x21 Series",
+    "CPU": "AMD Ryzen V1500B",
+    "Cores": "Quad Core",
+    "Threads": 8,
+    "Platform": "V1000",
+    "RAM": "DDR4 ECC SODIMM 4 GB"
+  },
+  {
+    "Model": "DS1621xs+",
+    "Series": "x21 Series",
+    "CPU": "Intel Xeon D-1527",
+    "Cores": "Quad Core",
+    "Threads": 8,
+    "Platform": "Broadwellnk",
+    "RAM": "DDR4 ECC SODIMM 8 GB"
+  },
+  {
+    "Model": "DS1019+",
+    "Series": "x19 Series",
+    "CPU": "Intel Celeron J3455",
+    "Cores": "Quad Core",
+    "Threads": 4,
+    "Platform": "Apollolake",
+    "RAM": "DDR3L SODIMM 8 GB"
+  }
+]

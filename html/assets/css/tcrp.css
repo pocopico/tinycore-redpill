@@ -37,3 +37,53 @@
     Font-Size:       .5em;
     Opacity:         .8;
   }
+
+  #patfilecached {
+  position: absolute;
+  top: 115;
+  left: 1350;
+  }
+
+  #extensionpayloadlist {
+  position: absolute;
+  top: 160;
+  left: 900;
+  min-width: 250px;
+  min-height: 200px;
+  max-height: 200px;
+  max-width: 200px;
+  }
+
+  #extensionlist{
+  position: absolute;
+  top: 160;
+  left: 1200;
+  min-width: 250px;
+  min-height: 200px;
+  max-height: 200px;
+  }
+
+  #addextbutton{
+  position: absolute;
+  top: 400;
+  left: 1200;
+  }
+
+  #remextbutton{
+  position: absolute;
+  top: 400;
+  left: 900;
+  }
+
+  #autoextbutton{
+  position: absolute;
+  top: 115;
+  left: 1200;
+  }
+
+
+  .form-horizontal .control-label{
+  /* text-align:right; */
+  text-align:left;
+  
+}

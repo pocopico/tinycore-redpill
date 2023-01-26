@@ -1,11 +1,12 @@
 #!/bin/bash
 
 HOMEPATH="/home/tc"
+PAYLOADDIR="${HOMEPATH}/payload"
 CONFIGFILES="${HOMEPATH}/redpill-load/config"
 
 function getstaticmodule() {
         redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill${redpillmake}/rpext-index.json"
-        SYNOMODEL="$(cat /home/tc/payload/platform)"
+        SYNOMODEL="$(cat ${PAYLOADDIR}/platform)"
 
         echo "Removing any old redpill.ko modules"
         [ -f redpill.ko ] && rm -f redpill.ko
@@ -45,8 +46,8 @@ function extadd() {
         shift 1
         extvars $1 $2
 
-        [ ! -d payload ] && mkdir payload
-        cd payload
+        [ ! -d ${PAYLOADDIR} ] && mkdir ${PAYLOADDIR}
+        cd ${PAYLOADDIR}
 
         [ ! -f platform ] && echo "$platform" >platform
 
@@ -67,9 +68,9 @@ function extremove() {
 
         extvars $1 $2
 
-        [ ! -d payload ] && mkdir payload
+        [ ! -d ${PAYLOADDIR} ] && mkdir ${PAYLOADDIR}
 
-        cd payload
+        cd ${PAYLOADDIR}
 
         [ -f extensions ] && [ $(grep $extid extensions | wc -l) -gt 0 ] && echo "Extension $extid will be removed"
 
@@ -104,7 +105,7 @@ function extvars() {
 
 function processexts() {
 
-        cd payload
+        cd ${PAYLOADDIR}
 
         for ext in $(cat extensions); do
 
@@ -162,9 +163,8 @@ function processexts() {
                 fi
         done
 
-        find . -type f -name "*.sh" -exec chmod 777 {} \;
-        #[ $(ls -ltr *.sh | wc -l) -gt 0 ] && chmod 777 *.sh
-        #[ -f "*/*.sh" ] && [ $(ls -ltr */*.sh | wc -l) -gt 0 ] && chmod 777 */*.sh
+        [ $(ls -ltr *.sh | wc -l) -gt 0 ] && chmod 777 *.sh
+        [ -f "*/*.sh" ] && [ $(ls -ltr */*.sh | wc -l) -gt 0 ] && chmod 777 */*.sh
 
 }
 
@@ -211,12 +211,12 @@ function createcustominitfile() {
 
         getstaticmodule $2
 
-        mkdir -p exts && cp -arfp /home/tc/payload/* exts/
+        mkdir -p exts && cp -arfp ${PAYLOADDIR}/* exts/
 
         #### CREATE exec.sh
 
-        platformid="$(cat /home/tc/payload/platform)"
-        extensionids="$(cat /home/tc/payload/extensions | awk '!/0$/{printf $0 " " }/0$/')"
+        platformid="$(cat ${PAYLOADDIR}/platform)"
+        extensionids="$(cat ${PAYLOADDIR}/extensions | awk '!/0$/{printf $0 " " }/0$/')"
 
         cat <<EOF >exts/exec.sh
 #!/usr/bin/env sh
@@ -272,9 +272,6 @@ esac
 EOF
 
         chmod 777 exts/exec.sh
-
-        echo "Changing execute permission on scripts"
-        find . -type f -name "*.sh" -exec chmod 777 {} \;
 
         echo "I'm in $PWD and i'm Creating custom.gz file and placing it in place /home/tc/custom.gz"
 

@@ -1,0 +1,38 @@
+{
+  "general": {
+    "model": "",
+    "version": "",
+    "smallfixnumber": "",
+    "zimghash": "",
+    "rdhash": "",
+    "usb_line": "",
+    "sata_line": "",
+    "redpillmake": "prod",
+    "friendautoupd": "true",
+    "hidesensitive": "false"
+  },
+  "ipsettings": {
+    "ipset": "",
+    "ipaddr": "",
+    "ipgw": "",
+    "ipdns": "",
+    "ipproxy": ""
+  },
+  "extra_cmdline": {
+    "pid": "",
+    "vid": "",
+    "sn": "",
+    "mac1": "",
+    "netif_num": "1",
+    "SataPortMap": "58",
+    "DiskIdxMap": "0A00"
+  },
+  "synoinfo": {
+    "internalportcfg": "0xffff",
+    "maxdisks": "16",
+    "support_bde_internal_10g": "no",
+    "support_disk_compatibility": "no",
+    "support_memory_compatibility": "no"
+  },
+  "ramdisk_copy": {}
+}

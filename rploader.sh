@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 230108
-# Version : 0.9.4.2
+# Version : 0.9.4.3
 #
 #
 # User Variables :
 
-rploaderver="0.9.4.2"
+rploaderver="0.9.4.3"
 build="main"
 redpillmake="prod"
 
@@ -90,6 +90,7 @@ function history() {
     0.9.4.0 Added experimental DS923+ model, added new extensions handler functions
     0.9.4.1 Fixed missing serian and mac if user has not taken that into account. 
     0.9.4.2 Added serial numbers prefixes for DS923+ and DS1522+  
+    0.9.4.3 Added serial numbers prefixes for SA6400, added class 104 to listpci function
     --------------------------------------------------------------------------------------
 EOF
 
@@ -305,7 +306,7 @@ EOF
 #!/usr/bin/env sh
 
 cd "$(dirname "\${0}")" || exit 1 # get to the script directory realiably in POSIX
-PLATFORM_ID="ds923p_42962"
+PLATFORM_ID="$SYNOMODEL"
 EXTENSION_IDS="dtbpatch pocopico.mptspi pocopico.vmxnet3 redpill-boot-wait redpill-misc "
 
 _load_kmods(){
@@ -490,7 +491,7 @@ function syntaxcheck() {
 
         serialgen)
             echo "Syntax error, You have to specify one of the existing models"
-            echo "DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+"
+            echo "DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+ SA6400"
             ;;
 
         patchdtc)
@@ -2202,7 +2203,7 @@ function serialgen() {
 
     [ "$2" == "realmac" ] && let keepmac=1 || let keepmac=0
 
-    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "DS923+" ]; then
+    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "DS923+" ] || [ "$1" = "SA6400" ]; then
         serial="$(generateSerial $1)"
         mac="$(generateMacAddress $1)"
         realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}')
@@ -2236,7 +2237,7 @@ function serialgen() {
         fi
     else
         echo "Error : $1 is not an available model for serial number generation. "
-        echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+"
+        echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+ SA6400"
     fi
 
 }
@@ -2304,6 +2305,10 @@ function beginArray() {
         permanent="TRR"
         serialstart="2270"
         ;;
+    SA6400)
+        permanent="TQR"
+        serialstart="2270"
+        ;;
 
     esac
 
@@ -2338,7 +2343,7 @@ function toupper() {
 function generateMacAddress() {
 
     #toupper "Mac Address: 00:11:32:$(randomhex):$(randomhex):$(randomhex)"
-    if [ "$1" = "DS923+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "RS4021xs+" ]; then
+    if [ "$1" = "DS923+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "SA6400" ]; then
         # DS1522+ and DS923+ Mac starts with 90:09:d0
         printf '90:09:d0:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
     else
@@ -2396,6 +2401,9 @@ function generateSerial() {
         serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
         ;;
     DS1522+)
+        serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+        ;;
+    SA6400)
         serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
         ;;
     esac
@@ -2664,7 +2672,7 @@ mountshare, version, monitor, bringfriend, downloadupgradepat, help
   
 - serialgen <synomodel> <option> :
   Generates a serial number and mac address for the following platforms 
-  DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+
+  DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+ SA6400
   
   Valid Options :  realmac , keeps the real mac of interface eth0
   
@@ -3186,6 +3194,8 @@ function setplatform() {
         SYNOMODEL="ds923p_$TARGET_REVISION" && MODEL="DS923+"
     elif [ "${TARGET_PLATFORM}" = "ds1522p" ]; then
         SYNOMODEL="ds1522p_$TARGET_REVISION" && MODEL="DS1522+"
+    elif [ "${TARGET_PLATFORM}" = "sa6400" ]; then
+        SYNOMODEL="ds923p_$TARGET_REVISION" && MODEL="sa6400"
     fi
 
 }
@@ -3332,6 +3342,9 @@ function listpci() {
             ;;
         0101)
             echo "Found IDE Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device})"
+            ;;
+        0104)
+            echo "Found SAS Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device})"
             ;;
         0107)
             echo "Found SAS Controller : pciid ${vendor}d0000${device}  Required Extension : $(matchpciidmodule ${vendor} ${device})"
@@ -3641,6 +3654,7 @@ if [ -z "$GATEWAY_INTERFACE" ]; then
         exit 99
         ;;
     monitor)
+        httpconf
         monitor
         exit 0
         ;;

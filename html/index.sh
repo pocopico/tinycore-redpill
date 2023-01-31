@@ -1,6 +1,4 @@
-#!/bin/sudo bash
-
-#. ./rploader.sh
+#!/usr/bin/sudo bash
 
 ###### VARIABLES
 
@@ -11,7 +9,10 @@ PATCHEXTRACTOR="${HOMEPATH}/patch-extractor"
 THISURL="index.sh"
 BUILDLOG="/home/tc/html/buildlog.txt"
 USERCONFIGFILE="/home/tc/user_config.json"
+TOOLSPATH="https://raw.githubusercontent.com/pocopico/tinycore-redpill/develop/tools/"
+TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
 
+#. ${HOMEPATH}/include/config.sh
 ############################################
 
 function pagehead() {
@@ -53,6 +54,124 @@ function pagehead() {
   <body>
 
 EOF
+}
+function checkmachine() {
+
+  if grep -q ^flags.*\ hypervisor\  /proc/cpuinfo; then
+    MACHINE="VIRTUAL"
+    HYPERVISOR=$(dmesg | grep -i "Hypervisor detected" | awk '{print $5}')
+    echo "Machine is $MACHINE Hypervisor=$HYPERVISOR" | tee -a $BUILDLOG >/dev/null
+  fi
+
+}
+
+function usbidentify() {
+
+  checkmachine
+
+  if [ "$MACHINE" = "VIRTUAL" ]; then
+    vendorid="0x46f4"
+    productid="0x0001"
+    echo "Running on $HYPERVISOR, setting USB VID and PID,to $productid:$vendorid" | tee -a $BUILDLOG >/dev/null
+    return
+  fi
+
+  loaderdisk=$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)
+
+  lsusb -v 2>&1 | grep -B 33 -A 1 SCSI >/tmp/lsusb.out
+
+  usblist=$(grep -B 33 -A 1 SCSI /tmp/lsusb.out)
+  vendorid=$(grep -B 33 -A 1 SCSI /tmp/lsusb.out | grep -i idVendor | awk '{print $2}')
+  productid=$(grep -B 33 -A 1 SCSI /tmp/lsusb.out | grep -i idProduct | awk '{print $2}')
+
+  if [ $(echo $vendorid | wc -w) -gt 1 ]; then
+    echo "Found more than one USB disk devices, please select which one is your loader on" | tee -a $BUILDLOG >/dev/null
+    usbvendor=$(for item in $vendorid; do grep $item /tmp/lsusb.out | awk '{print $3}'; done)
+    select usbdev in $usbvendor; do
+      vendorid=$(grep -B 10 -A 10 $usbdev /tmp/lsusb.out | grep idVendor | grep $usbdev | awk '{print $2}')
+      productid=$(grep -B 10 -A 10 $usbdev /tmp/lsusb.out | grep -A 1 idVendor | grep idProduct | awk '{print $2}')
+      echo "Selected Device : $usbdev , with VendorID: $vendorid and ProductID: $productid" | tee -a $BUILDLOG >/dev/null
+      break
+    done
+  else
+    usbdevice="$(grep iManufacturer /tmp/lsusb.out | awk '{print $3}') $(grep iProduct /tmp/lsusb.out | awk '{print $3}') SerialNumber: $(grep iSerial /tmp/lsusb.out | awk '{print $3}')"
+  fi
+
+  if [ -n "$usbdevice" ] && [ -n "$vendorid" ] && [ -n "$productid" ]; then
+    echo "Found $usbdevice" | tee -a $BUILDLOG >/dev/null
+    echo "Vendor ID : $vendorid Product ID : $productid" | tee -a $BUILDLOG >/dev/null
+  else
+    echo "Sorry, no usb disk could be identified" | tee -a $BUILDLOG >/dev/null
+    rm /tmp/lsusb.out
+  fi
+}
+
+function staticip() {
+
+  ipset=$(cat $USERCONFIGFILE | jq -r -e ' .ipsettings .ipset')
+  ipaddr=$(cat $USERCONFIGFILE | jq -r -e ' .ipsettings .ipaddr')
+  ipgw=$(cat $USERCONFIGFILE | jq -r -e ' .ipsettings .ipgw')
+  ipdns=$(cat $USERCONFIGFILE | jq -r -e ' .ipsettings .ipdns')
+  ipproxy=$(cat $USERCONFIGFILE | jq -r -e ' .ipsettings .ipproxy')
+
+  cat <<EOF
+   <div class="staticip">
+      <div class="title-bar">
+        <h3>Static IP Form</h3>  
+     </div>
+   <div class="content">
+
+<form id="staticip" action="/${THISURL}?action=staticipset"  class="form-horizontal" align="left" method="POST">
+  <div class="control-group">
+  <label class="control-label" for="ipset">IP Setting</label>
+  <div class="controls">
+  <input id="ipset" name="ipset" value="$ipset" placeholder='static/dhcp' required />
+   </div>
+  </div>
+  <div class="control-group">
+  <label class="control-label" for="ipaddr">IP Address</label>
+  <div class="controls">
+  <input id="ipaddr" name="ipaddr" value="$ipaddr" placeholder='xxx.xxx.xxx.xxx'  required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$"  />
+   </div>
+  </div>
+  <div class="control-group">
+  <label class="control-label" for="ipgw">Gateway</label>
+  <div class="controls">
+  <input id="ipgw" name="ipgw" value="$ipgw" placeholder='xxx.xxx.xxx.xxx' required pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" />
+   </div>
+  </div>
+  <div class="control-group">
+  <label  class="control-label" for="ipdns">DNS</label>
+  <div class="controls">
+  <input id="ipdns" name="ipdns" value="$ipdns" placeholder='xxx.xxx.xxx.xxx' requrequired pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$"ired />
+   </div>
+  </div>
+    <div class="control-group">
+  <label  class="control-label" for="ipproxy">HTTP proxy</label>
+  <div class="controls">
+  <input id="ipproxy" name="ipproxy" value="$ipproxy" placeholder='xxx.xxx.xxx.xxx' pattern="^([0-9]{1,3}\.){3}[0-9]{1,3}$" />
+   </div>
+  </div>
+<br><br><button id="staticipset" class="btn btn-lg btn-success btn-left">Save Settings</button>
+</form>
+
+     </div>
+    </div>
+
+EOF
+
+}
+
+function staticipset() {
+
+  echo "$POST"
+
+  updateuserconfigfield "ipsettings" "ipset" "$ipset"
+  updateuserconfigfield "ipsettings" "ipaddr" "$ipaddr"
+  updateuserconfigfield "ipsettings" "ipgw" "$ipgw"
+  updateuserconfigfield "ipsettings" "ipdns" "$ipdns"
+  updateuserconfigfield "ipsettings" "ipproxy" "$ipproxy"
+
 }
 
 function selectmodel() {
@@ -126,8 +245,9 @@ function pagebody() {
                 <li><a class=" dropdown-item" href="${THISURL}?action=cleanloader">Clean Loader </a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=listplatforms">List Platforms</a><li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=extensions">Extension Management</a><li>
+                <li><a class=" dropdown-item" href="${THISURL}?action=staticip">Static IP Setting</a><li>
                 <hr class="dropdown-divider">
-                <li><a class="dropdown-item" href="${THISURL}?action=resetmodel">Reset Model</a></li>
+                <li><a class="dropdown-item" href="${THISURL}?action=resetmodel" onclick="return confirm('About to reset the model are you sure?, this will permanently remove model info from /home/tc/user_config.json')" data-toggle="confirmation" data-title="Reset Model ?">Reset Model</a></li>
               </ul>
               </li>
               <li><a href="https://github.com/pocopico/tinycore-redpill">Tinycore Redpill Repo</a></li>
@@ -261,14 +381,76 @@ function pagefooter() {
          });
       
       });
+
+  \$('#redpillmakebutton').click(function(){
+
+         \$.ajax({
+          data: \$(this).serialize(), // get the form data
+           data:  { "action" : "redpillmake"},
+           type: 'POST',
+           url: "/index.sh?action=redpillmake", // the file to call
+             success: function(data) {    
+              console.log("Button redpillmake pressed");
+               \$("buildform").text(data);
+               location.reload();
+             }
+         });
+      
+      });
+
+  \$('#realmac').click(function(){
+
+         \$.ajax({
+          data: \$(this).serialize(), // get the form data
+           data:  { "action" : "realmac"},
+           type: 'POST',
+           url: "/index.sh?action=realmac", // the file to call
+             success: function(data) {    
+              console.log("Button realmac pressed");
+               \$("buildform").text(data);
+               location.reload();
+             }
+         });
+      
+      });
   
+    \$('#staticipset').click(function(){
+
+         \$.ajax({
+          data: \$(this).serialize(), // get the form data
+           data:  { "ipset" : \$('#ipset').val(),"ipaddr" : \$('#ipaddr').val(), "ipgw" : \$('#ipgw').val(), "ipdns" : \$('#ipdns').val(), "ipproxy" : \$('#ipproxy').val(),"action" : "staticipset"},
+           type: 'POST',
+           url: "/index.sh?action=staticipset", // the file to call
+             success: function(data) {    
+              console.log("Button realmac pressed");
+               \$("staticipform").text(data);
+               location.reload();
+             }
+         });
+      
+      });
+
+
+
+
 });
 
+ function togglemac(e) {
+      let txt = e.innerText;
+      e.innerText = txt == 'Real Mac' ? 'Gen Mac' : 'Real Mac';
+      macaddress.value = txt == '$realmac' ? '$macaddress' : '$realmac';
+       }
 
+      
 function onModelChange() {
   var x = document.getElementById("myModel").value;
   document.getElementById("model").innerHTML = "You selected: " + x;
 }
+
+\$('#redpillmake').tooltip({'trigger':'focus', 'title': 'Change the redpill make to development or production'});
+\$('#macaddress').tooltip({'trigger':'focus', 'title': 'Change the mac address to what you like or leave the generated one'});
+\$('#serial').tooltip({'trigger':'focus', 'title': 'Change the serial to what you like or leave the generated one'});
+
 
 </script>
 EOF
@@ -286,13 +468,14 @@ EOF
 
 function breadcrumb() {
 
+  echo "<div class=\"container\"><div class=\"row\"><div class=\"col-sm\">"
   echo "<nav aria-label=\"breadcrumb\">  <ol class=\"breadcrumb\">"
 
   [ ! -z "$MODEL" ] && echo "<li class=\"breadcrumb-item\"><a href=\"#\">$MODEL\</a></li>"
   [ ! -z "$VERSION" ] && echo "<li class=\"breadcrumb-item\"><a href=\"index.sh?action=setversion\">$VERSION\</a></li>"
   echo "<li class=\"breadcrumb-item active\" aria-current=\"page\">Build</li>"
 
-  echo "</ol></nav>"
+  echo "</ol></nav></div></div></div>"
 
 }
 
@@ -300,43 +483,17 @@ function serialgen() {
 
   [ ! -z "$GATEWAY_INTERFACE" ] && shift 0 || shift 1
 
-  [ "$2" == "realmac" ] && let keepmac=1 || let keepmac=0
-
-  if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "SA6400" ]; then
+  if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "DS923+" ] || [ "$1" = "SA6400" ]; then
     serial="$(generateSerial $1)"
     mac="$(generateMacAddress $1)"
-    realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}')
+
     echo "Serial Number for Model = $serial"
     echo "Mac Address for Model $1 = $mac "
-    [ $keepmac -eq 1 ] && echo "Real Mac Address : $realmac"
-    [ $keepmac -eq 1 ] && echo "Notice : realmac option is requested, real mac will be used"
 
-    if [ -z "$GATEWAY_INTERFACE" ]; then
+    macaddress=$(echo $mac | sed -s 's/://g')
 
-      echo "Should i update the user_config.json with these values ? [Yy/Nn]"
-      read answer
-    else
-      answer="y"
-    fi
-
-    if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-      # sed -i "/\"sn\": \"/c\    \"sn\": \"$serial\"," user_config.json
-      json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-
-      if [ $keepmac -eq 1 ]; then
-        macaddress=$(echo $realmac | sed -s 's/://g')
-      else
-        macaddress=$(echo $mac | sed -s 's/://g')
-      fi
-
-      json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-      # sed -i "/\"mac1\": \"/c\    \"mac1\": \"$macaddress\"," user_config.json
-    else
-      echo "OK remember to update manually by editing $USERCONFIGFILE file"
-    fi
-  else
-    echo "Error : $1 is not an available model for serial number generation. "
-    echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 SA6400"
+    updateuserconfigfield "extra_cmdline" "sn" "${serial}"
+    updateuserconfigfield "extra_cmdline" "mac1" "${macaddress}"
   fi
 
 }
@@ -376,10 +533,6 @@ function beginArray() {
     permanent="PSN"
     serialstart="1960"
     ;;
-  SA6400)
-    permanent="PSN"
-    serialstart="1960"
-    ;;
   DVA3219)
     permanent="RFR"
     serialstart="1930 1940"
@@ -397,10 +550,47 @@ function beginArray() {
     serialstart="2080"
     ;;
   RS4021xs+)
-    permanent="SQR"
-    serialstart="2030 2040 20C0 2150"
+    permanent="T2R"
+    serialstart="2250"
     ;;
+  DS923+)
+    permanent="TQR"
+    serialstart="2270"
+    ;;
+  DS1522+)
+    permanent="TRR"
+    serialstart="2270"
+    ;;
+  SA6400)
+    permanent="TQR"
+    serialstart="2270"
+    ;;
+
   esac
+
+}
+
+function realmac() {
+
+  getvars
+
+  if [ "$macaddress" = "$realmac" ]; then
+    updateuserconfigfield "extra_cmdline" "mac1" "$genmac"
+  else
+    updateuserconfigfield "extra_cmdline" "mac1" "$realmac"
+  fi
+
+}
+
+function redpillmake() {
+
+  getvars
+
+  if [ "$redpillmake" = "prod" ]; then
+    updateuserconfigfield "general" "redpillmake" "dev"
+  elif [ "$redpillmake" = "dev" ]; then
+    updateuserconfigfield "general" "redpillmake" "prod"
+  fi
 
 }
 
@@ -431,8 +621,14 @@ function toupper() {
 }
 
 function generateMacAddress() {
+
   #toupper "Mac Address: 00:11:32:$(randomhex):$(randomhex):$(randomhex)"
-  printf '00:11:32:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
+  if [ "$1" = "DS923+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "SA6400" ]; then
+    # DS1522+ and DS923+ Mac starts with 90:09:d0
+    printf '90:09:d0:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
+  else
+    printf '00:11:32:%02X:%02X:%02X' $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256))
+  fi
 
 }
 
@@ -455,9 +651,6 @@ function generateSerial() {
     serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
     ;;
   FS6400)
-    serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
-    ;;
-  SA6400)
     serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
     ;;
   DS920+)
@@ -484,9 +677,55 @@ function generateSerial() {
   RS4021xs+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
+  DS923+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  DS1522+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  SA6400)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
   esac
 
   echo $serialnum
+
+}
+
+function updateuserconfigfield() {
+
+  block="$1"
+  field="$2"
+  value="$3"
+
+  if [ -n "$1 " ] && [ -n "$2" ]; then
+    jsonfile=$(jq ".$block+={\"$field\":\"$value\"}" $USERCONFIGFILE)
+    echo $jsonfile | jq . >$USERCONFIGFILE
+  else
+    echo "No values to update specified"
+  fi
+}
+
+function bringoverfriend() {
+
+  echo "Bringing over my friend"
+  [ ! -d /home/tc/friend ] && mkdir /home/tc/friend/ && cd /home/tc/friend
+  URLS=$(curl --insecure -s https://api.github.com/repos/pocopico/tcrpfriend/releases/latest | jq -r ".assets[].browser_download_url")
+  for file in $URLS; do curl --insecure --location --progress-bar "$file" -O; done
+
+  if [ -f bzImage-friend ] && [ -f initrd-friend ] && [ -f chksum ]; then
+    FRIENDVERSION="$(grep VERSION chksum | awk -F= '{print $2}')"
+    BZIMAGESHA256="$(grep bzImage-friend chksum | awk '{print $1}')"
+    INITRDSHA256="$(grep initrd-friend chksum | awk '{print $1}')"
+    [ "$(sha256sum bzImage-friend | awk '{print $1}')" == "$BZIMAGESHA256" ] && echo "bzImage-friend checksum OK !" || echo "bzImage-friend checksum ERROR !" || exit 99
+    [ "$(sha256sum initrd-friend | awk '{print $1}')" == "$INITRDSHA256" ] && echo "initrd-friend checksum OK !" || echo "initrd-friend checksum ERROR !" || exit 99
+  else
+    echo "Could not find friend files, exiting" && exit 0
+  fi
+
+  echo "Copying friend to /mnt/$tcrppart"
+  cp -f /home/tc/friend/bzImage-friend /mnt/$tcrppart && [ -f /mnt/$tcrppart/bzImage-friend ] && [ "$(sha256sum /mnt/$tcrppart/bzImage-friend | awk '{print $1}')" == "$BZIMAGESHA256" ] && echo "bzImage-friend Copied succesfully"
+  cp -f /home/tc/friend/initrd-friend /mnt/$tcrppart && [ -f /mnt/$tcrppart/initrd-friend ] && [ "$(sha256sum /mnt/$tcrppart/initrd-friend | awk '{print $1}')" == "$INITRDSHA256" ] && echo "initrrd-friend Copied succesfully"
 
 }
 
@@ -494,17 +733,45 @@ function buildform() {
 
   getvars
 
-  json="$(jq --arg var "$MODEL" '.general.model = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-  json="$(jq --arg var "$VERSION" '.general.version = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  updateuserconfigfield "general" "model" "$MODEL"
+  updateuserconfigfield "general" "version" "$VERSION"
 
   if [ -z "$serial" ] || [ -z "$macaddress" ]; then
     serialgen "$MODEL" | awk -F= '{print $2}' | sed -e 'N;s/\n/ /' | read serial macaddress
     serialgen "$MODEL" >/dev/null
-    json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-    json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+    updateuserconfigfield "extra_cmdline" "sn" "$serial"
+    updateuserconfigfield "extra_cmdline" "mac1" "$macaddress"
+
+  fi
+
+  if [ -z "$productid" ] || [ -z "$vendorid"]; then
+    usbidentify
+    updateuserconfigfield "extra_cmdline" "pid" "$productid"
+    updateuserconfigfield "extra_cmdline" "vid" "$vendorid"
+
   fi
 
   cat <<EOF
+   <div class="buildform">
+      <div class="title-bar">
+        <h3>Build Form</h3>  
+
+EOF
+  checkcached
+
+  if [ "$iscached" = "yes" ]; then
+    cat <<EOF
+<button type="button" id="patfilecached" class="btn btn-lg btn-success position-absolute top-0 start-0 translate-middle" data-toggle="popover" title="Found Cached" data-content="Patfile $patfile is cached">Patfile cached</button>
+EOF
+  else
+    cat <<EOF
+<button type="button" id="patfilecached" class="btn btn-lg btn-danger position-absolute top-0 start-0 translate-middle" data-toggle="popover" title="Found Cached" data-content="Patfile $patfile is cached">Patfile not cached</button>
+EOF
+  fi
+  cat <<EOF
+      </div>
+   <div class="content">
+
 <form id="mybuild" action="/${THISURL}"  class="form-horizontal" align="left" method="POST">
   <div class="control-group">
   <label class="control-label" for="mymodel">Model</label>
@@ -530,6 +797,13 @@ function buildform() {
   <input id="macaddress" name="macaddress" value="$macaddress" required />
    </div>
   </div>
+    <div class="control-group">
+  <label  class="control-label" for="redpillmake">Redpill Make</label>
+  <div class="controls">
+  <input id="redpillmake" name="redpillmake" value="$redpillmake" required />
+   </div>
+  </div>
+<!--
   <div class="control-group">
   <label class="control-label"  class="form-check-label" for="addexts">Automatically add extensions</label>
   <div class="controls">
@@ -549,25 +823,21 @@ function buildform() {
   <textarea id="extracmdline" name="extracmdline" value=" "> </textarea>
    </div>
   </div>
-  
+  --> 
+
   <input id="action" class="hidden" name="action" value="build" hidden required />
   <input id="buildit" class="hidden" name="buildit" value="yes" hidden required />
-
-  <br><br><button type="submit"  class="btn btn-lg btn-success">Build</button>
+<br>
+  <button id="realmac"  name="realmac" onclick="toggle(this)" type="button" class="btn btn-lg btn-info">Real Mac</button>
+  <button id="redpillmakebutton" name="redpillmakebutton" onclick="" type="button" class="btn btn-info btn-sm">Change Redpill Make</button>
+  <br><br><button type="submit"  class="btn btn-lg btn-success btnright">Build</button>
 
 </form>
-EOF
-  checkcached
 
-  if [ "$iscached" = "yes" ]; then
-    cat <<EOF
-<button type="button" id="patfilecached" class="btn btn-lg btn-success position-absolute top-0 start-0 translate-middle" data-toggle="popover" title="Found Cached" data-content="Patfile $patfile is cached">Patfile cached</button>
+     </div>
+    </div>
+
 EOF
-  else
-    cat <<EOF
-<button type="button" id="patfilecached" class="btn btn-lg btn-danger position-absolute top-0 start-0 translate-middle" data-toggle="popover" title="Found Cached" data-content="Patfile $patfile is cached">Patfile not cached</button>
-EOF
-  fi
 
   extmanagement
 
@@ -576,7 +846,6 @@ EOF
 function checkcached() {
 
   patfile="$(find /mnt/sdb3/auxfiles/ | grep -i $OS_ID)"
-  #patfile="/mnt/${tcrppart}/auxfiles/sa6400_42962.pat"
 
   [ -z "$patfile" ] && patfile="$(find /home/tc/html/ | grep -i $OS_ID)"
 
@@ -598,12 +867,9 @@ function resetmodel() {
 
   getvars
 
-  #wecho "Reseting model from : $MODEL to NULL" && json="$(jq '. .general.model=""' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-  #wecho "Reseting version from : $VERSION to NULL" && json="$(jq '. .general.version=""' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-  #wecho "Reseting sn from : $serial to NULL" && json="$(jq '. .extra_cmdline.sn=""' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-  #wecho "Reseting mac1 from : $macaddress to NULL" && json="$(jq '. .extra_cmdline.mac1=""' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-  wecho "Clearing $USERCONFIGFILE" && cp ${HOMEPATH}/include/user_config.json $USERCONFIGFILE
-  wecho "Removing extension payload" && rm -rf ${HOMEPATH}/payload
+  cp ${HOMEPATH}/include/user_config.json $USERCONFIGFILE
+  rm -rf ${HOMEPATH}/payload
+  selectmodel
 
 }
 
@@ -632,6 +898,7 @@ function getvars() {
   ln -s /lib /lib64
 
   tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+  loaderdisk=$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)
   local_cache="/mnt/${tcrppart}/auxfiles"
   GETTIME=$(curl -v --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
   INTERNETDATE=$(date +"%d%m%Y" -d "$GETTIME")
@@ -647,8 +914,13 @@ function getvars() {
   RAMDISK_COPY=$(cat ${CONFIGFILES}/$MODEL/$VERSION/config.json | jq -r -e ' .extra .ramdisk_copy')
   SYNOINFO_USER=$(cat $USERCONFIGFILE | jq -r -e ' .synoinfo')
   RD_COMPRESSED=$(cat ${CONFIGFILES}/$MODEL/$VERSION/config.json | jq -r -e ' .extra .compress_rd')
+  productid=$(cat $USERCONFIGFILE | jq -r -e ' .extra_cmdline .pid')
+  vendorid=$(cat $USERCONFIGFILE | jq -r -e ' .extra_cmdline .vid')
+  redpillmake=$(cat $USERCONFIGFILE | jq -r -e ' .general .redpillmake')
   redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
   FILENAME="${OS_ID}.pat"
+  realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}' | sed -s 's/://g')
+  genmac="$(generateMacAddress $MODEL | sed -e "s/://g")"
 
   mount ${tcrppart}
 
@@ -883,7 +1155,15 @@ function downloadpat() {
       wecho "Error downloaded file is corrupted stopping process. Remove file $FILENAME and try again"
       #rm -f $FILENAME
       exit 99
+    fi
+  fi
 
+  if [ -f $FILENAME ] && [ ! -f ${tcrppart}/auxfiles/$filename ]; then
+    if [ $(df -h /mnt/${tcrpart} | tail -1 | awk '{print ($4+0)}') -le 400 ]; then
+      cp $filename ${tcrppart}/auxfiles/$filename
+    else
+      rm -f ${tcrppart}/auxfiles/*.pat
+      cp $filename ${tcrppart}/auxfiles/$filename
     fi
   fi
 
@@ -895,8 +1175,8 @@ function downloadtools() {
 
   [ ! -d ${HOMEPATH}/tools ] && mkdir -p ${HOMEPATH}/tools
   cd ${HOMEPATH}/tools
-  for FILE in bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz; do
-    [ ! -f ${HOMEPATH}/tools/$FILE ] && curl --silent --insecure --location "https://raw.githubusercontent.com/pocopico/tinycore-redpill/develop/tools/${FILE}" -O
+  for FILE in $TOOLS; do
+    [ ! -f ${HOMEPATH}/tools/$FILE ] && curl --silent --insecure --location "$TOOLSPATH/${FILE}" -O
     chmod +x $FILE
   done
 
@@ -924,8 +1204,8 @@ function extractpat() {
   [ -f ${TEMPPAT}/VERSION ] && . ${TEMPPAT}/VERSION && wecho "Extracted PAT file, VERSION Found : ${major}.${minor}.${micro}_${buildnumber}"
   extractedzImagesha="$(sha256sum ${TEMPPAT}/zImage | awk '{print $1}')"
   extractedrdsha="$(sha256sum ${TEMPPAT}/rd.gz | awk '{print $1}')"
-  wecho "zImage sha256sum : $extractedzImagesha" && json="$(jq --arg var "${extractedzImagesha}" '.general.zimghash = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-  wecho "rd sha256sum : $extractedrdsha" && json="$(jq --arg var "${extractedrdsha}" '.general.rdhash = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  wecho "zImage sha256sum : $extractedzImagesha" && updateuserconfigfield "general" "zimghash" "${extractedzImagesha}"
+  wecho "rd sha256sum : $extractedrdsha" && updateuserconfigfield "general" "rdhash" "${extractedrdsha}"
 
 }
 
@@ -944,6 +1224,8 @@ function cleanbuild() {
 
   wecho "Cleaning build directory"
   rm -rf ${TEMPPAT}
+  rm -rf ${HOMEPATH}/html/*.pat
+  rm -rf ${HOMEPATH}/friend
 
 }
 
@@ -952,7 +1234,7 @@ function addextensions() {
   cd $HOMEPATH/
 
   # extadd URL PLATFORM
-  BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]')"
+  BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]' | sed -e "s/+/p/g")"
   platform_selected="$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq ".build_configs[] | select(.id==\"${BUILDMODEL}-${VERSION}\")")"
   EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
   EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
@@ -1270,7 +1552,8 @@ function build() {
 
   getvars
 
-  cleanbuild
+  rm -rf ${HOMEPATH}/temppat
+
   testarchive $FILENAME
   checkextractor
   checkcached
@@ -1293,10 +1576,11 @@ function build() {
       rtncode=$?
       if [ $rtncode -eq 0 ]; then
         #wecho "Field exists, updating"
-        json="$(jq --arg var "${VALUE}" ".extra_cmdline.${KEY}"' = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+        updateuserconfigfield "extra_cmdline" "${KEY}" "${VALUE}"
       else
         #wecho "Field does not exist, adding "
-        json="$(jq ".extra_cmdline +={\"${KEY}\":\"$VALUE\"}" $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+        updateuserconfigfield "extra_cmdline" "${KEY}" "${VALUE}"
+
       fi
     fi
   done <<<$(echo $extracmdline | sed -s 's/ /\n/g')
@@ -1310,17 +1594,42 @@ function build() {
   SATA_LINE=$(getcmdline ${CONFIGFILES}/$MODEL/$VERSION/config.json $USERCONFIGFILE 2>&1 | grep linux | tail -1 | cut -c 16-999)
 
   #wecho "Updating user_config with serial : $serial and macaddress : $macaddress"
-  json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-  json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-
-  #wecho "Updated user_config with USB Command Line : $USB_LINE"
-  json="$(jq --arg var "${USB_LINE}" '.general.usb_line = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
-  #wecho "Updated user_config with SATA Command Line : $SATA_LINE"
-  json="$(jq --arg var "${SATA_LINE}" '.general.sata_line = $var' $USERCONFIGFILE)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  updateuserconfigfield "extra_cmdline" "sn" "$serial"
+  updateuserconfigfield "extra_cmdline" "mac1" "$macaddress"
+  updateuserconfigfield "general" "usb_line" "${USB_LINE}"
+  updateuserconfigfield "general" "sata_line" "${SATA_LINE}"
 
   #wecho "Copying $USERCONFIGFILE to boot partition"
   cp -f $USERCONFIGFILE /mnt/${tcrppart}/
   [ "$(sha256sum $USERCONFIGFILE | awk '{print $1}')" = "$(sha256sum /mnt/${tcrppart}/user_config.json | awk '{print $1}')" ] && wecho "File copied succesfully" || wecho "User config file is corrupted "
+
+  bringoverfriend
+
+  generategrub
+
+  cleanbuild
+
+}
+
+function generategrub() {
+
+  cd ${HOMEPATH}/html
+
+  getvars
+
+  BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]' | sed -e "s/+/p/g")"
+  BUILDVERSION="$(echo $VERSION | awk -F- '{print $2}')"
+
+  echo "Generating GRUB entries for model :${BUILDMODEL}_${BUILDVERSION}"
+
+  ${HOMEPATH}/include/grubmgr.sh generate "${BUILDMODEL}_${BUILDVERSION}" && [ -f grub.cfg ] && echo "Generated successfully" || echo "Failed to generate grub.cfg"
+  ${HOMEPATH}/include/grubmgr.sh addentry usb && [ $(grep -i USB grub.cfg | wc -l) -gt 0 ] && echo "Added USB entry" || echo "Failed to add USB entry"
+  ${HOMEPATH}/include/grubmgr.sh addentry sata && [ $(grep -i SATA grub.cfg | wc -l) -gt 0 ] && echo "Added SATA entry" || echo "Failed to add SATA entry"
+  ${HOMEPATH}/include/grubmgr.sh addentry tcrp && [ $(grep -i "Tiny Core Image Build" grub.cfg | wc -l) -gt 0 ] && echo "Added TCRP entry" || echo "Failed to add SATA entry"
+  ${HOMEPATH}/include/grubmgr.sh addentry tcrpfriend && [ $(grep -i "Tiny Core Friend" grub.cfg | wc -l) -gt 0 ] && echo "Added TCRP FRIEND entry" || echo "Failed to add SATA entry"
+
+  cp /mnt/${loaderdisk}1/boot/grub/grub.cfg /mnt/${loaderdisk}1/boot/grub/grub.cfg.old
+  cp -f grub.cfg /mnt/${loaderdisk}1/boot/grub/grub.cfg
 
 }
 
@@ -1410,7 +1719,7 @@ function loaderstatus() {
   #wecho "Current used Space in /home/tc is:$(du -sh /home/tc)"
 
   cat <<EOF
-
+<div class="container"<div class="row">
 <table class="table table-dark mx-auto w-auto">
   <thead>
     <tr>
@@ -1421,21 +1730,21 @@ function loaderstatus() {
   </thead>
   <tbody>
     <tr>
-      <td><div class="col-md-4 py-1">
+      <td><div class="col-sm ">
             <div class="card">
                 <div class="card-body">
                     <canvas id="chDonut1" ></canvas>
                 </div>
             </div>
      </div></td>
-      <td>  <div class="col-md-4 py-1">
+      <td>  <div class="col-sm ">
             <div class="card">
                 <div class="card-body">
                     <canvas id="chDonut2"   ></canvas>
                 </div>
             </div>
      </div></td>
-      <td>  <div class="col-md-4 py-1">
+      <td>  <div class="col-sm ">
             <div class="card">
                 <div class="card-body">
                     <canvas id="chDonut3"  ></canvas>
@@ -1447,7 +1756,7 @@ function loaderstatus() {
   
   </tbody>
 </table>
-
+</div></div>
 EOF
 
 }
@@ -1489,7 +1798,7 @@ function autoaddexts() {
   getvars
 
   wecho "Automatically detecting the required extensions"
-  BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]')"
+  BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]' | sed -e "s/+/p/g")"
   platform_selected="$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq ".build_configs[] | select(.id==\"${BUILDMODEL}-${VERSION}\")")"
   EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
   EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
@@ -1504,7 +1813,20 @@ function extmanagement() {
 
   getvars
 
-  BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]')"
+  cat <<EOF
+   <div class="extmanagement">
+      <div class="title-bar">
+        <h3>Extension Management</h3>
+        <!-- Add buttons for minimization, maximization, and closing the window -->
+    </div>
+         <div class="content">
+EOF
+  if [ -z "$MODEL" ] || [ -z "$VERSION" ]; then
+    echo "<p>Model or Version is not selected or not found, please click build to select model first<p>"
+    return
+  fi
+
+  BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]' | sed -e "s/+/p/g")"
   platform_selected="$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq ".build_configs[] | select(.id==\"${BUILDMODEL}-${VERSION}\")")"
   EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
   EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
@@ -1549,15 +1871,16 @@ function extmanagement() {
 
   echo "<button id=\"autoextbutton\" name=\"autoextbutton\" onclick=\"\" type=\"button\" class=\"btn btn-info btn-sm\">Auto add extensions</button></div>"
 
+  echo "</div></div>"
+
 }
 
 function readlog() {
 
   cat <<EOF
+<div class="buildlog fixed-bottom pre-scrollable bg-dark">
 <h3>Build output log</h3>
-<div class="pre-scrollable bg-dark">
 <pre id="containerDiv"></pre>
-</div>
 <script>
 
     var containerDiv = document.getElementById('containerDiv');
@@ -1576,6 +1899,7 @@ function getLog() {
 getLog();
 
 </script>
+</div>
 
 EOF
 
@@ -1643,6 +1967,13 @@ else
     if [ "$action" == "extadd" ]; then
       exturl="$(echo "${post[exturl]}" | sed -s "s/'//g")"
     fi
+    if [ "$action" == "staticipset" ]; then
+      ipset="$(echo "${post[ipset]}" | sed -s "s/'//g")"
+      ipaddr="$(echo "${post[ipaddr]}" | sed -s "s/'//g")"
+      ipgw="$(echo "${post[ipgw]}" | sed -s "s/'//g")"
+      ipdns="$(echo "${post[ipdns]}" | sed -s "s/'//g")"
+      ipproxy="$(echo "${post[ipproxy]}" | sed -s "s/'//g")"
+    fi
 
   fi
 
@@ -1654,27 +1985,34 @@ else
   [ "$action" == "backuploader" ] && wecho "Backing up loader " && result=$(yes | ${HOMEPATH}/rploader.sh backuploader) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "listplatforms" ] && result=$(listplatforms) && wecho "$result" | tee -a buildlog.log
   [ "$action" == "cleanloader" ] && wecho "Cleaning loader home space" && result=$(${HOMEPATH}/rploader.sh clean) && recho "$result" | tee -a ${BUILDLOG}
-  [ "$action" == "extensions" ] && wecho "Extension Management" && result=$(extmanagement) && wecho "$result" | tee -a ${BUILDLOG}
-  [ "$action" == "extadd" ] && wecho "Extadd" && result=$($HOMEPATH/include/extmgr.sh extadd $exturl sa6400_42962) && wecho "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "extensions" ] && result=$(extmanagement) && wecho "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "extadd" ] && wecho "Extadd" && result=$($HOMEPATH/include/extmgr.sh extadd $exturl $MODEL) && wecho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "setversion" ] && result=$(selectversion) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "resetmodel" ] && result=$(resetmodel) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "redpillmake" ] && result=$(redpillmake) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "staticip" ] && result=$(staticip) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "staticipset" ] && result=$(staticipset) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "realmac" ] && result=$(realmac) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "autoaddexts" ] && result=$(autoaddexts) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "generategrub" ] && result=$(generategrub $MODEL) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "bringoverfriend" ] && result=$(bringoverfriend) && echo "$result" | tee -a ${BUILDLOG}
 
   [ "$action" == "none" ] && loaderstatus
 
   if [ "$action" == "build" ]; then
+
     echo "Clearing log file" >${BUILDLOG}
 
     getvars
 
     if [ ! -z "$MODEL" ] && [ ! -z "$VERSION" ] && [ ! -z "$serial" ] && [ ! -z "$macaddress" ] && [ ! -z "$buildit" ]; then
-      echo "<br>Building loader for model, $MODEL and software version, $VERSION<br>" | tee -a ${BUILDLOG}
+      echo "Building loader for model, $MODEL and software version, $VERSION" | tee -a ${BUILDLOG} >/dev/null
 
-      downloadtools | tee -a ${BUILDLOG}
+      downloadtools | tee -a ${BUILDLOG} >/dev/null
 
-      downloadpat | tee -a ${BUILDLOG}
+      downloadpat | tee -a ${BUILDLOG} >/dev/null
 
-      build | tee -a ${BUILDLOG}
+      build | tee -a ${BUILDLOG} >/dev/null
 
       #result="$(cd ${HOMEPATH} && ./rploader.sh build v1000-7.1.0-42661 withfriend)"
       #recho "$result" | tee -a buildlog.log

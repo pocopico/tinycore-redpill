@@ -1,23 +1,182 @@
 Model,Series,CPU,Cores,Threads,Platform,RAM
 FS6400,FS Series,Intel Xeon Silver 4110 x 2,Eight Core x 2,16 x 2,Purley,DDR4 ECC RDIMM 32 GB
+FS3600,FS Series,Intel Xeon D-1567,Twelve Core,24,Broadwellnk,DDR4 ECC RDIMM 16 GB
+FS3410,FS Series,Intel Xeon D-1541,Eight Core,16,Broadwellnkv2,DDR4 ECC RDIMM 16 GB
+FS3400,FS Series,Intel Xeon D-1541,Eight Core,16,Broadwell,DDR4 ECC RDIMM 16 GB
+FS3017,FS Series,Intel Xeon E5-2620 v3 x 2,Six Core x 2,12 x 2,Grantley,DDR4 ECC RDIMM 64 GB
+FS2500,FS Series,AMD Ryzen V1780B,Quad Core,8,V1000,DDR4 ECC UDIMM 8 GB
+FS2017,FS Series,Intel Xeon D-1541,Eight Core,16,Broadwell,DDR4 ECC RDIMM 16 GB
+FS1018,FS Series,Intel Pentium D1508,Dual Core,4,Broadwellnk,DDR4 ECC SODIMM 8 GB
+HD6500,HD Series,Intel Xeon Silver 4210R x 2,Ten Core x 2,20 x 2,Purley,DDR4 ECC RDIMM 64 GB
 SA6400,SA Series,AMD EPYC 7272,Twelve Core,24,Epyc7002,DDR4 ECC RDIMM 32 GB
+SA3610,SA Series,Intel Xeon D-1567,Twelve Core,24,Broadwellnkv2,DDR4 ECC RDIMM 16 GB
+SA3600,SA Series,Intel Xeon D-1567,Twelve Core,24,Broadwellnk,DDR4 ECC RDIMM 16 GB
+SA3410,SA Series,Intel Xeon D-1541,Eight Core,16,Broadwellnkv2,DDR4 ECC RDIMM 16 GB
+SA3400,SA Series,Intel Xeon D-1541,Eight Core,16,Broadwellnk,DDR4 ECC RDIMM 16 GB
+SA3200D,SA Series,Intel Xeon D-1521 x 2,Quad Core x 2,8 x 2,Broadwellntbap,DDR4 ECC UDIMM 8 GB x 2
 DS923+,x23 Series,AMD Ryzen R1600,Dual Core,4,R1000,DDR4 ECC SODIMM 4 GB
+DS723+,x23 Series,AMD Ryzen R1600,Dual Core,4,R1000,DDR4 ECC SODIMM 2 GB
+DS223,x23 Series,Realtek RTD1619B,Quad Core,4,rtd1619b,DDR4 2 GB
 DVA1622,x22 Series,Intel Celeron J4125,Quad Core,4,Geminilake,DDR4 6 GB
-DS2422+,x22 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC SODIMM 4 GB
+RS822+/RS822RP+,x22 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC SODIMM 2 GB
+RS422+,x22 Series,AMD Ryzen R1600,Dual Core,4,R1000,DDR4 ECC 2 GB
 DS3622xs+,x22 Series,Intel Xeon D-1531,Six Core,12,Broadwellnk,DDR4 ECC SODIMM 16 GB
+DS2422+,x22 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC SODIMM 4 GB
 DS1522+,x22 Series,AMD Ryzen R1600,Dual Core,4,R1000,DDR4 ECC SODIMM 8 GB
 RS4021xs+,x21 Series,Intel Xeon D-1541,Eight Core,16,Broadwellnk,DDR4 ECC UDIMM 16 GB
+RS3621xs+,x21 Series,Intel Xeon D-1541,Eight Core,16,Broadwellnk,DDR4 ECC UDIMM 8 GB
+RS3621RPxs,x21 Series,Intel Xeon D-1531,Six Core,12,Broadwellnk,DDR4 ECC UDIMM 8 GB
+RS2821RP+,x21 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC UDIMM 4 GB
+RS2421+/RS2421RP+,x21 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC UDIMM 4 GB
+RS1221+/RS1221RP+,x21 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC SODIMM 4 GB
+DS1821+,x21 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC SODIMM 4 GB
+DS1621xs+,x21 Series,Intel Xeon D-1527,Quad Core,8,Broadwellnk,DDR4 ECC SODIMM 8 GB
+DS1621+,x21 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC SODIMM 4 GB
 DVA3221,x21 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC SODIMM 8 GB
+RS820+/RS820RP+,x20 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC 2 GB
 DS1520+,x20 Series,Intel Celeron J4125,Quad Core,4,Geminilake,DDR4 8 GB
 DS920+,x20 Series,Intel Celeron J4125,Quad Core,4,Geminilake,DDR4 4 GB
-DS3617xs+,x17 Series,Intel Xeon D-1531,Six Core,12,Broadwell,DDR4 ECC UDIMM 8 GB
-DS3615xs,x15 Series,Intel Core i3-4130,Dual Core,4,Bromolow,DDR3 ECC 4 GB
-RS3618xs,x18 Series,Intel Xeon D-1521,Quad Core,8,Broadwell,DDR4 ECC UDIMM 8 GB
-RS3413xs+,x13 Series,Intel Xeon E3-1230 v2,Quad Core,8,Bromolow,DDR3 ECC 8 GB
-FS2500,FS Series,AMD Ryzen V1780B,Quad Core,8,V1000,DDR4 ECC UDIMM 8 GB
-DVA3219,x19 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC SODIMM 4 GB
-DS918+,x18 Series,Intel Celeron J3455,Quad Core,4,Apollolake,DDR3L SODIMM 4 GB
-DS1621+,x21 Series,AMD Ryzen V1500B,Quad Core,8,V1000,DDR4 ECC SODIMM 4 GB
-DS1621xs+,x21 Series,Intel Xeon D-1527,Quad Core,8,Broadwellnk,DDR4 ECC SODIMM 8 GB
+DS720+,x20 Series,Intel Celeron J4125,Quad Core,4,Geminilake,DDR4 2 GB
+DS620slim,x20 Series,Intel Celeron J3355,Dual Core,2,Apollolake,DDR3L SODIMM 2 GB
+DS420+,x20 Series,Intel Celeron J4025,Dual Core,2,Geminilake,DDR4 2 GB
+DS420j,x20 Series,Realtek RTD1296,Quad Core,4,rtd1296,DDR4 1 GB
+DS220+,x20 Series,Intel Celeron J4025,Dual Core,2,Geminilake,DDR4 2 GB
+DS220j,x20 Series,Realtek RTD1296,Quad Core,4,rtd1296,DDR4 512 MB
+DS120j,x20 Series,Marvell A3720,Dual Core,2,armada37xx,DDR3 512 MB
+RS1619xs+,x19 Series,Intel Xeon D-1527,Quad Core,8,Broadwellnk,DDR4 ECC UDIMM 8 GB
+RS1219+,x19 Series,Intel Atom C2538,Quad Core,4,Avoton,DDR3 2 GB
+RS819,x19 Series,Realtek RTD1296,Quad Core,4,rtd1296,DDR4 2 GB
+DS2419+II,x19 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC SODIMM 4 GB
+DS2419+,x19 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC SODIMM 4 GB
+DS1819+,x19 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC SODIMM 4 GB
 DS1019+,x19 Series,Intel Celeron J3455,Quad Core,4,Apollolake,DDR3L SODIMM 8 GB
-
+DS419slim,x19 Series,Marvell Armada 385 88F6820,Dual Core,2,armada38x,DDR3L 512 MB
+DS119j,x19 Series,Marvell A3720,Dual Core,2,armada37xx,DDR3L 256 MB
+DVA3219,x19 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC SODIMM 4 GB
+RS3618xs,x18 Series,Intel Xeon D-1521,Quad Core,8,Broadwell,DDR4 ECC UDIMM 8 GB
+RS2818RP+,x18 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC UDIMM 4 GB
+RS2418+/RS2418RP+,x18 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC UDIMM 4 GB
+RS818+/RS818RP+,x18 Series,Intel Atom C2538,Quad Core,4,Avoton,DDR3 2GB
+DS3018xs,x18 Series,Intel Pentium D1508,Dual Core,4,Broadwellnk,DDR4 SODIMM 8 GB
+DS1618+,x18 Series,Intel Atom C3538,Quad Core,4,Denverton,DDR4 Non-ECC SODIMM 4 GB
+DS918+,x18 Series,Intel Celeron J3455,Quad Core,4,Apollolake,DDR3L SODIMM 4 GB
+DS718+,x18 Series,Intel Celeron J3455,Quad Core,4,Apollolake,DDR3L SODIMM 2 GB
+DS418,x18 Series,Realtek RTD1296,Quad Core,4,rtd1296,DDR4 2GB
+DS418play,x18 Series,Intel Celeron J3355,Dual Core,2,Apollolake,DDR3L SODIMM 2 GB
+DS418j,x18 Series,Realtek RTD1293,Dual Core,2,rtd1296,DDR4 1 GB
+DS218+,x18 Series,Intel Celeron J3355,Dual Core,2,Apollolake,DDR3L SODIMM 2 GB
+DS218,x18 Series,Realtek RTD1296,Quad Core,4,rtd1296,DDR4 2GB
+DS218play,x18 Series,Realtek RTD1296,Quad Core,4,rtd1296,DDR4 1 GB
+DS218j,x18 Series,Marvell Armada 385 88F6820,Dual Core,2,Armada38x,DDR3 512 MB
+DS118,x18 Series,Realtek RTD1296,Quad Core,4,rtd1296,DDR4 1 GB
+RS18017xs+,x17 Series,Intel Xeon D-1531,Six Core,12,Broadwell,DDR4 ECC RDIMM 16 GB
+RS4017xs+,x17 Series,Intel Xeon D-1541,Eight Core,16,Broadwell,DDR4 ECC UDIMM 8 GB
+RS3617xs+,x17 Series,Intel Xeon D-1531,Six Core,12,Broadwell,DDR4 ECC UDIMM 8 GB
+RS3617RPxs,x17 Series,Intel Xeon D-1521,Quad Core,8,Broadwell,DDR4 ECC UDIMM 8 GB
+RS3617xs,x17 Series,Intel Xeon E3-1230 v2,Quad Core,8,Bromolow,DDR3 ECC 4 GB
+RS217,x17 Series,Marvell Armada 385 88F6820,Dual Core,2,Armada38x,DDR3 512 MB
+DS3617xsII,x17 Series,Intel Xeon D-1527,Quad Core,8,Broadwell,DDR4 ECC SODIMM 16 GB
+DS3617xs,x17 Series,Intel Xeon D-1527,Quad Core,8,Broadwell,DDR4 ECC SODIMM 16 GB
+DS1817+,x17 Series,Intel Atom C2538,Quad Core,4,Avoton,DDR3 2/8 GB
+DS1817,x17 Series,Annapurna Labs Alpine AL-314,Quad Core,4,Alpine,DDR3L 4GB
+DS1517+,x17 Series,Intel Atom C2538,Quad Core,4,Avoton,DDR3 2/8 GB
+DS1517,x17 Series,Annapurna Labs Alpine AL-314,Quad Core,4,Alpine,DDR3L 2 GB
+RS18016xs+,x16 Series,Intel Xeon E3-1230 v2,Quad Core,8,Bromolow,DDR3 ECC 8 GB
+RS2416+/RS2416RP+,x16 Series,Intel Atom C2538,Quad Core,4,Avoton,DDR3 2 GB
+RS816,x16 Series,Marvell Armada 385 88F6820,Dual Core,2,Armada38x,DDR3 1 GB
+DS916+,x16 Series,Intel Pentium N3710,Quad Core,4,Braswell,DDR3 2 / 8 GB
+DS716+II,x16 Series,Intel Celeron N3160,Quad Core,4,Braswell,DDR3 2 GB
+DS716+,x16 Series,Intel Celeron N3150,Quad Core,4,Braswell,DDR3 2 GB
+DS416,x16 Series,Annapurna Labs Alpine AL-212,Dual Core,2,Alpine4k,DDR3 1 GB
+DS416play,x16 Series,Intel Celeron N3060,Dual Core,2,Braswell,DDR3 1 GB
+DS416j,x16 Series,Marvell Armada 388 88F6828,Dual Core,2,Armada38x,DDR3 512 MB
+DS416slim,x16 Series,Marvell Armada 385 88F6820,Dual Core,2,Armada38x,DDR3 512 MB
+DS216+II,x16 Series,Intel Celeron N3060,Dual Core,2,Braswell,DDR3 1 GB
+DS216+,x16 Series,Intel Celeron N3050,Dual Core,2,Braswell,DDR3 1 GB
+DS216,x16 Series,Marvell Armada 385 88F6820,Dual Core,2,Armada38x,DDR3 512 MB
+DS216play,x16 Series,STM STiH412,Dual Core,2,Monaco,DDR3 1 GB
+DS216j,x16 Series,Marvell Armada 385 88F6820,Dual Core,2,Armada38x,DDR3 512 MB
+DS216se,x16 Series,Marvell Armada 370 88F6707,Single Core,1,Armada370,DDR3 256 MB
+DS116,x16 Series,Marvell Armada 385 88F6820,Dual Core,2,Armada38x,DDR3 1 GB
+RS815+/RS815RP+,x15 Series,Intel Atom C2538,Quad Core,4,Avoton,DDR3 2 GB
+RS815,x15 Series,Marvell Armada XP MV78230,Dual Core,2,Armadaxp,DDR3 1 GB
+RC18015xs+,x15 Series,Intel Xeon E3-1230 v2,Quad Core,8,Bromolow,DDR3 ECC 8 GB
+DS3615xs,x15 Series,Intel Core i3-4130,Dual Core,4,Bromolow,DDR3 ECC 4 GB
+DS2415+,x15 Series,Intel Atom C2538,Quad Core,4,Avoton,DDR3 2 GB
+DS2015xs,x15 Series,Annapurna Labs Alpine AL-514,Quad Core,4,Alpine,DDR3 4 GB
+DS1815+,x15 Series,Intel Atom C2538,Quad Core,4,Avoton,DDR3 2 GB
+DS1515+,x15 Series,Intel Atom C2538,Quad Core,4,Avoton,DDR3 2 GB
+DS1515,x15 Series,Annapurna Labs Alpine AL-314,Quad Core,4,Alpine,DDR3 2 GB
+DS715,x15 Series,Annapurna Labs Alpine AL-314,Quad Core,4,Alpine,DDR3 2 GB
+DS415+,x15 Series,Intel Atom C2538,Quad Core,4,Avoton,DDR3 2 GB
+DS415play,x15 Series,Intel Atom CE5335,Dual Core,4,Evansport,DDR3 1 GB
+DS215+,x15 Series,Annapurna Labs Alpine AL-212,Dual Core,2,Alpine4k,DDR3 1 GB
+DS215j,x15 Series,Marvell Armada 375 88F6720,Dual Core,2,Armada375,DDR3 512 MB
+DS115,x15 Series,Marvell Armada 375 88F6720,Dual Core,2,Armada375,DDR3 512 MB
+DS115j,x15 Series,Marvell Armada 370 88F6707,Single Core,1,Armada370,DDR3 256 MB
+RS3614xs+,x14 Series,Intel Xeon E3-1230 v2,Quad Core,8,Bromolow,DDR3 ECC 8 GB
+RS3614xs/RS3614RPxs,x14 Series,Intel Core i3-4130,Dual Core,4,Bromolow,DDR3 ECC 4 GB
+RS2414+/RS2414RP+,x14 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 2 GB
+RS814+/RS814RP+,x14 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 2 GB
+RS814,x14 Series,Marvell Armada XP MV78230,Dual Core,2,Armadaxp,DDR3 1 GB
+RS214,x14 Series,Marvell Armada 370 88F6707,Single Core,1,Armada370,DDR3 512 MB
+DS414,x14 Series,Marvell Armada XP MV78230,Dual Core,2,Armadaxp,DDR3 1 GB
+DS414j,x14 Series,Mindspeed Comcerto C2000,Dual Core,2,Comcerto2k,DDR3 512 MB
+DS414slim,x14 Series,Marvell Armada 370 88F6707,Single Core,1,Armada370,DDR3 512 MB
+DS214+,x14 Series,Marvell Armada XP MV78230,Dual Core,2,Armadaxp,DDR3 1 GB
+DS214,x14 Series,Marvell Armada XP MV78230,Dual Core,2,Armadaxp,DDR3 512 MB
+DS214play,x14 Series,Intel Atom CE5335,Dual Core,4,Evansport,DDR3 1 GB
+DS214se,x14 Series,Marvell Armada 370 88F6707,Single Core,1,Armada370,DDR3 256 MB
+DS114,x14 Series,Marvell Armada 370 88F6707,Single Core,1,Armada370,DDR3 512 MB
+RS10613xs+,x13 Series,Intel Xeon E3-1230 v2,Quad Core,8,Bromolow,DDR3 ECC 8 GB
+RS3413xs+,x13 Series,Intel Xeon E3-1230 v2,Quad Core,8,Bromolow,DDR3 ECC 8 GB
+DS2413+,x13 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 2 GB
+DS1813+,x13 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 2 GB
+DS1513+,x13 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 2 GB
+DS713+,x13 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 1 GB
+DS413,x13 Series,Freescale P1022,Dual Core,2,Qoriq,DDR3 1 GB
+DS413j,x13 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 512 MB
+DS213+,x13 Series,Freescale P1022,Dual Core,2,Qoriq,DDR3 512 MB
+DS213,x13 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 512 MB
+DS213air,x13 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 256 MB
+DS213j,x13 Series,Marvell Armada 370 88F6707,Single Core,1,Armada370,DDR3 512 MB
+RS3412xs/RS3412RPxs,x12 Series,Intel Core i3-2100,Dual Core,4,Bromolow,DDR3 ECC 2 GB
+RS2212+/RS2212RP+,x12 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 1 GB
+RS812+/RS812RP+,x12 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 1 GB
+RS812,x12 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 512 MB
+RS212,x12 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 256 MB
+DS3612xs,x12 Series,Intel Core i3-2100,Dual Core,4,Bromolow,DDR3 ECC 2 GB
+DS1812+,x12 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 1 GB
+DS1512+,x12 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 1 GB
+DS712+,x12 Series,Intel Atom D425,Single Core,2,X86,DDR3 1 GB
+DS412+,x12 Series,Intel Atom D2700,Dual Core,4,Cedarview,DDR3 1 GB
+DS212+,x12 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 512 MB
+DS212,x12 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 256 MB
+DS212j,x12 Series,Marvell Kirkwood 88F6281,Single Core,1,88f628x,DDR2 256 MB
+DS112+,x12 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 512 MB
+DS112,x12 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 256 MB
+DS112j,x12 Series,Marvell Kirkwood 88F6702,Single Core,1,88f628x,DDR2 128 MB
+RS3411xs/RS3411RPxs,x11 Series,Intel Core i3-2100,Dual Core,4,Bromolow,DDR3 ECC 2 GB
+RS2211+/RS2211RP+,x11 Series,Intel Atom D525,Dual Core,4,X86,DDR2 1 GB
+RS411,x11 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 256 MB
+DS3611xs,x11 Series,Intel Core i3-2100,Dual Core,4,Bromolow,DDR3 ECC 2 GB
+DS2411+,x11 Series,Intel Atom D525,Dual Core,4,X86,DDR2 1 GB
+DS1511+,x11 Series,Intel Atom D525,Dual Core,4,X86,DDR2 1 GB
+DS411+II,x11 Series,Intel Atom D525,Dual Core,4,X86,DDR2 1 GB
+DS411+,x11 Series,Intel Atom D510,Dual Core,4,X86,DDR2 1 GB
+DS411,x11 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 512 MB
+DS411j,x11 Series,Marvell Kirkwood 88F6281,Single Core,1,88f628x,DDR2 128 MB
+DS411slim,x11 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 256 MB
+DS211+,x11 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 512 MB
+DS211,x11 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 256 MB
+DS211j,x11 Series,Marvell Kirkwood 88F6281,Single Core,1,88f628x,DDR2 128 MB
+DS111,x11 Series,Marvell Kirkwood 88F6282,Single Core,1,88f628x,DDR3 256 MB
+RS810+/RS810RP+,x10 Series,Intel Atom D510,Dual Core,4,X86,DDR2 1 GB
+DS1010+,x10 Series,Intel Atom D510,Dual Core,4,X86,DDR2 1 GB
+DS710+,x10 Series,Intel Atom D410,Single Core,2,X86,DDR2 1 GB
+DS410,x10 Series,Freescale MPC8533E,Single Core,1,Ppc853x,DDR 512 MB
+DS410j,x10 Series,Marvell Kirkwood 88F6281,Single Core,1,88f628x,DDR2 128 MB
+DS210+,x10 Series,Freescale MPC8533E,Single Core,1,Ppc853x,DDR 512 MB
+DS210j,x10 Series,Marvell Kirkwood 88F6281,Single Core,1,88f628x,DDR2 128 MB
+DS110+,x10 Series,Freescale MPC8533E,Single Core,1,Ppc853x,DDR 512 MB
+DS110j,x10 Series,Marvell Kirkwood 88F6281,Single Core,1,88f628x,DDR2 128 MB

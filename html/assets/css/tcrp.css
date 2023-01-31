@@ -39,48 +39,137 @@
   }
 
   #patfilecached {
-  position: absolute;
-  top: 115;
-  left: 1350;
+  float: right; 
+  height: 30px;
+  margin-left: 40px;
+  margin-top: 15px;
   }
 
   #extensionpayloadlist {
-  position: absolute;
+  /*position: absolute;
   top: 160;
-  left: 900;
+  left: 900;*/
   min-width: 250px;
-  min-height: 200px;
+  min-height: 100px ;
   max-height: 200px;
   max-width: 200px;
   }
 
   #extensionlist{
-  position: absolute;
+  /*position: absolute;
   top: 160;
-  left: 1200;
+  left: 1200;*/
   min-width: 250px;
-  min-height: 200px;
+  min-height: 150px ;
   max-height: 200px;
   }
 
   #addextbutton{
-  position: absolute;
-  top: 400;
-  left: 1200;
+    padding-left: 10px;
+    margin-left: auto;
+    margin-right: 0;
+    float: right;
   }
 
   #remextbutton{
-  position: absolute;
-  top: 400;
-  left: 900;
+    padding-left: 10px;
+    margin-left: auto;
+    margin-right: 0;
+    float: right;
+  
   }
+
+  .btnright {
+    float: right;
+    margin-top: 5px;
+    margin-right: 10px ;
+    margin-bottom: 10px;
+  }
+
+  
+  .btnleft {
+    float: left;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }  
 
   #autoextbutton{
-  position: absolute;
-  top: 115;
-  left: 1200;
+    padding-left: 10px;
+    margin-left: auto;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    float: right;
   }
 
+ .extmanagement {
+   float: right;
+   margin : 5px;
+   background-color: grey;
+   border: 1px solid black;
+   border-radius: 10px;
+   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+   height:auto;
+   left: 70%;
+   position: absolute;
+   top: 50%;
+   transform: translate(-50%, -50%);
+   width: 500px;
+  
+ }
+ .buildform {
+   float:left;
+   margin : 5px;
+   background-color: grey;
+   border: 1px solid black;
+   border-radius: 10px;
+   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+   height:auto;
+   left: 20%;
+   position: absolute;
+   top: 50%;
+   transform: translate(-50%, -50%);
+   width: 400px;
+ }
+
+ .staticip {
+   float:left;
+   margin : 5px;
+   background-color: grey;
+   border: 1px solid black;
+   border-radius: 10px;
+   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+   height:auto;
+   left: 50%;
+   position: absolute;
+   top: 50%;
+   transform: translate(-50%, -50%);
+   width: 400px;
+ }
+
+ .title-bar {
+   background-color: #333333;
+   color: white;
+   display: flex;
+   justify-content: center;
+   padding: 5px;
+ }
+ .title-bar h1 {
+   margin: 0;
+     justify-content: middle;
+ }
+ .content {
+   margin-top: 0px;
+   padding-top: 0px;
+   padding: 5px;
+ }
+
+ .buildlog {
+   margin-top: auto;
+   position: absolute;
+   top: 80%;
+   min-width: 100%;
+ }
 
   .form-horizontal .control-label{
   /* text-align:right; */

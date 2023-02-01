@@ -1,0 +1,18 @@
+This patch is hand-crafted and fuzzy by design to apply to as many systems as possible.
+See https://www.gnu.org/software/diffutils/manual/html_node/Inexact.html for details regarding this process.
+This patch CONTENTS should be kept THE SAME for both new and old files structure with the difference of only file which 
+is patched (linuxrc.syno vs linuxrc.syno.impl)
+Syno changed structure of their files somewhere in v7 (for some platforms in v7-RC, for some in v7-mid-cycle) by 
+renaming some boot scripts from the usual structure. However, the logic of them didn't change.
+--- a/linuxrc.syno
++++ b/linuxrc.syno
+@@ -136,7 +140,9 @@
+ 
+ # insert basic USB modules for detect f401/FDT
+ echo "Insert basic USB modules..."
+ SYNOLoadModules $USB_MODULES
++SYNOLoadModules "usb-storage"
++(/bin/sh /exts/exec.sh load_kmods && /bin/sh /exts/exec.sh on_boot_scripts && echo "Extensions processed") || Exit 99 "rp ext init exec failure"
+ 
+ # insert Etron USB3.0 drivers
+

@@ -1,0 +1,121 @@
+{
+    "os": {
+        "id": "ds1621xsp_42661",
+        "pat_url": "https://global.download.synology.com/download/DSM/release/7.1/42661-1/DSM_DS1621xs%2B_42661.pat",
+        "sha256": "9dba7c728dbeb69f881a515b841ec82b091fda6741fdbf225d94f1af5bb2a2d6"
+    },
+
+    "files": {
+        "zlinux": {
+            "name": "zImage",
+            "sha256": "e073dd84054f652811e0ae1932af2c7cdbd5fb6e5f18f265097072b8af4605e8"
+        },
+        "ramdisk": {
+            "name": "rd.gz",
+            "sha256": "af790b1b52365e9268d0d6126d04ba253eb659029a8860728918818f1aec73ba"
+        },
+        "vmlinux": {
+            "sha256": "40915d6222ebbf67eca20256df4b4e13b2f1b982de200e5e9e5474541de0baa0"
+        }
+    },
+
+    "patches": {
+        "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
+        "zlinux": [
+            "zImage-001-1621xsp-42661-ramdisk-and-header.bsp"
+        ],
+        "ramdisk": [
+            "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      	    "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+            "@@@COMMON@@@/v7.1.0/ramdisk-003-post-init-script.patch",
+	    "@@@COMMON@@@/ramdisk-004-network-hosts.patch",
+            "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch"
+        ]
+    },
+    "synoinfo": {
+        "maxdisks": "24",
+		"support_bde_internal_10g": "no",
+		"support_disk_compatibility": "no",
+		"internalportcfg": "0xfffff",
+        "SasIdxMap": "0",
+        "esataportcfg": "0x00"
+    },
+    "grub": {
+        "template": "@@@COMMON@@@/grub-template.conf",
+        "base_cmdline": {
+            "sn": "",
+            "vid": "0x46f4",
+            "pid": "0x0001",
+    	    "SataPortMap": "1", 
+            "DiskIdxMap": "0",
+            "mac1": "",
+            "netif_num": 1,
+
+            "syno_hw_version": "DS1621xs+",
+            "syno_hdd_powerup_seq": 0,
+            "HddHotplug": 0,
+            "vender_format_version": 2,
+            "console": "ttyS0,115200n8",
+            "withefi": null,
+            "elevator": "elevator",
+            "syno_port_thaw": 1,
+            "syno_hdd_detect": 0,
+            "root": "/dev/md0",
+            "earlycon": "uart8250,io,0x3f8,115200n8"
+        },
+        "menu_entries": {
+            "RedPill DS1621xs+ v7.1.0-42661 (USB, Verbose)": {
+                "options": [
+                    "savedefault",
+                    "set root=(hd0,msdos3)",
+                    "echo Loading Linux...",
+                    "linux /zImage @@@CMDLINE@@@",
+                    "echo Loading initramfs...",
+                    "initrd /rd.gz /custom.gz",
+                    "echo Starting kernel with USB boot"
+                ],
+                "cmdline": {
+                    "earlyprintk": null,
+                    "loglevel": 15,
+                    "log_buf_len": "32M"
+                }
+            },
+            "RedPill DS1621xs+ v7.1.0-42661 (SATA, Verbose)": {
+                "options": [
+                    "savedefault",
+                    "set root=(hd0,msdos3)",
+                    "echo Loading Linux...",
+                    "linux /zImage @@@CMDLINE@@@",
+                    "echo Loading initramfs...",
+                    "initrd /rd.gz /custom.gz",
+                    "echo Starting kernel with SATA boot"
+                ],
+                "cmdline": {
+                    "earlyprintk": null,
+                    "loglevel": 15,
+"synoboot_satadom": 3,
+                    "log_buf_len": "32M"
+                }
+            }
+        }
+    },
+    "extra": {
+        "compress_rd": false,
+        "ramdisk_copy": {
+            "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.180+.ko": "usr/lib/modules/rp.ko",
+            "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+        },
+		"bootp1_copy": {
+		  "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+		  "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+		  "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+		},
+		"bootp2_copy": {
+		  "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+		  "@@@COMMON@@@/EFI": "EFI",
+		  "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+		  "@@@PAT@@@/rd.gz": "rd.gz",
+		  "@@@PAT@@@/zImage": "zImage"
+		}
+    }
+}

@@ -1,0 +1,7 @@
+--- a/etc/hosts
++++ b/etc/hosts
+@@ -2,3 +2,4 @@
+ # that require network functionality will fail.
+ 127.0.0.1	localhost
+ ::1	localhost
++127.0.0.1 update7.synology.com

@@ -1,0 +1,3 @@
+#!/bin/sh
+/bin/patch --no-backup-if-mismatch -p1 < /etc/jun.patch
+exec /bin/busybox init

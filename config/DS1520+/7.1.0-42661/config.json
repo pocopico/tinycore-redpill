@@ -1,0 +1,164 @@
+{
+  "os": {
+    "id": "ds1520p_42661",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.1/42661-1/DSM_DS1520%2B_42661.pat",
+    "sha256": "3a8499c5f72d7241b81781ec741d4019eaa506e6e7a4fd17ce54fb149f6ffae6"
+  },
+
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "1d0e5b76e08e3483f6bf06d23b5978ec498b855bde23db1f96f343db4c43337d"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "b18f14b8420a217d7b6dd3696786ecccfbe7c325d342475531a68a7df831cffc"
+    },
+    "vmlinux": {
+      "sha256": "2df11d9f0b383da1eb34606770e55391f974f9cbc096127fe6a821ecd644e05a"
+    }
+  },
+
+  "patches": {
+    "zlinux": [
+      "zImage-001-1520p-42661-ramdisk-and-flag-NOP.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch"
+    ]
+  },
+
+  "synoinfo": {
+    "maxdisks": "16",
+    "internalportcfg": "0xffff",
+    "esataportcfg": "0x0",
+    "HddHotplug": "",
+    "support_led_brightness_adjustment": "",
+    "support_leds_lp3943": "",
+    "buzzeroffen": "0xffff",
+    "rss_server": "http://example.com/null.xml",
+    "rss_server_ssl": "https://example.com/null.xml",
+    "small_info_path": "https://example.com/null",
+    "updateurl": "http://example.com/",
+    "myds_region_api_base_url": "https://example.com"
+  },
+
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+
+      "syno_hw_version": "DS1520+",
+      "intel_iommu": "igfx_off",
+      "HddEnableDynamicPower": 1,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "synoboot2": null,
+      "elevator": "elevator",
+      "syno_ttyS0": "serial,0x3f8",
+      "syno_ttyS1": "serial,0x2f8",
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8"
+
+    },
+
+    "menu_entries": {
+      "RedPill DS1520+ v7.1.0-42661 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos3)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill DS1520+ v7.1.0-42661 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos3)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+"synoboot_satadom": 3,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill DS1520+ v7.1.0-42661 (USB, Verbose, Re-Install DSM)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos3)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M",
+          "force_junior": null
+        }
+      },
+      "RedPill DS1520+ v7.1.0-42661 (SATA, Verbose, Re-Install DSM)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos3)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+"synoboot_satadom": 3,
+          "log_buf_len": "32M",
+          "force_junior": null
+        }
+      }      
+    }
+  },
+
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.180+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

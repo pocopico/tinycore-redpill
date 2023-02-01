@@ -1,0 +1,144 @@
+{
+  "os": {
+    "id": "ds1520p_42218",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS1520%2B_42218.pat",
+    "sha256": "06947c58f25bd591f7fa3c58ad9473777481bdd7a049b42d1cb585ca01b053ee"
+  },
+
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "74d513aaa3e30d8aa4f80e202d94a68a552e9c0472f8470e133ad29080556f55"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "f0a275587c51acdb4d58a7f0d82d70f31e54228d0fbf7575d5d425dae75d1969"
+    },
+    "vmlinux": {
+      "sha256": "84e5e1a238e73ffe2ccf08d51e3f9ad13385fcdcac18163678de3f6ad1447bc4"
+    }
+  },
+
+  "patches": {
+    "zlinux": [
+      "zImage-001-1520p-42218-ramdisk-and-flag-NOP.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch"
+    ]
+  },
+
+  "synoinfo": {
+  },
+
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+
+      "syno_hw_version": "DS1520+",
+      "intel_iommu": "igfx_off",
+      "HddEnableDynamicPower": 1,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "synoboot2": null,
+      "elevator": "elevator",
+      "syno_ttyS0": "serial,0x3f8",
+      "syno_ttyS1": "serial,0x2f8",
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8"
+    },
+
+    "menu_entries": {
+      "Jun`s Mod x RedPill DS1520+ v7.0.1-42218 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos2)",
+          "echo Loading Linux...",
+          "linux /bzImage @@@CMDLINE@@@",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "Jun`s Mod x RedPill DS1520+ v7.0.1-42218 (SATA, Verbose)": {
+        "options": [
+         "savedefault",
+          "set root=(hd0,msdos2)",
+          "echo Loading Linux...",
+          "linux /bzImage @@@CMDLINE@@@",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M"
+        }
+      },
+      "Jun`s Mod x RedPill DS1520+ v7.0.1-42218 (USB, Verbose, Re-Install DSM)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos2)",
+          "echo Loading Linux...",
+          "linux /bzImage @@@CMDLINE@@@",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M",
+          "force_junior": null
+        }
+      },
+      "Jun`s Mod x RedPill DS1520+ v7.0.1-42218 (SATA, Verbose, Re-Install DSM)": {
+        "options": [
+         "savedefault",
+          "set root=(hd0,msdos2)",
+          "echo Loading Linux...",
+          "linux /bzImage @@@CMDLINE@@@",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M",
+          "force_junior": null
+        }
+      }
+    }
+  },
+
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.180+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@COMMON@@@/bzImage": "bzImage",
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

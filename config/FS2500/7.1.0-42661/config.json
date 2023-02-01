@@ -1,0 +1,156 @@
+{
+  "os": {
+    "id": "fs2500_42661",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.1/42661-1/DSM_FS2500_42661.pat",
+    "sha256": "f8343ac070b43fe62d02af6ac9a9c61f8c9852b6b2c79b933629409113e1d3e6"
+  },
+
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "d939b5937be00a644aae64c33633619a7c310433e60a515c77bbef00b0a7e6b6"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "698e9b1d719d3032a9a2b91ca08078c632b3265590147b2f6c9ca200c826e987"
+    },
+    "vmlinux": {
+      "sha256": "2df11d9f0b383da1eb34606770e55391f974f9cbc096127fe6a821ecd644e05a"
+    }
+  },
+
+  "patches": {
+    "zlinux": [
+      "zImage-001-fs2500-42661-ramdisk-and-flag-NOP.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch"
+    ]
+  },
+
+  "synoinfo": {
+    "rss_server": "http://example.com/autoupdate/genRSS.php",
+    "rss_server_ssl": "https://example.com/autoupdate/genRSS.php",
+    "small_info_path": "https://example.com/smallupdate",
+    "updateurl": "http://example.com/",
+    "myds_region_api_base_url": "https://example.com/"
+  },
+
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+
+      "syno_hw_version": "FS2500",
+      "SMBusHddDynamicPower": 1,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "synoboot2": null,
+      "elevator": "elevator",
+      "syno_ttyS0": "serial,0x3f8",
+      "syno_ttyS1": "serial,0x2f8",
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8"
+    },
+
+    "menu_entries": {
+      "RedPill FS2500 v7.1.0-42661 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos3)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill FS2500 v7.1.0-42661 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos3)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+"synoboot_satadom": 3,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill FS2500 v7.1.0-42661 (USB, Verbose, Re-Install DSM)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos3)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M",
+          "force_junior": null
+        }
+      },
+      "RedPill FS2500 v7.1.0-42661 (SATA, Verbose, Re-Install DSM)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos3)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+"synoboot_satadom": 3,
+          "log_buf_len": "32M",
+          "force_junior": null
+        }
+      }
+    }
+  },
+
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.180+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}
+

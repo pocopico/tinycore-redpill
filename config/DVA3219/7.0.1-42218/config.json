@@ -1,0 +1,145 @@
+{
+    "os": {
+        "id": "dva3219_42218",
+        "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DVA3219_42218.pat",
+        "sha256": "3557df23ff6af9bbb0cf46872ba2fc09c344eb303a38e8283dbc9a46e5eae979"
+    },
+
+    "files": {
+        "zlinux": {
+            "name": "zImage",
+            "sha256": "ef97f2d64f3f7f8c5e3f4e8fee613d385d7888826f56e119f1885a722c95c7cc"
+        },
+        "ramdisk": {
+            "name": "rd.gz",
+            "sha256": "6820f900bf2870660541b83f9741a0b70e05e8871bc41c006c9d688105c97f7c"
+        },
+        "vmlinux": {
+            "sha256": "f9abb018c9e5f05db887c9457703d7a985b85f9e73ea3c20ea0b0b2c0b4134e7"
+        }
+    },
+
+    "patches": {
+        "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
+        "zlinux": [
+            "zImage-001-dav3219-42218-ramdisk-and-header.bsp"
+        ],
+        "ramdisk": [
+            "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      	    "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+            "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch"
+        ]
+    },
+    "synoinfo": {
+    "support_bde_internal_10g": "no",
+    "support_disk_compatibility": "no"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+
+      "syno_hw_version": "DVA3219",
+      "syno_hdd_powerup_seq": 0,
+      "HddHotplug": 0,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "withefi": null,
+      "elevator": "elevator",
+      "syno_port_thaw": 1,
+      "syno_hdd_detect": 0,
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8"
+    },
+    "menu_entries": {
+      "Jun’s Mod × RedPill DVA3219 v7.0.1-42218 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos2)",
+          "echo Loading Linux...",
+          "linux /bzImage @@@CMDLINE@@@",
+          "echo Starting kernel with USB boot",
+          "echo Thanks jumkey hard work"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "Jun`s Mod x RedPill DVA3219 v7.0.1-42218 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos2)",
+          "echo Loading Linux...",
+          "linux /bzImage @@@CMDLINE@@@",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M"
+        }
+      },
+      "Jun’s Mod × RedPill DVA3219 v7.0.1-42218 (USB, Verbose, Re-Install DSM)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos2)",
+          "echo Loading Linux...",
+          "linux /bzImage @@@CMDLINE@@@",
+          "echo Starting kernel with USB boot",
+          "echo Thanks jumkey hard work"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M",
+          "force_junior": null
+        }
+      },
+      "Jun`s Mod x RedPill DVA3219 v7.0.1-42218 (SATA, Verbose, Re-Install DSM)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos2)",
+          "echo Loading Linux...",
+          "linux /bzImage @@@CMDLINE@@@",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M",
+          "force_junior": null
+        }
+      }  
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.180+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@COMMON@@@/bzImage": "bzImage",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

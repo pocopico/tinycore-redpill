@@ -1,0 +1,35 @@
+This patch is hand-crafted and fuzzy by design to apply to as many systems as possible.
+See https://www.gnu.org/software/diffutils/manual/html_node/Inexact.html for details regarding this process.
+This patch CONTENTS should be kept logically the same for both v6 and v7 versions with the only exception of uppercase 
+functions or quotes in v7, to make diffing and management of these patches easier.
+--- a/usr/sbin/init.post
++++ b/usr/sbin/init.post
+@@ -18,5 +18,28 @@
+ fi
+ Mount "$RootDevice" /tmpRoot -o barrier=1
+ 
++############################################################################################
++SED_PATH='/tmpRoot/usr/bin/sed'
++
++@@@CONFIG-MANIPULATORS-TOOLS@@@
++
++@@@CONFIG-GENERATED@@@
++
++UPSTART="/tmpRoot/usr/share/init"
++
++if ! echo; then
++  _replace_in_file '^start on' '#start on' $UPSTART/tty.conf
++  _replace_in_file "console output" "console none" $UPSTART/syno_poweroff_task.conf
++  _replace_in_file "console output" "console none" $UPSTART/burnin_loader.conf
++  _replace_in_file "console output" "console none" $UPSTART/udevtrigger.conf
++  _replace_in_file "console output" "console none" $UPSTART/bs-poweroff.conf
++  _replace_in_file "console output" "console none" $UPSTART/udevd.conf
++else
++  _replace_in_file '^#start on' 'start on' $UPSTART/tty.conf
++fi
++
++(/bin/sh /exts/exec.sh on_os_load_scripts && echo "OS load extensions processed") || Exit 99 "rp ext post exec failure"
++############################################################################################
++
+ Mkdir -p /tmpRoot/initrd
+

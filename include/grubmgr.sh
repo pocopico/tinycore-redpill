@@ -83,7 +83,7 @@ menuentry 'RedPill $model $version (SATA, Verbose)' {
 	savedefault
 	search --set=root --fs-uuid 6234-C863 --hint hd0,msdos3
 	echo Loading Linux...
-	linux /zImage $sata_line
+	linux /zImage-dsm $sata_line
 	echo Loading initramfs...
 	initrd /initrd-dsm
 	echo Starting kernel with SATA boot

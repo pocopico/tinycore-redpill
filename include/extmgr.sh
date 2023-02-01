@@ -155,16 +155,17 @@ function processexts() {
 
                 if [ $(echo $onboot | wc -l) -gt 0 ] && [ $(grep $extid on_boot.sh | wc -l) -eq 0 ] && [ "$onboot" != "null" ]; then
                         echo "Adding boot script"
-                        echo "cd $extid && ./$onboot && cd .." >>on_boot.sh
+                        echo "cd /exts/$extid && ./$onboot && cd .." >>on_boot.sh
                 fi
                 if [ $(echo $onosload | wc -l) -gt 0 ] && [ $(grep $extid on_os_load.sh | wc -l) -eq 0 ] && [ "$onosload" != "null" ]; then
                         echo "Adding os load script"
-                        echo "echo -n \":: Executing $extid os load scripts ... \" && cd $extid && ./$onosload && cd .. " >>on_os_load.sh
+                        echo "echo -n \":: Executing $extid os load scripts ... \" && cd /exts/$extid && ./$onosload && cd .. " >>on_os_load.sh
                 fi
         done
 
-        [ $(ls -ltr *.sh | wc -l) -gt 0 ] && chmod 777 *.sh
-        [ -f "*/*.sh" ] && [ $(ls -ltr */*.sh | wc -l) -gt 0 ] && chmod 777 */*.sh
+         find . -type f -name "*.sh" -exec chmod 777 {} \;
+         chmod 777 *.sh
+         chmod 777 */*.sh
 
 }
 

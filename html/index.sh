@@ -4,16 +4,28 @@
 
 HOMEPATH="/home/tc"
 TEMPPAT="${HOMEPATH}/temppat"
-CONFIGFILES="${HOMEPATH}/redpill-load/config"
+CONFIGFILES="${HOMEPATH}/config"
 PATCHEXTRACTOR="${HOMEPATH}/patch-extractor"
 THISURL="index.sh"
 BUILDLOG="/home/tc/html/buildlog.txt"
 USERCONFIGFILE="/home/tc/user_config.json"
 TOOLSPATH="https://raw.githubusercontent.com/pocopico/tinycore-redpill/develop/tools/"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
+SCRIPTVERSION="0.10.0"
 
 #. ${HOMEPATH}/include/config.sh
 ############################################
+
+function versionhistory(){
+
+cat <<EOF
+<h3> TCRP HTML, Version History : </h3>
+<br> 0.10.0, Initial release, most models tested and booted.
+
+
+EOF
+
+}
 
 function pagehead() {
 
@@ -252,7 +264,7 @@ function pagebody() {
               </li>
               <li><a href="https://github.com/pocopico/tinycore-redpill">Tinycore Redpill Repo</a></li>
               <li><a href="https://xpenology.com/forum/topic/53817-redpill-tinycore-loader/">Contact</a></li>
-              <li><a href="#">Version $(version)</a></li>
+              <li><a href="${THISURL}?action=versionhistory">Version ${SCRIPTVERSION}</a></li>
              
             </ul>
              
@@ -845,7 +857,7 @@ EOF
 
 function checkcached() {
 
-  patfile="$(find /mnt/sdb3/auxfiles/ | grep -i $OS_ID)"
+  patfile="$(find /mnt/$tcrppart/auxfiles/ | grep -i $OS_ID)"
 
   [ -z "$patfile" ] && patfile="$(find /home/tc/html/ | grep -i $OS_ID)"
 
@@ -867,7 +879,7 @@ function resetmodel() {
 
   getvars
 
-  cp ${HOMEPATH}/include/user_config.json $USERCONFIGFILE
+  cp -f ${HOMEPATH}/include/user_config.json $USERCONFIGFILE
   rm -rf ${HOMEPATH}/payload
   selectmodel
 
@@ -923,6 +935,8 @@ function getvars() {
   genmac="$(generateMacAddress $MODEL | sed -e "s/://g")"
 
   mount ${tcrppart}
+  mount ${loaderdisk}1
+  mount ${loaderdisk}2
 
   #wecho "tcrppart            :   $tcrppart    local_cache         :   $local_cache        INTERNETDATE        :   $INTERNETDATE     \  LOCALDATE           :   $LOCALDATE
   #OS_ID               :   $OS_ID              PAT_URL             :   $PAT_URL            PAT_SHA             :   $PAT_SHA          \
@@ -1222,7 +1236,7 @@ function patchkernel() {
 
 function cleanbuild() {
 
-  wecho "Cleaning build directory"
+  echo "Cleaning build directory"
   rm -rf ${TEMPPAT}
   rm -rf ${HOMEPATH}/html/*.pat
   rm -rf ${HOMEPATH}/friend
@@ -1271,7 +1285,7 @@ function patchramdisk() {
   [ ! -d $temprd ] && mkdir -p $temprd && cd $temprd && xz -dc <"${TEMPPAT}/rd.gz" | cpio -idm >/dev/null 2>&1
   [ -f ${TEMPPAT}/rd.temp/VERSION ] && ${TEMPPAT}/rd.temp/VERSION
   wecho "Extracted ramdisk VERSION : ${major}.${minor}.${micro}_${buildnumber}"
-  PATCHES="$(echo $RAMDISK_PATCH | jq . | sed -s 's/@@@COMMON@@@/\/home\/tc\/redpill-load\/config\/_common/' | grep config | sed -s 's/"//g' | sed -s 's/,//g')"
+  PATCHES="$(echo $RAMDISK_PATCH | jq . | sed -s 's/@@@COMMON@@@/\/home\/tc\/config\/_common/' | grep config | sed -s 's/"//g' | sed -s 's/,//g')"
 
   wecho "Patches to be applied : $PATCHES"
 
@@ -1300,7 +1314,7 @@ function patchramdisk() {
   while IFS=":" read SRC DST; do
     echo "Source :$SRC Destination : $DST"
     cp -f $SRC $DST
-  done <<<$(echo $RAMDISK_COPY | jq . | grep "COMMON" | sed -s 's/"//g' | sed -s 's/,//g' | sed -s 's/@@@COMMON@@@/\/home\/tc\/redpill-load\/config\/_common/')
+  done <<<$(echo $RAMDISK_COPY | jq . | grep "COMMON" | sed -s 's/"//g' | sed -s 's/,//g' | sed -s 's/@@@COMMON@@@/\/home\/tc\/config\/_common/')
 
   #wecho "Adding precompiled redpill module"
   #getstaticmodule
@@ -1546,11 +1560,11 @@ function build() {
 
   #window.open("index.sh&monitor");
 
-  wecho "Starting build"
-  wecho "Buildling loader for $model, $version, with serial number : $serial and macaddress : $macaddress"
-  wecho "extracommans : $extracmdline"
-
   getvars
+
+  wecho "Starting build"
+  wecho "Buildling loader for $MODEL, $VERSION, with serial number : $serial and macaddress : $macaddress"
+  wecho "extracommans : $extracmdline"
 
   rm -rf ${HOMEPATH}/temppat
 
@@ -1560,10 +1574,27 @@ function build() {
 
   [ "$isencrypted" = "yes" ] && [ "$extractorcached" = "no" ] && downloadextractor
 
-  extractpat "$FILENAME"
+  extractpat "$patfile"
 
-  [ "$extractedzImagesha" = "$ZIMAGE_SHA" ] && wecho "zImage sha256sum matches expected sha256sum, patching kernel" && patchkernel || wecho "zImage does not match sha256sum : $extractedzImagesha"
-  [ "$extractedrdsha" = "$RD_SHA" ] && wecho "ramdisk sha256sum matches expected sha256sum, patching kernel" && patchramdisk || wecho "rd.gz  does not match sha256sum : $extractedrdsha"
+  if [ "$extractedzImagesha" = "$ZIMAGE_SHA" ]; then
+    wecho "Copying original zImage to partitions ${loaderdisk}1 and ${loaderdisk}2"
+    cp -f ${TEMPPAT}/zImage /mnt/${loaderdisk}1/
+    cp -f ${TEMPPAT}/zImage /mnt/${loaderdisk}2/
+    wecho "zImage sha256sum matches expected sha256sum, patching kernel"
+    patchkernel
+  else
+    wecho "zImage does not match sha256sum : $extractedzImagesha"
+  fi
+
+  if [ "$extractedrdsha" = "$RD_SHA" ]; then
+    wecho "Copying original ramdisk to partitions ${loaderdisk}1 and ${loaderdisk}2"
+    cp -f ${TEMPPAT}/rd.gz /mnt/${loaderdisk}1/
+    cp -f ${TEMPPAT}/rd.gz /mnt/${loaderdisk}2/
+    wecho "ramdisk sha256sum matches expected sha256sum, patching kernel"
+    patchramdisk
+  else
+    wecho "rd.gz  does not match sha256sum : $extractedrdsha"
+  fi
 
   [ -n "${extracmdline}" ] && wecho "Extra User built defined command line parameters ${extracmdline}"
 
@@ -1608,6 +1639,10 @@ function build() {
   generategrub
 
   cleanbuild
+
+  checkloader
+
+  echo "Finished building the loader. "
 
 }
 
@@ -1763,7 +1798,7 @@ EOF
 
 function listplatforms() {
 
-  models="$(ls ${HOMEPATH}/redpill-load/config | grep -v comm | sed -e 's/\///g')"
+  models="$(ls ${CONFIGFILES} | grep -v comm | sed -e 's/\///g')"
   echo "<h3>Available Platforms Hardware Information</h3>"
   cat <<EOF
 <table class="table table-dark">
@@ -1844,9 +1879,7 @@ EOF
     done
   )"
   extensionlist="$(curl -L https://github.com/pocopico/rp-ext/raw/main/rpext-index.json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq)"
-  #echo "<div id=\"extmanagement\"><textarea rows=\"10\" cols=\"40\" id=\"extensionpayloadlist\" name=\"extensionpayload\" value=\"\">$extensionpayload</textarea>"
-  #echo "<textarea rows=\"10\" cols=\"40\" id=\"extensionlist\" name=\"extensionlist\" value=\"\">$extensionlist</textarea>"
-
+  
   echo "<div id=\"extmanagement\">"
 
   echo "<select rows=\"10\" id=\"extensionlist\" name=\"extensionlist\" class=\"form-select\" size=\"3\" aria-label=\"size 3 select example\">"
@@ -1872,6 +1905,22 @@ EOF
   echo "<button id=\"autoextbutton\" name=\"autoextbutton\" onclick=\"\" type=\"button\" class=\"btn btn-info btn-sm\">Auto add extensions</button></div>"
 
   echo "</div></div>"
+
+}
+
+checkloader(){
+
+echo "Checking loader consistency ..."
+echo -n "Checking menuentries ..." && echo "$(grep menuentry /mnt/${loaderdisk}1/boot/grub/grub.cfg | wc -l ) entries found" 
+echo "Checking boot files are in place..."
+
+for bootfile in bzImage-friend initrd-friend zImage-dsm initrd-dsm user_config.json custom.gz
+do
+[ -f /mnt/${tcrppart}/$bootfile ] && echo "OK ! file /mnt/${tcrppart}/$bootfile, IN PLACE" || echo "Error ! /mnt/${tcrppart}/$bootfile MISSING"
+done 
+
+echo -n "Checking user_config.json general block ..." && [ $(jq .general /mnt/${tcrppart}/user_config.json |wc -l) -ge 12 ] && echo "OK"
+
 
 }
 
@@ -1903,11 +1952,7 @@ getLog();
 
 EOF
 
-  #"Range" : "bytes="+byteRead+"-"
-
 }
-
-#. ${HOMEPATH}/rploader.sh >/dev/null
 
 [ -z "$POST_STRING" -a "$REQUEST_METHOD" = "POST" -a ! -z "$CONTENT_LENGTH" ] && read -n $CONTENT_LENGTH POST_STRING
 
@@ -1977,7 +2022,7 @@ else
 
   fi
 
-  #wecho "POST STRING : $POST_STRING : Action = $action" | tee -a buildlog.log
+  #echo "POST STRING : $POST_STRING : Action = $action" | tee -a buildlog.log
   #echo "<br>REQUEST METHOD $REQUEST_METHOD , MODEL : $MODEL , VERSION : $VERSION"
   #echo "<br>Serial : $serial , MAC : $macaddress , Buildit : $buildit"
   #echo "<br>Build VARS : MODEL :$MODEL VERSION: $VERSION SN: $serial MAC: $macaddress BUILDIT: $buildit"
@@ -1996,6 +2041,7 @@ else
   [ "$action" == "autoaddexts" ] && result=$(autoaddexts) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "generategrub" ] && result=$(generategrub $MODEL) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "bringoverfriend" ] && result=$(bringoverfriend) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "versionhistory" ] && result=$(versionhistory) && echo "$result" | tee -a ${BUILDLOG}
 
   [ "$action" == "none" ] && loaderstatus
 
@@ -2004,6 +2050,13 @@ else
     echo "Clearing log file" >${BUILDLOG}
 
     getvars
+
+    if [ $(jq . $USERCONFIGFILE | wc -l) -ge 38 ] ; then
+      echo "File $USERCONFIGFILE looks OK" | tee -a $BUILDLOG >/dev/null
+    else
+      wecho "Error file looks corrupted, reset model to recreate"
+      exit 99
+    fi
 
     if [ ! -z "$MODEL" ] && [ ! -z "$VERSION" ] && [ ! -z "$serial" ] && [ ! -z "$macaddress" ] && [ ! -z "$buildit" ]; then
       echo "Building loader for model, $MODEL and software version, $VERSION" | tee -a ${BUILDLOG} >/dev/null

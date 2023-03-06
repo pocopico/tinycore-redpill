@@ -16,9 +16,9 @@ SCRIPTVERSION="0.10.0"
 #. ${HOMEPATH}/include/config.sh
 ############################################
 
-function versionhistory(){
+function versionhistory() {
 
-cat <<EOF
+  cat <<EOF
 <h3> TCRP HTML, Version History : </h3>
 <br> 0.10.0, Initial release, most models tested and booted.
 
@@ -186,6 +186,67 @@ function staticipset() {
 
 }
 
+function mountshare() {
+
+  cat <<EOF
+   <div class="mountshare">
+      <div class="title-bar">
+        <h3>Mount Share</h3>  
+     </div>
+   <div class="content">
+
+<form id="mountshare" action="/${THISURL}?action=mountshare&share=$share&mountpoint=$mountpoint&cifsuser=$cifsuser&cifspass=$cifspass"  class="form-horizontal" align="left" method="POST">
+  <div class="control-group">
+  <label class="control-label" for="share">Share</label>
+  <div class="controls">
+  <input id="share" name="share" value="$share" placeholder='Share url e.g //192.168.1.100/tcrpshare' required />
+   </div>
+  </div>
+  <div class="control-group">
+  <label class="control-label" for="mountpoint">Mount Point</label>
+  <div class="controls">
+  <input id="mountpoint" name="mountpoint" value="$mountpoint" placeholder='/home/tc/mountpoint'  required  />
+   </div>
+  </div>
+  <div class="control-group">
+  <label class="control-label" for="cifsuser">User Name</label>
+  <div class="controls">
+  <input id="cifsuser" name="cifsuser" value="$cifsuser" placeholder='usename'  required  />
+   </div>
+  </div>
+<div class="control-group">
+  <label class="control-label" for="cifspass">Password</label>
+  <div class="controls">
+  <input id="cifspass" name="cifspass" value="$cifspass" placeholder='password'  required  />
+   </div>
+  </div>
+EOF
+
+  if [ ! -z $share ] && [ ! -z $mountpoint ] && [ ! -z $cifsuser ] && [ ! -z $cifspass ]; then
+    mkdir -p $mountpoint
+    echo -e "username=$cifsuser\npassword=$cifspass" >/home/tc/credentials
+    chmod 600 /home/tc/credentials
+    sudo /usr/local/sbin/mount.cifs $share $mountpoint -o credentials=/home/tc/credentials --verbose
+    if [ $(mount | grep "$mountpoint" | wc -l) -gt 0 ]; then
+      echo "<button id='mounted' class='btn btn-lg btn-success btn-left'>mounted</button>"
+    else
+      echo "<button id='mounted' class='btn btn-lg btn-danger btn-left'>Not mounted</button>"
+    fi
+  else
+    echo ""
+  fi
+
+  cat <<EOF
+  
+<button id="mountthisshare" class="btn btn-lg btn-success btn-left">Mountshare</button>
+</form>
+     </div>
+    </div>
+
+EOF
+
+}
+
 function selectmodel() {
 
   cat <<EOF
@@ -258,6 +319,7 @@ function pagebody() {
                 <li><a class=" dropdown-item" href="${THISURL}?action=listplatforms">List Platforms</a><li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=extensions">Extension Management</a><li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=staticip">Static IP Setting</a><li>
+                <li><a class=" dropdown-item" href="${THISURL}?action=mountshare">Mount share</a><li>
                 <hr class="dropdown-divider">
                 <li><a class="dropdown-item" href="${THISURL}?action=resetmodel" onclick="return confirm('About to reset the model are you sure?, this will permanently remove model info from /home/tc/user_config.json')" data-toggle="confirmation" data-title="Reset Model ?">Reset Model</a></li>
               </ul>
@@ -1879,7 +1941,7 @@ EOF
     done
   )"
   extensionlist="$(curl -L https://github.com/pocopico/rp-ext/raw/main/rpext-index.json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq)"
-  
+
   echo "<div id=\"extmanagement\">"
 
   echo "<select rows=\"10\" id=\"extensionlist\" name=\"extensionlist\" class=\"form-select\" size=\"3\" aria-label=\"size 3 select example\">"
@@ -1908,19 +1970,17 @@ EOF
 
 }
 
-checkloader(){
+checkloader() {
 
-echo "Checking loader consistency ..."
-echo -n "Checking menuentries ..." && echo "$(grep menuentry /mnt/${loaderdisk}1/boot/grub/grub.cfg | wc -l ) entries found" 
-echo "Checking boot files are in place..."
+  echo "Checking loader consistency ..."
+  echo -n "Checking menuentries ..." && echo "$(grep menuentry /mnt/${loaderdisk}1/boot/grub/grub.cfg | wc -l) entries found"
+  echo "Checking boot files are in place..."
 
-for bootfile in bzImage-friend initrd-friend zImage-dsm initrd-dsm user_config.json custom.gz
-do
-[ -f /mnt/${tcrppart}/$bootfile ] && echo "OK ! file /mnt/${tcrppart}/$bootfile, IN PLACE" || echo "Error ! /mnt/${tcrppart}/$bootfile MISSING"
-done 
+  for bootfile in bzImage-friend initrd-friend zImage-dsm initrd-dsm user_config.json custom.gz; do
+    [ -f /mnt/${tcrppart}/$bootfile ] && echo "OK ! file /mnt/${tcrppart}/$bootfile, IN PLACE" || echo "Error ! /mnt/${tcrppart}/$bootfile MISSING"
+  done
 
-echo -n "Checking user_config.json general block ..." && [ $(jq .general /mnt/${tcrppart}/user_config.json |wc -l) -ge 12 ] && echo "OK"
-
+  echo -n "Checking user_config.json general block ..." && [ $(jq .general /mnt/${tcrppart}/user_config.json | wc -l) -ge 12 ] && echo "OK"
 
 }
 
@@ -2019,6 +2079,14 @@ else
       ipdns="$(echo "${post[ipdns]}" | sed -s "s/'//g")"
       ipproxy="$(echo "${post[ipproxy]}" | sed -s "s/'//g")"
     fi
+    if [ "$action" == "mountshare" ]; then
+      share="$(echo "${post[share]}" | sed -s "s/'//g")"
+      mountpoint="$(echo "${post[mountpoint]}" | sed -s "s/'//g")"
+      cifsuser="$(echo "${post[cifsuser]}" | sed -s "s/'//g")"
+      cifspass="$(echo "${post[cifspass]}" | sed -s "s/'//g")"
+      enccifsuser="$(printf %s "${post[cifsuser]}" | jq -sRr @uri | sed -s "s/'//g")"
+      enccifspass="$(printf %s "${post[cifspass]}" | jq -sRr @uri | sed -s "s/'//g")"
+    fi
 
   fi
 
@@ -2042,6 +2110,7 @@ else
   [ "$action" == "generategrub" ] && result=$(generategrub $MODEL) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "bringoverfriend" ] && result=$(bringoverfriend) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "versionhistory" ] && result=$(versionhistory) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "mountshare" ] && result=$(mountshare) && echo "$result" | tee -a ${BUILDLOG}
 
   [ "$action" == "none" ] && loaderstatus
 
@@ -2051,7 +2120,7 @@ else
 
     getvars
 
-    if [ $(jq . $USERCONFIGFILE | wc -l) -ge 38 ] ; then
+    if [ $(jq . $USERCONFIGFILE | wc -l) -ge 38 ]; then
       echo "File $USERCONFIGFILE looks OK" | tee -a $BUILDLOG >/dev/null
     else
       wecho "Error file looks corrupted, reset model to recreate"

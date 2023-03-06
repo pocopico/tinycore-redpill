@@ -147,6 +147,22 @@
    width: 400px;
  }
 
+
+ .mountshare {
+   float:left;
+   margin : 5px;
+   background-color: grey;
+   border: 1px solid black;
+   border-radius: 10px;
+   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+   height:auto;
+   left: 50%;
+   position: absolute;
+   top: 50%;
+   transform: translate(-50%, -50%);
+   width: 400px;
+ }
+
  .title-bar {
    background-color: #333333;
    color: white;

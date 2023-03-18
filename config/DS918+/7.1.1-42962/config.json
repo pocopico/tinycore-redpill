@@ -34,8 +34,8 @@
 
   "synoinfo": {
     "maxdisks": "16",
-    "internalportcfg": "0xffff",
-    "esataportcfg": "0x0",
+    "internalportcfg": "0x1",
+    "esataportcfg": "0xfffe",
     "buzzeroffen": "0xffff",
     "rss_server": "http://example.com/null.xml",
     "rss_server_ssl": "https://example.com/null.xml",

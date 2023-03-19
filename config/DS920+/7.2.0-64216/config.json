@@ -1,0 +1,120 @@
+{
+  "os": {
+    "id": "ds920p_64216",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2.0/64216/DSM_DS920%2B_64216.pat",
+    "sha256": "ab7062c0ce130fd3883f1b1e6d85bea33ef92f222a421b18567decfb6d76107e"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "a793c3adb40b20c257a1c26fb48049bfc2d9e88c599e9f9299754f0efc35f89c"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "b2eb45986497bb3d9efe1748c2bc0f856c029e7f89e8fca03cf559ad4c95c155"
+    },
+    "vmlinux": {
+      "sha256": "420e3425855894282c985227568df0b93994d75c449d7612e119fd1944cdbef1"
+    }
+  },
+  "patches": {
+    "zlinux": [
+      "zImage-001-920p-64216-ramdisk-and-flag-NOP.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-004-network-hosts.patch"
+    ]
+  },
+  "synoinfo": {
+    "maxdisks": "16",
+    "internalportcfg": "0xffff",
+    "esataportcfg": "0x0",
+    "buzzeroffen": "0xffff",
+    "rss_server": "http://example.com/null.xml",
+    "rss_server_ssl": "https://example.com/null.xml",
+    "small_info_path": "https://example.com/null",
+    "updateurl": "http://example.com/",
+    "myds_region_api_base_url": "https://example.com"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "DS920+",
+      "intel_iommu": "igfx_off",
+      "HddEnableDynamicPower": 1,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "synoboot2": null,
+      "elevator": "elevator",
+      "syno_ttyS0": "serial,0x3f8",
+      "syno_ttyS1": "serial,0x2f8",
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8"
+    },
+    "menu_entries": {
+      "RedPill DS920+ v7.2.0-64216 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "withefi": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill DS920+ v7.2.0-64216 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "withefi": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.302+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

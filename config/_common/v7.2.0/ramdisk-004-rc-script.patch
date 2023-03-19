@@ -1,0 +1,11 @@
+--- a/etc/rc
++++ b/etc/rc
+@@ -113,7 +113,7 @@ ThisMachine=`uname -m`
+ if [ $KERNEL_VCODE -ge "$(KernelVersionCode "2.6")" ]; then
+ 	# 2.6 or 3.x
+ 	VXLAN_MODULES="ip_tunnel udp_tunnel ip6_udp_tunnel vxlan"
+-	NET_DRIVERS="${VXLAN_MODULES} dca e1000e i2c-algo-bit igb be2net ixgbe r8168 i40e"
++	NET_DRIVERS="${VXLAN_MODULES} dca e1000e i2c-algo-bit igb be2net r8168 i40e"
+ 	if [ "kvmx64" = "$PLATFORM" ] || [ "nextkvmx64" = "$PLATFORM" ]; then
+ 		NET_DRIVERS="${VXLAN_MODULES} igbvf be2net ixgbevf i40evf"
+ 	fi

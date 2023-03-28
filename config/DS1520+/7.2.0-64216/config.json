@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "ds1520p_64216",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2.0/64216/DSM_ds1520p_64216.pat",
+    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_DS1520%2B_64216.pat",
     "sha256": "6078d405128ffd3dba2570cd5a17b391fd2395a7d1a4a26b161a3a96864575f2"
   },
   "files": {

@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "ds918p_64216",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2.0/64216/DSM_DS918%2B_64216.pat",
+    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_DS918%2B_64216.pat",
     "sha256": "2b0cbe8b78588ee797cfedd41a0ff11410ac95bc88c3ae981f758251992a52c4"
   },
   "files": {

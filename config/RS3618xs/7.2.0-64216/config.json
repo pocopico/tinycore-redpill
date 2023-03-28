@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "rs3618xs_64216",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2.0/64216/DSM_RS3618xs_64216.pat",
+    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_RS3618xs_64216.pat",
     "sha256": "be35633cd368aeede2f5f6e309b936cd849d6a80975622e6155a2fe1f72d2e60"
   },
   "files": {

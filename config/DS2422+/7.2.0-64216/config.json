@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "ds2422p_64216",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2.0/64216/DSM_DS2422%2B_64216.pat",
+    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_DS2422%2B_64216.pat",
     "sha256": "130d847bfa7b7bab7b42466003c1920cd22056f80cd31bc6cd2d84b07d17ccae"
   },
   "files": {

@@ -91,10 +91,10 @@ fi
 case $action in
 
 extadd)
-  /home/tc/include/extmgr.sh extadd $exturl sa6400_42962
+  /home/tc/include/extmgr.sh extadd $exturl ${MODEL}_${REVISION}
   ;;
 extrem)
-  /home/tc/include/extmgr.sh extremove $exturl sa6400_42962
+  /home/tc/include/extmgr.sh extremove $exturl ${MODEL}_${REVISION}
   ;;
 
 esac

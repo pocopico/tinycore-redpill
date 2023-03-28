@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "ds1019p_64216",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2.0/64216/DSM_DS1019%2B_64216.pat",
+    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_DS1019%2B_64216.pat",
     "sha256": "46e878970f8167aaba391115b1588c3557a8a33e29a7e5c047a8ab7bd02186ad"
   },
   "files": {

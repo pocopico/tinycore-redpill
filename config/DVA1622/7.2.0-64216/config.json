@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "dva1622_64216",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2.0/64216/DSM_DVA1622_64216.pat",
+    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_DVA1622_64216.pat",
     "sha256": "cf8658ac9501045c59c6a6b0af29774cdab684b71ee96e760a91c4981a89a6fb"
   },
   "files": {

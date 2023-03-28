@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "fs6400_64216",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2.0/42951/DSM_FS6400_42951.pat",
+    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_FS6400_64216.pat",
     "sha256": "c225b79d5154488226655cbbd2f40e14f5711643baffb7b8b15488683f28e058"
   },
   "files": {

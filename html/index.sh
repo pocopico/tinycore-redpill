@@ -1072,7 +1072,7 @@ function downloadextractor() {
   sudo rm -rf ../oldpat.tar.gz
   sudo rm -rf hda1.tgz
 
-  curl --silent --location https://github.com/pocopico/tinycore-redpill/blob/develop/tools/xxd?raw=true --output xxd
+  curl --silent --location "https://github.com/pocopico/tinycore-redpill/blob/main/tools/xxd?raw=true" --output xxd
 
   chmod +x xxd
 

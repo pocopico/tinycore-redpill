@@ -616,7 +616,7 @@ function beginArray() {
     serialstart="2030 2040 20C0 2150"
     ;;
   DVA1622)
-    permanent="SJR"
+    permanent="UBR"
     serialstart="2030 2040 20C0 2150"
     ;;
   DS2422+)

@@ -17,7 +17,7 @@ function listextension() {
 
   if [ ! -z $1 ]; then
     echo "Searching for matching extension for $1"
-    matchingextension="$(jq -r -e ". | select(.id | endswith(\"${1}\")) .url  " ${RPEXTFILE})"
+    matchingextension="$(jq -r -e ". | select(.id | endswith(\"${1}\")) .url  " ${RPEXTFILE} | head -1)"
 
     if [ ! -z "$matchingextension" ]; then
       echo "Found matching extension : "

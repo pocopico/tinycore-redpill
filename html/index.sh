@@ -1309,6 +1309,9 @@ function cachepat() {
 function cleanbuild() {
 
   echo "Cleaning build directory"
+  rm -rf /home/tc/payload
+  rm -rf /home/tc/custom.gz
+  rm -rf /home/tc/customtemp
   rm -rf ${TEMPPAT}
   rm -rf ${HOMEPATH}/html/*.pat
   rm -rf ${HOMEPATH}/friend

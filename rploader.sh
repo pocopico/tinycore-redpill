@@ -445,7 +445,7 @@ function monitor() {
     mount /dev/${loaderdisk}1
     mount /dev/${loaderdisk}2
     NETGW="$(route | grep -i def | awk '{print $2}')"
-    ping -c $NEWGW >/dev/null &
+    ping -c 5 $NEWGW >/dev/null &
 
     while [ -z "$GATEWAY_INTERFACE" ]; do
         clear

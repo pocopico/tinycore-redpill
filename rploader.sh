@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 230108
-# Version : 0.9.4.3
+# Version : 0.9.4.4
 #
 #
 # User Variables :
 
-rploaderver="0.9.4.3"
+rploaderver="0.9.4.4"
 build="main"
 redpillmake="prod"
 
@@ -91,8 +91,27 @@ function history() {
     0.9.4.1 Fixed missing serian and mac if user has not taken that into account. 
     0.9.4.2 Added serial numbers prefixes for DS923+ and DS1522+  
     0.9.4.3 Added serial numbers prefixes for SA6400, added class 104 to listpci function
+    0.9.4.4 Added cmdmonitor function
     --------------------------------------------------------------------------------------
 EOF
+
+}
+
+function cmdmonitor() {
+
+    echo "TCRP Command Monitoring daemon"
+    touch cmdout
+
+    while true; do
+        cmd="$(cat $HOME/cmdout)"
+        if [ -z $cmd ]; then
+            nocommand="yes"
+        else
+            echo "Command to execute : $cmd" >>$HOME/cmdout.log
+            $cmd | tee -a $HOME/cmdout.log
+            >$HOME/cmdout
+        fi
+    done
 
 }
 
@@ -425,6 +444,8 @@ function monitor() {
     loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
     mount /dev/${loaderdisk}1
     mount /dev/${loaderdisk}2
+    NETGW="$(route | grep -i def | awk '{print $2}')"
+    ping -c $NEWGW >/dev/null &
 
     while [ -z "$GATEWAY_INTERFACE" ]; do
         clear
@@ -3548,8 +3569,7 @@ if [ -z "$GATEWAY_INTERFACE" ]; then
 
         ;;
 
-    \
-        ext)
+    ext)
         getvars $2
         checkinternet
         gitdownload

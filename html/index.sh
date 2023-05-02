@@ -1297,6 +1297,15 @@ function patchkernel() {
 
 }
 
+function cachepat() {
+
+  echo "Caching PAT file"
+  cd ${TEMPPAT}
+  rm -rf rd.temp && rm -rf vmlinux* && rm -rf zImage-dsm && rm -rf initrd-dsm
+  [ ! -f /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat] && tar cfz /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat *
+
+}
+
 function cleanbuild() {
 
   echo "Cleaning build directory"
@@ -1377,6 +1386,7 @@ function patchramdisk() {
   while IFS=":" read SRC DST; do
     echo "Source :$SRC Destination : $DST"
     cp -f $SRC $DST
+    cmp -s $SRC $DST || echo "File $SRC differ to $DST" && echo "FILE : $SRC copied to : $DST succesfully"
   done <<<$(echo $RAMDISK_COPY | jq . | grep "COMMON" | sed -s 's/"//g' | sed -s 's/,//g' | sed -s 's/@@@COMMON@@@/\/home\/tc\/config\/_common/')
 
   #wecho "Adding precompiled redpill module"
@@ -1399,6 +1409,7 @@ function patchramdisk() {
   wecho "Copying file to ${tcrppart}"
 
   cp -f $HOMEPATH/custom.gz /mnt/${tcrppart}/
+  cp -f $HOMEPATH/custom.gz /mnt/${loaderdisk}1/
   cp -f ${TEMPPAT}/zImage-dsm /mnt/${tcrppart}/
   cp -f ${TEMPPAT}/initrd-dsm /mnt/${tcrppart}/
 
@@ -1700,6 +1711,8 @@ function build() {
   bringoverfriend
 
   generategrub
+
+  cachepat
 
   cleanbuild
 

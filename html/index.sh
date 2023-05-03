@@ -1957,14 +1957,15 @@ EOF
       cat /home/tc/payload/$ext/*json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq
     done
   )"
-  extensionlist="$(curl -L https://github.com/pocopico/rp-ext/raw/main/rpext-index.json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq)"
+  [ ! -f rpext-index.json ] && curl --insecure -sL https://github.com/pocopico/rp-ext/raw/main/rpext-index.json -O
+  extensionlist="$(cat rpext-index.json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq)"
 
   echo "<div id=\"extmanagement\">"
 
   echo "<select rows=\"10\" id=\"extensionlist\" name=\"extensionlist\" class=\"form-select\" size=\"3\" aria-label=\"size 3 select example\">"
   while IFS=" " read -r extension exturl; do
-
-    echo "<option value=\"$exturl\">$extension</option>"
+    tooltiptext="$(jq -r -e ". |  select(.id==\"$extension\") | .info.description " rpext-index.json | uniq)"
+    echo "<option value=\"$exturl\" data-toggle=\"tooltip\" title=\"$tooltiptext\" >$extension</option>"
   done < <(printf '%s\n' "$extensionlist")
 
   echo "</select>"

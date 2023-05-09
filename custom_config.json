@@ -1544,6 +1544,40 @@
           "dtbpatch": "https://github.com/pocopico/rp-ext/raw/main/dtbpatch/rpext-index.json"
         }
       ]
+    },
+  {
+      "id": "ds723p-7.2.0-64551",
+      "platform_version": "ds723p-7.2.0-64551",
+      "user_config_json": "ds723p_user_config.json",
+      "docker_base_image": "debian:8-slim",
+      "redpill_lkm_make_target": "dev-v7",
+      "compile_with": "toolkit_dev",
+      "downloads": {
+        "kernel": {
+          "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/denverton-source/linux-4.4.x.txz/download",
+          "sha256": "d3e85eb80f16a83244fcae6016ab6783cd8ac55e3af2b4240455261396e1e1be"
+        },
+        "toolkit_dev": {
+          "url": "https://sourceforge.net/projects/toolkit-me/files/ds.denverton-7.2.dev.txz/download",
+          "sha256": "6dc6818bad28daff4b3b8d27b5e12d0565b65ee60ac17e55c36d913462079f57"
+        }
+      },
+      "redpill_lkm": {
+        "source_url": "https://github.com/PeterSuh-Q3/redpill-lkm.git",
+        "branch": "master"
+      },
+      "redpill_load": {
+        "source_url": "https://github.com/PeterSuh-Q3/redpill-load.git",
+        "branch": "master"
+      },
+"add_extensions": [
+        {
+          "all-modules": "https://github.com/pocopico/tcrp-addons/raw/main/all-modules/rpext-index.json",
+          "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
+          "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
+          "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json"
+        }
+      ]
     }
   ]
 }

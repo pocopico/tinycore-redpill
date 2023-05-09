@@ -573,7 +573,10 @@ function serialgen() {
 
   [ ! -z "$GATEWAY_INTERFACE" ] && shift 0 || shift 1
 
-  if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "DS923+" ] || [ "$1" = "SA6400" ]; then
+  #if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "DS923+" ] || [ "$1" = "SA6400" ]; then
+
+  if [ -n $(generateSerial $1) ]; then
+
     serial="$(generateSerial $1)"
     mac="$(generateMacAddress $1)"
 
@@ -607,17 +610,53 @@ function beginArray() {
     permanent="PDN"
     serialstart="1780 1790 1860 1980"
     ;;
+  DS1019+)
+    permanent="PDN"
+    serialstart="1780 1790 1860 1980"
+    ;;
+  DS720+)
+    permanent="SBR"
+    serialstart="2030 2040 20C0 2150"
+    ;;
   DS920+)
     permanent="SBR"
     serialstart="2030 2040 20C0 2150"
+    ;;
+  DS1520+)
+    permanent="TRR"
+    serialstart="2270"
     ;;
   DS3622xs+)
     permanent="SQR"
     serialstart="2030 2040 20C0 2150"
     ;;
+  DS1621xs+)
+    permanent="S7R"
+    serialstart="2080"
+    ;;
+  DS923+)
+    permanent="TQR"
+    serialstart="2270"
+    ;;
+  DS1522+)
+    permanent="TRR"
+    serialstart="2270"
+    ;;
+  DS723+)
+    permanent="TQR"
+    serialstart="2270"
+    ;;
   DS1621+)
     permanent="S7R"
     serialstart="2080"
+    ;;
+  DS2422+)
+    permanent="S7R"
+    serialstart="2080"
+    ;;
+  FS2500)
+    permanent="PSN"
+    serialstart="1960"
     ;;
   FS6400)
     permanent="PSN"
@@ -635,27 +674,42 @@ function beginArray() {
     permanent="UBR"
     serialstart="2030 2040 20C0 2150"
     ;;
-  DS2422+)
+  RS1221+)
+    permanent="RWR"
+    serialstart="20B0"
+    ;;
+  RS1619xs+)
+    permanent="QPR"
+    serialstart="1920"
+    ;;
+  RS3618xs)
+    permanent="ODN"
+    serialstart="1130 1230 1330 1430"
+    ;;
+  RS3413xs+)
     permanent="S7R"
     serialstart="2080"
+    ;;
+  RS3621xs+)
+    permanent="SZR"
+    serialstart="20A0"
     ;;
   RS4021xs+)
     permanent="T2R"
     serialstart="2250"
     ;;
-  DS923+)
-    permanent="TQR"
-    serialstart="2270"
-    ;;
-  DS1522+)
-    permanent="TRR"
-    serialstart="2270"
+  SA3400)
+    permanent="RJR"
+    serialstart="1920"
     ;;
   SA6400)
     permanent="TQR"
     serialstart="2270"
     ;;
-
+  *)
+    permanent=""
+    serialstart=""
+    ;;
   esac
 
 }
@@ -740,16 +794,43 @@ function generateSerial() {
   DS918+)
     serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
     ;;
+  DS1019+)
+    serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
+    ;;
+  FS2500)
+    serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
+    ;;
   FS6400)
     serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
     ;;
+  DS720+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
   DS920+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  DS923+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  DS1522+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  DS723+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  DS1520+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
   DS3622xs+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
+  DS1621xs+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
   DS1621+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  DS2422+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
   DVA3219)
@@ -761,20 +842,32 @@ function generateSerial() {
   DVA1622)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
-  DS2422+)
+  RS1221+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  RS1619xs+)
+    serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  RS3621xs+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
   RS4021xs+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
-  DS923+)
+  RS3618xs)
+    serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
+    ;;
+  RS3413xs+)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
-  DS1522+)
+  SA3400)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
     ;;
   SA6400)
     serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+    ;;
+  *)
+    serialnum=""
     ;;
   esac
 
@@ -1234,7 +1327,7 @@ function downloadpat() {
 
   if [ ! -f $FILENAME ]; then
     wecho "Downloading PAT file $FILENAME for MODEL=$MODEL, Version=$VERSION, SHA256=$PAT_SHA"
-    curl --insecure --progress-bar "$PAT_URL" --output "$FILENAME" | tee -a ${BUILDLOG}
+    curl --insecure --silent "$PAT_URL" --output "$FILENAME" | tee -a ${BUILDLOG}
 
     [ "$(sha256sum $FILENAME | awk '{print $1}')" = "$PAT_SHA" ] && wecho "File downloaded and matches expected sha256sum" || wecho "Error downloaded file is corrupted"
   else
@@ -1961,9 +2054,17 @@ EOF
   EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
   EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
   BUILDVERSION="$(echo $VERSION | awk -F- '{print $2}')"
-  wecho "Please note that for MODEL ${BUILDMODEL}_${BUILDVERSION}, $EXTENSIONS are added automatically"
+  wecho "Please note that for MODEL ${BUILDMODEL}_${BUILDVERSION}, the following extensions are added automatically: $EXTENSIONS <br>"
+
   for exturl in $EXTENSIONS_SOURCE_URL; do
-    ${HOMEPATH}/include/extmgr.sh extadd $exturl ${BUILDMODEL}_${BUILDVERSION} | tee -a ${BUILDLOG} >/dev/null
+
+    if [ $(jq -re '.url' ${HOMEPATH}/payload/*/rpext* | grep -i $exturl | wc -l) -ge 1 ]; then
+      echo "Extension $exturl already added, skipping" | tee -a ${BUILDLOG} >/dev/null
+      continue
+    else
+      ${HOMEPATH}/include/extmgr.sh extadd $exturl ${BUILDMODEL}_${BUILDVERSION} | tee -a ${BUILDLOG} >/dev/null
+    fi
+
   done
 
   #listplaforms

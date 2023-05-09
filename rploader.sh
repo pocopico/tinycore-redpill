@@ -446,6 +446,7 @@ function monitor() {
     mount /dev/${loaderdisk}2
     NETGW="$(route | grep -i def | awk '{print $2}')"
     ping -c 5 $NEWGW >/dev/null &
+    [ ! -d /lib64 ] && sudo ln -s /lib /lib64
 
     while [ -z "$GATEWAY_INTERFACE" ]; do
         clear

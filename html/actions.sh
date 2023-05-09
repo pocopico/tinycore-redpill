@@ -63,6 +63,7 @@ else
     action="$(echo "${get[action]}" | sed -s "s/'//g")"
   elif [ "$REQUEST_METHOD" = "POST" ]; then
     exturl="$(echo ${post[exturl]})"
+    platform="$(echo ${post[platform]})"
     if [ -z "$(echo ${post[mymodel]} | sed -s "s/'//g")" ]; then
       MODEL="$(echo "${get[mymodel]}" | sed -s "s/'//g")"
     else
@@ -91,16 +92,21 @@ fi
 case $action in
 
 extadd)
-  /home/tc/include/extmgr.sh extadd $exturl ${MODEL}_${REVISION}
+  /home/tc/include/extmgr.sh extadd $exturl $platform
   ;;
 extrem)
-  /home/tc/include/extmgr.sh extremove $exturl ${MODEL}_${REVISION}
+  /home/tc/include/extmgr.sh extremove $exturl $platform
+  ;;
+manualextadd)
+  /home/tc/include/extmgr.sh extadd $exturl $platform
   ;;
 
 esac
 
 logtofile "------------------- Start ------------------------"
+logtofile "cmd : $action, $1 $2 $3 $4"
 logtofile "ext url : $exturl"
+logtofile "ext platform : $platform"
 logtofile "GATEWAY : $GATEWAY_INTERFACE"
 logtofile "Request method : $REQUEST_METHOD"
 logtofile "POST Action : ${post[action]}"

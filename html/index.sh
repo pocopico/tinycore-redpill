@@ -408,10 +408,8 @@ function pagefooter() {
 
          \$.ajax({
           data: \$(this).serialize(), // get the form data
-           data:  { "exturl" : \$('#extensionlist').val(), "action" : "extadd"},
+           data:  { "exturl" : \$('#extensionlist').val(), "action" : "extadd", "platform" : \$('#myplatform').val()},
            type: 'POST',
-           //   type: \$(this).attr('post'), // GET or POST
-           //url: "/actions.sh?action=extadd&ext=" + \$('#extensionlist').val() + "&url=\$exturl&platform=\$MODEL", // the file to call
            url: "/actions.sh?action=extadd&ext=" + \$('#extensionlist').val() + "&url=\$exturl&platform=\$MODEL", // the file to call
              success: function(data) {
              console.log("Button addextbutton pressed loading : \${location.href}  " + \$('#extensionlist').val()) ;
@@ -426,11 +424,10 @@ function pagefooter() {
 
          \$.ajax({
           data: \$(this).serialize(), // get the form data
-           data:  { "exturl" : \$('#extensionpayloadlist').val(), "action" : "extrem"},
+          // POST DATA IS SET BELOW 
+           data:  { "exturl" : \$('#extensionpayloadlist').val(), "action" : "extrem",  "platform" : \$('#myplatform').val() },
            type: 'POST',
-           //   type: \$(this).attr('post'), // GET or POST
-           //url: "/actions.sh?action=extadd&ext=" + \$('#extensionlist').val() + "&url=\$exturl&platform=\$MODEL", // the file to call
-           url: "/actions.sh?action=extrem&ext=" + \$('#extensionlist').val() + "&url=\$exturl&platform=\$MODEL", // the file to call
+           url: "/actions.sh?action=extrem&ext=" + \$('#extensionlist').val() + "&url=\$exturl", // the file to call
              success: function(data) {
              console.log("Button remextbutton pressed removing : \${location.href} " + \$('#extensionlist').val()) ;
                  //alert(data);
@@ -440,6 +437,24 @@ function pagefooter() {
          });
       
       });
+
+      \$('#manualextbutton').click(function(){
+
+         \$.ajax({
+          data: \$(this).serialize(), // get the form data
+          // POST DATA IS SET BELOW 
+           data:  { "exturl" : \$('#manualexturl').val(), "action" : "manualextadd", "platform" : \$('#myplatform').val() },
+           type: 'POST',         
+           url: "/actions.sh?action=manualextadd&ext=" + \$('#manualexturl').val() + "&url=\$exturl&platform=\$mymodel", // the file to call
+             success: function(data) {
+             console.log("Button manualextbutton pressed adding : \${location.href} " + \$('#manualexturl').val()) ;
+                 //alert(data);
+               \$("extensionmanagement").text(data);
+               location.reload();
+             }
+         });
+      
+      }); 
 
       \$('#autoextbutton').click(function(){
 
@@ -1953,7 +1968,7 @@ EOF
   #listplaforms
 
   extensionpayload="$(
-    for ext in $(cat /home/tc/payload/extensions); do
+    for ext in $(cat /home/tc/payload/extensions | uniq); do
       cat /home/tc/payload/$ext/*json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq
     done
   )"
@@ -1961,7 +1976,7 @@ EOF
   extensionlist="$(cat rpext-index.json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq)"
 
   echo "<div id=\"extmanagement\">"
-
+  echo "<input type=\"hidden\" id=\"myplatform\" name=\"myplatform\" value=\"${BUILDMODEL}_${BUILDVERSION}\">"
   echo "<select rows=\"10\" id=\"extensionlist\" name=\"extensionlist\" class=\"form-select\" size=\"3\" aria-label=\"size 3 select example\">"
   while IFS=" " read -r extension exturl; do
     tooltiptext="$(jq -r -e ". |  select(.id==\"$extension\") | .info.description " rpext-index.json | uniq)"
@@ -1981,10 +1996,11 @@ EOF
   echo "</select>"
 
   echo "<button id=\"remextbutton\" name=\"remextbutton\" onclick=\"\" type=\"button\" class=\"btn btn-danger btn-sm\">Remove extension</button></div>"
+  echo "<input type=\"url\" class=\"form-control input-sm\" id=\"manualexturl\" placeholder=\"Extension URL to manualy add \">"
+  echo "<button id=\"manualextbutton\" name=\"manualextbutton\" onclick=\"\" type=\"button\" class=\"btn btn-info btn-sm\">Manual add extensions</button>"
+  echo "<button id=\"autoextbutton\" name=\"autoextbutton\" onclick=\"\" type=\"button\" class=\"btn btn-info btn-sm\">Auto add extensions</button>"
 
-  echo "<button id=\"autoextbutton\" name=\"autoextbutton\" onclick=\"\" type=\"button\" class=\"btn btn-info btn-sm\">Auto add extensions</button></div>"
-
-  echo "</div></div>"
+  echo "</div></div></div>"
 
 }
 

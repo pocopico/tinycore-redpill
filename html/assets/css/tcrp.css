@@ -64,6 +64,15 @@
   max-height: 200px;
   }
 
+  #manualexturl{
+/*position: absolute;
+  top: 160;
+  left: 1200;*/
+  margin-left: auto;
+  padding-left: 10px;
+  min-width: 480px;
+  }
+
   #addextbutton{
     padding-left: 10px;
     margin-left: auto;

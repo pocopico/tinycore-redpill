@@ -2,7 +2,7 @@
 
 HOMEPATH="/home/tc"
 PAYLOADDIR="${HOMEPATH}/payload"
-CONFIGFILES="${HOMEPATH}/redpill-load/config"
+CONFIGFILES="${HOMEPATH}/config"
 
 function getstaticmodule() {
         redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill${redpillmake}/rpext-index.json"
@@ -314,6 +314,8 @@ function syntaxcheck() {
 # ./newcustom.sh extadd https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/rpext-index.json ds3622xsp_42951
 #$1 $2 $3
 
+echo "CMD LOGGED : $0 , $@" >> $0.log
+
 case $1 in
 
 extadd)
@@ -340,3 +342,4 @@ processexts)
         syntaxcheck $@
         ;;
 esac
+

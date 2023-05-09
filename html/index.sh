@@ -1234,7 +1234,7 @@ function downloadpat() {
 
   if [ ! -f $FILENAME ]; then
     wecho "Downloading PAT file $FILENAME for MODEL=$MODEL, Version=$VERSION, SHA256=$PAT_SHA"
-    curl --insecure --silent "$PAT_URL" --output "$FILENAME" | tee -a ${BUILDLOG}
+    curl --insecure --progress-bar "$PAT_URL" --output "$FILENAME" | tee -a ${BUILDLOG}
 
     [ "$(sha256sum $FILENAME | awk '{print $1}')" = "$PAT_SHA" ] && wecho "File downloaded and matches expected sha256sum" || wecho "Error downloaded file is corrupted"
   else
@@ -1317,7 +1317,8 @@ function cachepat() {
   echo "Caching PAT file"
   cd ${TEMPPAT}
   rm -rf rd.temp && rm -rf vmlinux* && rm -rf zImage-dsm && rm -rf initrd-dsm
-  [ ! -f /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat] && tar cfz /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat *
+  echo "Cached pat file :  /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat"
+  rm -rf /mnt/$tcrppart/auxfiles/*.pat && tar cfz /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat * || echo "Failed to cache file"
 
 }
 

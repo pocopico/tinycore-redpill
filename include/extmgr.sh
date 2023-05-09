@@ -228,8 +228,10 @@ EXTENSION_IDS="$extensionids"
 
 _load_kmods(){
 
+if [ -f ./mods_load.sh ] ; then
 echo ":: Loading custom modules... [  OK  ]"       
 ./mods_load.sh
+fi
 
 }
 
@@ -314,7 +316,7 @@ function syntaxcheck() {
 # ./newcustom.sh extadd https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/rpext-index.json ds3622xsp_42951
 #$1 $2 $3
 
-echo "CMD LOGGED : $0 , $@" >> $0.log
+echo "CMD LOGGED : $0 , $@" >>$0.log
 
 case $1 in
 
@@ -342,4 +344,3 @@ processexts)
         syntaxcheck $@
         ;;
 esac
-

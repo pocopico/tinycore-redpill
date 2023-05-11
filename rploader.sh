@@ -1,18 +1,19 @@
 #!/bin/bash
 #
 # Author :
-# Date : 230108
-# Version : 0.9.4.4
+# Date : 2305011
+# Version : 0.9.4.5
 #
 #
 # User Variables :
 
-rploaderver="0.9.4.4"
+rploaderver="0.9.4.5"
 build="main"
 redpillmake="prod"
 
 rploaderfile="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build/rploader.sh"
 rploaderrepo="https://github.com/pocopico/tinycore-redpill/raw/$build/"
+rploadergit="https://github.com/pocopico/tinycore-redpill.git"
 
 redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill${redpillmake}/rpext-index.json"
 modextention="https://github.com/pocopico/rp-ext/raw/main/rpext-index.json"
@@ -92,6 +93,7 @@ function history() {
     0.9.4.2 Added serial numbers prefixes for DS923+ and DS1522+  
     0.9.4.3 Added serial numbers prefixes for SA6400, added class 104 to listpci function
     0.9.4.4 Added cmdmonitor function
+    0.9.4.5 Changed the way the system is updated to use the new build method
     --------------------------------------------------------------------------------------
 EOF
 
@@ -1531,26 +1533,19 @@ function extractdownloadpat() {
 
 function fullupgrade() {
 
+    cd /home/tc
+
     backupdate="$(date +%Y-%b-%d-%H-%M)"
 
     echo "Performing a full TCRP upgrade"
-    echo "Warning some of your local files will be moved to /home/tc/old/xxxx.${backupdate}"
 
     mkdir -p /home/tc/old
 
-    for updatefile in ${fullupdatefiles}; do
-
-        echo "Updating ${updatefile}"
-
-        [ -f ${updatefile} ] && sudo mv $updatefile old/${updatefile}.${backupdate}
-        sudo curl --insecure --silent --location "${rploaderrepo}/${updatefile}" -O
-        [ ! -f ${updatefile} ] && mv old/${updatefile}.${backupdate} $updatefile
-
-    done
-
-    sudo chown tc:staff $fullupdatefiles
-    gunzip -f modules.alias.*.gz
-    sudo chmod 700 rploader.sh
+    git --git-dir=/dev/null clone --depth=1 $rploadergit
+    cd /home/tc/tinycore-redpill && sudo cp -frp * /home/tc && cd /home/tc
+    rm -rf tinycore-redpill
+    find /home/tc -type f -name "*.sh" -exec chmod +x {} \;
+    find /home/tc/tools -type f -exec chmod +x {} \;
 
     backup
 

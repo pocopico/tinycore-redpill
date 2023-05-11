@@ -7,7 +7,7 @@
     "rdhash": "",
     "usb_line": "",
     "sata_line": "",
-    "redpillmake" : "",
+    "redpillmake" : "prod",
     "friendautoupd" : "true",
     "hidesensitive" : "false"
   }, 

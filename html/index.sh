@@ -253,7 +253,7 @@ EOF
 
 EOF
 
-  sudo rm -rf /home/tc/credentials
+  rm -rf /home/tc/credentials
 
 }
 

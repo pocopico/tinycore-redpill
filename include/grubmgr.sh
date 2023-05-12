@@ -4,6 +4,61 @@ HOMEPATH="/home/tc"
 
 . ${HOMEPATH}/include/config.sh
 
+function getgrubconf() {
+
+    tcrpdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+    grubdisk="${tcrpdisk}1"
+
+    echo "Mounting bootloader disk to get grub contents"
+    sudo mount /dev/$grubdisk
+
+    if [ $(df | grep -i $grubdisk | wc -l) -gt 0 ]; then
+        echo -n "Mounted succesfully : $(df -h | grep $grubdisk)"
+        [ -f /mnt/$grubdisk/boot/grub/grub.cfg ] && [ $(cat /mnt/$grubdisk/boot/grub/grub.cfg | wc -l) -gt 0 ] && echo "  -> Grub cfg is accessible and readable"
+    else
+        echo "Couldnt mount device : $grubdisk "
+        exit 99
+    fi
+
+    echo "Getting known loader grub variables"
+
+    grep pid /mnt/$grubdisk/boot/grub/grub.cfg >/tmp/grub.vars
+
+    while IFS=" " read -r -a line; do
+        printf "%s\n" "${line[@]}"
+    done </tmp/grub.vars | egrep -i "sataportmap|sn|pid|vid|mac|hddhotplug|diskidxmap|netif_num" | sort | uniq >/tmp/known.vars
+
+    if [ -f /tmp/known.vars ]; then
+        echo "Sourcing vars, found in grub : "
+        . /tmp/known.vars
+        rows="%-15s| %-15s | %-10s | %-10s | %-10s | %-15s | %-15s %c\n"
+        printf "$rows" Serial Mac Netif_num PID VID SataPortMap DiskIdxMap
+        printf "$rows" $sn $mac1 $netif_num $pid $vid $SataPortMap $DiskIdxMap
+
+        echo "Checking user config against grub vars"
+
+        for var in pid vid sn mac1 SataPortMap DiskIdxMap; do
+            if [ $(jq -r .extra_cmdline.$var user_config.json) == "${!var}" ]; then
+                echo "Grub var $var = ${!var} Matches your user_config.json"
+            else
+                echo "Grub var $var = ${!var} does not match your user_config.json variable which is set to : $(jq -r .extra_cmdline.$var user_config.json) "
+                echo "Should we populate user_config.json with these variables ? [Yy/Nn] "
+                read answer
+                if [ -n "$answer" ] && [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
+                    json="$(jq --arg newvar "${!var}" '.extra_cmdline.'$var'= $newvar' user_config.json)" && echo -E "${json}" | jq . >user_config.json
+                else
+                    echo "OK, you can edit yourself later"
+                fi
+            fi
+        done
+
+    else
+
+        echo "Could not read variables"
+    fi
+
+}
+
 function generate() {
     echo "Generating default grub.cfg for model $1"
     cat ${HOMEPATH}/include/grub-template.conf >grub.cfg
@@ -145,7 +200,7 @@ function syntaxcheck() {
             ;;
         esac
     else
-        echo "Error $0, $1 is an invalid command. Valid commands are : generate, modifydefault, addentry, modifyentry"
+        echo "Error $0, $1 is an invalid command. Valid commands are : generate, modifydefault, addentry, modifyentry, getgrubconf"
 
     fi
 
@@ -173,6 +228,9 @@ addentry)
 modifyentry)
     [ $# -lt 2 ] && syntaxcheck $@
     modifyentry $@
+    ;;
+getgrubconf)
+    getgrubconf $@
     ;;
 *)
     syntaxcheck $@

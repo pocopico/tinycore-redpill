@@ -10,7 +10,7 @@ PATCHEXTRACTOR="${HOMEPATH}/patch-extractor"
 THISURL="index.sh"
 BUILDLOG="/home/tc/html/buildlog.txt"
 USERCONFIGFILE="/home/tc/user_config.json"
-TOOLSPATH="https://raw.githubusercontent.com/pocopico/tinycore-redpill/develop/tools/"
+TOOLSPATH="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/tools/"
 SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
 SCRIPTVERSION="0.10.0"
@@ -344,6 +344,7 @@ function pagebody() {
               </a>
               <ul class="dropdown-menu">
                 <li><a class=" dropdown-item" href="${THISURL}?action=backuploader">Backup Loader</a></li>
+                <li><a class=" dropdown-item" href="${THISURL}?action=fullupgrade">Full upgrade loader</a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=cleanloader">Clean Loader </a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=listplatforms">List Platforms</a><li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=extensions">Extension Management</a><li>
@@ -2269,13 +2270,15 @@ function latestscript() {
 
   curl --insecure -L $SCRIPTREPO -o /tmp/index.sh
   chmod +x /tmp/index.sh
-  repoversion=$(/tmp/index.sh version)
+
+  curversion="$(grep "SCRIPTVERSION=" /home/tc/html/index.sh | head -1 | awk -F\" '{print $2}')"
+  repoversion="$(grep "SCRIPTVERSION=" /tmp/index.sh | head -1 | awk -F\" '{print $2}')"
   reposha256sum="/tmp/index.sh | awk '{print $1'"
   cursha256sum="$(sha256sum /home/tc/html/index.sh | awk '{print $1}')"
 
   rm -f /tmp/index.sh
-  if [ "/home/tc/html/index.sh version" != "$repoversion" ] && [ "$reposha256sum" != "$cursha256sum" ]; then
-    wecho "New version available, please update"
+  if [ "$curversion" != "$repoversion" ] || [ "$reposha256sum" != "$cursha256sum" ]; then
+    wecho "Current version : $curversion, new version available $repoversion, please update"
     echo "<a href=\"${THISURL}?action=updatescript\" class=\"btn btn-primary btn-lg active\" role=\"button\" aria-pressed=\"true\">UPDATE</a>"
   fi
 
@@ -2283,11 +2286,35 @@ function latestscript() {
 
 function updatescript() {
 
-  curl --insecure -L $SCRIPTREPO -o /tmp/index.sh
-  repoversion=$(/tmp/index.sh version)
+  curl --insecure -L $SCRIPTREPO -o /tmp/index.sh && chmod +x /tmp/index.sh
+  repoversion="$(grep "SCRIPTVERSION=" /tmp/index.sh | head -1 | awk -F\" '{print $2}')"
 
   [ ! -n "$(/tmp/index.sh version)" ] && cp /tmp/index.sh /home/tc/html/index.sh && chmod +x /home/tc/html/index.sh && wecho "Script updated to version $repoversion" && exit 0
   [ -n "$(/tmp/index.sh version)" ] && wecho "Error updating script, please try again later" && exit 1
+  rm -f /tmp/index.sh
+
+}
+
+function fullupgrade() {
+
+  getvars
+
+  cd $HOMEPATH
+
+  backupdate="$(date +%Y-%b-%d-%H-%M)"
+
+  echo "Performing a full TCRP upgrade"
+
+  mkdir -p /mnt/$tcrppart/backup
+  echo "Backuping up current files to /mnt/$tcrppart/backup/loaderbackup-${backupdate}.tgz"
+  tar cfz /mnt/$tcrppart/backup/loaderbackup-${backupdate}.tgz /home/tc 2>&1 >/dev/null
+  git --git-dir=/dev/null clone --depth=1 $rploadergit
+  cd /home/tc/tinycore-redpill && sudo cp -frp * /home/tc && cd /home/tc
+  rm -rf tinycore-redpill
+  find /home/tc -type f -name "*.sh" -exec chmod +x {} \;
+  find /home/tc/tools -type f -exec chmod +x {} \;
+
+  backuploader
 
 }
 
@@ -2330,7 +2357,8 @@ for ((i = 0; i < ${#parm_post[@]}; i += 2)); do
 done
 
 if [ -z "$GATEWAY_INTERFACE" ]; then
-  [ "$1" = "version" ] && echo "$SCRIPTVERSION" || echo "This is meant to run under CGI or to include functions in other scripts"
+  [ -z "$GATEWAY_INTERFACE" ] && [ "$1" = "version" ] && echo "$SCRIPTVERSION" || echo "This is meant to run under CGI or to include functions in other scripts"
+  [ ! -z "$GATEWAY_INTERFACE" ] && [ "$1" = "version" ] && echo "$SCRIPTVERSION" && exit 0
 else
 
   echo "Gateway is : $GATEWAY_INTERFACE"
@@ -2409,6 +2437,7 @@ else
   [ "$action" == "mountshare" ] && result=$(mountshare) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "buildstatus" ] && result=$(buildstatus) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "updatescript" ] && result=$(updatescript) && recho "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "fullupgrade" ] && result=$(fullupgrade) && recho "$result" | tee -a ${BUILDLOG}
 
   [ "$action" == "none" ] && loaderstatus
 

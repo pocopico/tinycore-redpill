@@ -234,7 +234,7 @@ EOF
     mkdir -p $mountpoint
     echo -e "username=$cifsuser\npassword=$cifspass" >/home/tc/credentials
     chmod 600 /home/tc/credentials
-    sudo /usr/local/sbin/mount.cifs $share $mountpoint -o credentials=/home/tc/credentials --verbose
+    sudo /usr/local/sbin/mount.cifs "$share" "$mountpoint" -o credentials=/home/tc/credentials --verbose
     if [ $(mount | grep "$mountpoint" | wc -l) -gt 0 ]; then
       echo "<button id='mounted' class='btn btn-lg btn-success btn-left'>mounted</button>"
     else
@@ -252,6 +252,8 @@ EOF
     </div>
 
 EOF
+
+  sudo rm -rf /home/tc/credentials
 
 }
 

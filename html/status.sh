@@ -5,35 +5,38 @@ stages="buildstatus downloadtools iscached downloadingpat patextraction kernelpa
 
 msgstatus() {
 
-    stage=$2
-    status=$3
-    msg=$4
+  stage=$2
+  status=$3
+  msg=$4
 
-    case $1 in
-    false)
-        echo -e "<tr class=\"bg-info\"><td>$stage</td><td class=\"text-info\">$status</td><td>$msg</td></tr>"
-        ;;
-    true)
-        echo -e "<tr class=\"bg-success\"><td>$stage</td><td class=\"text-success\">$status</td><td>$msg</td></tr>"
-        ;;
-    fail)
-        echo -e "<tr class=\"bg-danger\"><td>$stage</td><td class=\"text-danger\">.$status</td><td>$msg</td></tr>"
-        ;;
-    warn)
-        echo -e "<tr class=\"bg-warning\"><td>$stage</td><td class=\"text-warning\">$status</td><td>$msg</td></tr>"
-        ;;
-    *)
-        echo -e "<tr class=\"bg-primary\"><td>$stage</td><td class=\"text-primary\">$status</td><td>$msg</td></tr>"
-        ;;
-    esac
+  case $1 in
+  false)
+    echo -e "<tr class=\"bg-info\"><td>$stage</td><td class=\"text-info\">$status</td><td>$msg</td></tr>"
+    ;;
+  true)
+    echo -e "<tr class=\"bg-success\"><td>$stage</td><td class=\"text-success\">$status</td><td>$msg</td></tr>"
+    ;;
+  fail)
+    echo -e "<tr class=\"bg-danger\"><td>$stage</td><td class=\"text-danger\">.$status</td><td>$msg</td></tr>"
+    ;;
+  warn)
+    echo -e "<tr class=\"bg-warning\"><td>$stage</td><td class=\"text-warning\">$status</td><td>$msg</td></tr>"
+    ;;
+  *)
+    echo -e "<tr class=\"bg-primary\"><td>$stage</td><td class=\"text-primary\">$status</td><td>$msg</td></tr>"
+    ;;
+  esac
 
 }
 
 function getstatus() {
 
-    cat <<EOF
+  cat <<EOF
 <table class="table table-hover table-dark table-sm"> 
 <thead class="thead-dark">
+<tr class="table-active">
+<td class="text-active">$synomodel</td><td>$synoversion</td><td></td>
+</tr>
 <tr>
 <th>Stage</th>
 <th>Status</th>
@@ -43,54 +46,93 @@ function getstatus() {
 <tbody>
 EOF
 
-    for stage in $stages; do
+  for stage in $stages; do
 
-        status=$(jq -re ".stage.${stage}.status" $statjson)
-        stagetext=$(jq -re ".stage.${stage}.description" $statjson)
-        statusmsg=$(jq -re ".stage.${stage}.message" $statjson)
+    status=$(jq -re ".stage.${stage}.status" $statjson)
+    stagetext=$(jq -re ".stage.${stage}.description" $statjson)
+    statusmsg=$(jq -re ".stage.${stage}.message" $statjson)
 
-        #echo "$status = $stage" >>status.log
-        msgstatus "$status" "$stage" "$stagetext" "$statusmsg"
+    #echo "$status = $stage" >>status.log
+    msgstatus "$status" "$stage" "$stagetext" "$statusmsg"
 
-    done
+  done
 
-    echo "</tbody>"
-    echo "</table>"
+  echo "</tbody>"
+  echo "</table>"
+
+}
+
+function loaderstatus() {
+  tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+  userconfigfile="/home/tc/user_config.json"
+  synomodel="$(jq -re '.general.model' $userconfigfile)"
+  synoversion="$(jq -re '.general.version' $userconfigfile)"
+  redpillmake="$(jq -re '.general.redpillmake' $userconfigfile)"
+  friendautoupd="$(jq -re '.general.friendautoupd' $userconfigfile)"
+  hidesensitive="$(jq -re '.general.hidesensitive' $userconfigfile)"
+  synoserial="$(jq -re '.extra_cmdline.model' $userconfigfile)"
+  synomac="$(jq -re '.extra_cmdline.model' $userconfigfile)"
+  usbvid="$(jq -re '.extra_cmdline.model' $userconfigfile)"
+  usbpid="$(jq -re '.extra_cmdline.model' $userconfigfile)"
+  sataportmap="$(jq -re '.extra_cmdline.model' $userconfigfile)"
+  diskidxmap="$(jq -re '.extra_cmdline.model' $userconfigfile)"
+  freehomespace="$(df -h /home/tc | grep -v Filesystem | awk '{print $4}')"
+  freetcrpspace="$(df -h /mnt/$tcrppart | grep -v Filesystem | awk '{print $4}')"
+  cat <<EOF
+<table class="table table-hover table-sm>
+<thead class="thead-dark">
+<tr><th>User config file build parameters</th><th></th><th></th><th></th><th></th></tr>
+<tr>
+<th>Parameter</th><th>Value</th><th>Parameter</th><th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="table-active"><td class="text-info">Model</td><td class="text-info">$synomodel</td><td class="text-info">RedPill Make</td><td class="text-info">$redpillmake</td></tr>
+<tr class="table-active"><td class="text-info">Version</td><td class="text-info">$synoversion</td><td class="text-info">Friend Auto Update</td><td class="text-info">$friendautoupd</td></tr>
+<tr class="table-active"><td class="text-info">Serial</td><td class="text-info">$synoserial</td><td class="text-info">Hide Sensitive Info</td><td class="text-info">$hidesensitive</td></tr>
+<tr class="table-active"><td class="text-info">Mac Address</td><td class="text-info">synomac</td><td class="text-info">Free Home Space</td><td class="text-info">$freehomespace</td></tr>
+<tr class="table-active"><td class="text-info">Vid</td><td class="text-info">$usbvid</td><td class="text-info"></td><td class="text-info"></td></tr>
+<tr class="table-active"><td class="text-info">Pid</td><td class="text-info">$usbpid</td><td class="text-info">Free TCRP Space</td><td class="text-info">$freetcrpspace</td></tr>
+<tr class="table-active"><td class="text-info">SataPortMap</td><td class="text-info">$sataportmap</td><td class="text-info"></td><td class="text-info"></td></tr>
+<tr class="table-active"><td class="text-info">DiskIdxMap</td><td class="text-info">$diskidxmap</td><td class="text-info"></td><td class="text-info"></td></tr>
+</tbody>
+</table>
+EOF
 
 }
 
 function setstatus() {
 
-    stage=$1
-    status=$2
-    msg=$3
+  stage=$1
+  status=$2
+  msg=$3
 
-    json=$(jq ".stage.${stage}.status = \"${status}\"" $statjson)
-    echo $json | jq . >$statjson
-    json=$(jq ".stage.${stage}.message = \"${msg}\"" $statjson)
-    echo $json | jq . >$statjson
+  json=$(jq ".stage.${stage}.status = \"${status}\"" $statjson)
+  echo $json | jq . >$statjson
+  json=$(jq ".stage.${stage}.message = \"${msg}\"" $statjson)
+  echo $json | jq . >$statjson
 
 }
 
 function clearstatus() {
 
-    stages="$stages"
+  stages="$stages"
 
-    cp $statjson ${statjson}.bak
+  cp $statjson ${statjson}.bak
 
-    for stage in $stages; do
+  for stage in $stages; do
 
-        json=$(jq ".stage.${stage}.status = \"warn\"" $statjson)
-        echo $json | jq . >status.json
-        json=$(jq ".stage.${stage}.message = \" \"" $statjson)
-        echo $json | jq . >status.json
-    done
+    json=$(jq ".stage.${stage}.status = \"warn\"" $statjson)
+    echo $json | jq . >status.json
+    json=$(jq ".stage.${stage}.message = \" \"" $statjson)
+    echo $json | jq . >status.json
+  done
 
 }
 
 function recreatejson() {
 
-    cat <<EOF >$statjson
+  cat <<EOF >$statjson
 {
   "stage": {
     "buildstatus": {
@@ -182,19 +224,22 @@ EOF
 case $1 in
 
 clearstatus)
-    clearstatus
-    ;;
+  clearstatus
+  ;;
 recreatejson)
-    echo "recreating json"
-    recreatejson
-    ;;
+  echo "recreating json"
+  recreatejson
+  ;;
 status)
-    getstatus
-    ;;
+  getstatus
+  ;;
 setstatus)
-    setstatus "$2" "$3" "$4"
-    ;;
+  setstatus "$2" "$3" "$4"
+  ;;
+loaderstatus)
+  loaderstatus
+  ;;
 *)
-    getstatus
-    ;;
+  getstatus
+  ;;
 esac

@@ -1,0 +1,84 @@
+{
+  "stage": {
+    "buildstatus": {
+      "description": "Building started",
+      "status": "warn",
+      "message": " "
+    },
+    "downloadtools": {
+      "description": "Downloading extraction tools",
+      "status": "warn",
+      "message": " "
+    },
+    "iscached": {
+      "description": "Caching pat file",
+      "status": "warn",
+      "message": " "
+    },
+    "downloadingpat": {
+      "description": "Downloading pat file",
+      "status": "warn",
+      "message": " "
+    },
+    "patextraction": {
+      "description": "Pat file extracted",
+      "status": "warn",
+      "message": " "
+    },
+    "kernelpatch": {
+      "description": "Kernel patching",
+      "status": "warn",
+      "message": " "
+    },
+    "extadd": {
+      "description": "Extensions collection",
+      "status": "warn",
+      "message": " "
+    },
+    "ramdiskpatch": {
+      "description": "Ramdisk patching",
+      "status": "warn",
+      "message": " "
+    },
+    "ramdiskcreation": {
+      "description": "Ramdisk creation",
+      "status": "warn",
+      "message": " "
+    },
+    "copyfilestodisk": {
+      "description": "Copying all files to disk",
+      "status": "warn",
+      "message": " "
+    },
+    "frienddownload": {
+      "description": "TCRP Friend downloading",
+      "status": "warn",
+      "message": " "
+    },
+    "gengrub": {
+      "description": "Generating GRUB entries",
+      "status": "warn",
+      "message": " "
+    },
+    "cachingpat": {
+      "description": "Caching pat file to disk",
+      "status": "warn",
+      "message": " "
+    },
+    "cleanbuild": {
+      "description": "Cleaning build directory",
+      "status": "warn",
+      "message": " "
+    },
+    "checkloader": {
+      "description": "Last loader checks",
+      "status": "warn",
+      "message": " "
+    },
+    "finishloader": {
+      "description": "Loader build status",
+      "status": "warn",
+      "message": " "
+    }
+  }
+}

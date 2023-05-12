@@ -201,3 +201,8 @@
   text-align:left;
   
 }
+
+.table-hover tbody tr:hover td {
+    background: blue;
+}
+

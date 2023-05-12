@@ -11,6 +11,7 @@ THISURL="index.sh"
 BUILDLOG="/home/tc/html/buildlog.txt"
 USERCONFIGFILE="/home/tc/user_config.json"
 TOOLSPATH="https://raw.githubusercontent.com/pocopico/tinycore-redpill/develop/tools/"
+SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
 SCRIPTVERSION="0.10.0"
 
@@ -22,9 +23,15 @@ function versionhistory() {
   cat <<EOF
 <h3> TCRP HTML, Version History : </h3>
 <br> 0.10.0, Initial release, most models tested and booted.
-
+<br>
+<br>
+<br>
+<br>
+<br>
 
 EOF
+
+  latestscript
 
 }
 
@@ -295,6 +302,27 @@ EOF
 function urldecode {
   local url_encoded="${1//+/ }"
   printf '%b' "${url_encoded//%/\\x}"
+}
+
+function backuploader() {
+
+  getvars
+
+  echo "Backing up loader and making current home dir persistent"
+
+  HOMESIZE="$(du -sk . /home/tc/)"
+  TCRPFREESPACE="$(df -k | grep $tcrppart | awk '{print $4}')"
+  REMAINSPACE="$($TCRPFREESPACE-$HOMESIZE)"
+
+  if [ $remainspace -le 150000 ]; then
+    wecho "Not enough space to backup"
+  else
+    wecho "There is enough space to backup"
+    echo y | backup >/dev/null
+    wecho "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')"
+    wecho "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')"
+  fi
+
 }
 
 function pagebody() {
@@ -962,8 +990,8 @@ function status() {
 
 function bringoverfriend() {
 
-  echo "Bringing over my friend"
-  status "setstatus" "frienddownload" "false" "Bringing over my friend"
+  echo "Adding my friend"
+  status "setstatus" "frienddownload" "false" "Downloading my friend"
 
   [ ! -d /home/tc/friend ] && mkdir /home/tc/friend/ && cd /home/tc/friend
   URLS=$(curl --insecure -s https://api.github.com/repos/pocopico/tcrpfriend/releases/latest | jq -r ".assets[].browser_download_url")
@@ -973,11 +1001,12 @@ function bringoverfriend() {
     FRIENDVERSION="$(grep VERSION chksum | awk -F= '{print $2}')"
     BZIMAGESHA256="$(grep bzImage-friend chksum | awk '{print $1}')"
     INITRDSHA256="$(grep initrd-friend chksum | awk '{print $1}')"
-    [ "$(sha256sum bzImage-friend | awk '{print $1}')" == "$BZIMAGESHA256" ] && echo "bzImage-friend checksum OK !" || echo "bzImage-friend checksum ERROR !" || exit 99
-    [ "$(sha256sum initrd-friend | awk '{print $1}')" == "$INITRDSHA256" ] && echo "initrd-friend checksum OK !" || echo "initrd-friend checksum ERROR !" || exit 99
+    status "setstatus" "frienddownload" "false" "Checking TCRP checksum"
+    [ "$(sha256sum bzImage-friend | awk '{print $1}')" == "$BZIMAGESHA256" ] && status "setstatus" "frienddownload" "false" "bzImage-friend checksum OK !" && echo "bzImage-friend checksum OK !" || echo "bzImage-friend checksum ERROR !" || exit 99
+    [ "$(sha256sum initrd-friend | awk '{print $1}')" == "$INITRDSHA256" ] && status "setstatus" "frienddownload" "false" "initrd-friend checksum OK !" && echo "initrd-friend checksum OK !" || echo "initrd-friend checksum ERROR !" || exit 99
   else
+    status "setstatus" "frienddownload" "fail" "Checksum of TCRP friend failed"
     echo "Could not find friend files, exiting" && exit 0
-    status "setstatus" "frienddownload" "fail" "Bringing over my friend"
   fi
 
   echo "Copying friend to /mnt/$tcrppart"
@@ -1411,7 +1440,7 @@ function downloadpat() {
     status "setstatus" "downloadingpat" "false" "Downloading PAT file $FILENAME for MODEL=$MODEL, Version=$VERSION, SHA256=$PAT_SHA"
     curl --insecure --silent "$PAT_URL" --output "$FILENAME" | tee -a ${BUILDLOG}
 
-    [ "$(sha256sum $FILENAME | awk '{print $1}')" = "$PAT_SHA" ] && wecho "File downloaded and matches expected sha256sum" || wecho "Error downloaded file is corrupted"
+    [ "$(sha256sum $FILENAME | awk '{print $1}')" = "$PAT_SHA" ] && status "setstatus" "downloadingpat" "true" "Downloaded PAT file $FILENAME succesfully" && wecho "File downloaded and matches expected sha256sum" || wecho "Error downloaded file is corrupted"
   else
     wecho "$(sha256sum $FILENAME | awk '{print $1}')" = "$PAT_SHA"
     wecho "File $FILENAME is already downloaded"
@@ -2236,6 +2265,32 @@ checkloader() {
 
 }
 
+function latestscript() {
+
+  curl --insecure -L $SCRIPTREPO -o /tmp/index.sh
+  chmod +x /tmp/index.sh
+  repoversion=$(/tmp/index.sh version)
+  reposha256sum="/tmp/index.sh | awk '{print $1'"
+  cursha256sum="$(sha256sum /home/tc/html/index.sh | awk '{print $1}')"
+
+  rm -f /tmp/index.sh
+  if [ "/home/tc/html/index.sh version" != "$repoversion" ] && [ "$reposha256sum" != "$cursha256sum" ]; then
+    wecho "New version available, please update"
+    echo "<a href=\"${THISURL}?action=updatescript\" class=\"btn btn-primary btn-lg active\" role=\"button\" aria-pressed=\"true\">UPDATE</a>"
+  fi
+
+}
+
+function updatescript() {
+
+  curl --insecure -L $SCRIPTREPO -o /tmp/index.sh
+  repoversion=$(/tmp/index.sh version)
+
+  [ ! -n "$(/tmp/index.sh version)" ] && cp /tmp/index.sh /home/tc/html/index.sh && chmod +x /home/tc/html/index.sh && wecho "Script updated to version $repoversion" && exit 0
+  [ -n "$(/tmp/index.sh version)" ] && wecho "Error updating script, please try again later" && exit 1
+
+}
+
 function buildstatus() {
 
   echo "<div id="buildstatus"></div><br>"
@@ -2275,7 +2330,7 @@ for ((i = 0; i < ${#parm_post[@]}; i += 2)); do
 done
 
 if [ -z "$GATEWAY_INTERFACE" ]; then
-  echo "This is meant to run under CGI or to include functions in other scripts"
+  [ "$1" = "version" ] && echo "$SCRIPTVERSION" || echo "This is meant to run under CGI or to include functions in other scripts"
 else
 
   echo "Gateway is : $GATEWAY_INTERFACE"
@@ -2336,9 +2391,9 @@ else
   #echo "<br>Serial : $serial , MAC : $macaddress , Buildit : $buildit"
   #echo "<br>Build VARS : MODEL :$MODEL VERSION: $VERSION SN: $serial MAC: $macaddress BUILDIT: $buildit"
 
-  [ "$action" == "backuploader" ] && wecho "Backing up loader " && result=$(yes | ${HOMEPATH}/rploader.sh backuploader) && recho "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "backuploader" ] && result=$(backuploader) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "listplatforms" ] && result=$(listplatforms) && wecho "$result" | tee -a buildlog.log
-  [ "$action" == "cleanloader" ] && wecho "Cleaning loader home space" && result=$(${HOMEPATH}/rploader.sh clean) && recho "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "cleanloader" ] && result=$(cleanbuild) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "extensions" ] && result=$(extmanagement) && wecho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "extadd" ] && wecho "Extadd" && result=$($HOMEPATH/include/extmgr.sh extadd $exturl $MODEL) && wecho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "setversion" ] && result=$(selectversion) && echo "$result" | tee -a ${BUILDLOG}
@@ -2353,6 +2408,7 @@ else
   [ "$action" == "versionhistory" ] && result=$(versionhistory) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "mountshare" ] && result=$(mountshare) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "buildstatus" ] && result=$(buildstatus) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "updatescript" ] && result=$(updatescript) && recho "$result" | tee -a ${BUILDLOG}
 
   [ "$action" == "none" ] && loaderstatus
 

@@ -327,7 +327,7 @@ function backuploader() {
     [ -z "$1" ] && wecho "There is enough space to backup" || status "setstatus" "backuploader" "true" "There is enough space to backup"
     [ -z "$1" ] && echo y | backup >/dev/null
     [ -z "$1" ] && wecho "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')" || status "setstatus" "backuploader" "true" "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')"
-    [ -z "$1" ] && wecho "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')" || status "setstatus" "backuploader" "true" "File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')"
+    [ -z "$1" ] && wecho "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')" || status "setstatus" "backuploader" "true" "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')"
   fi
 
 }

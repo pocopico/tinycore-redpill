@@ -369,8 +369,8 @@
   "id": "disks",
   "info": {
     "author_url": "https://github.com/pocopico/tcrp-addons/main/disks/",
-    "description": "Eudev binaries will assist with auto module loading",
-    "name": "Eudev binaries",
+    "description": "All in one solution for disk issues",
+    "name": "Disks",
     "help_url": "https://github.com/pocopico/tcrp-addons/main/disks/",
     "packer_url": "https://github.com/pocopico/tcrp-addons/main/disks/"
   },

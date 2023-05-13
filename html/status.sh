@@ -1,7 +1,7 @@
 #!/bin/bash
 
 statjson="/home/tc/html/status.json"
-stages="buildstatus downloadtools iscached downloadingpat patextraction kernelpatch extadd ramdiskpatch ramdiskcreation copyfilestodisk frienddownload gengrub cachingpat checkloader cleanbuild finishloader"
+stages="buildstatus downloadtools iscached downloadingpat patextraction kernelpatch extadd ramdiskpatch ramdiskcreation copyfilestodisk frienddownload gengrub cachingpat checkloader cleanbuild backuploader finishloader"
 
 msgstatus() {
 
@@ -207,6 +207,11 @@ function recreatejson() {
     },
     "checkloader": {
       "description": "Last loader checks",
+      "status": "warn",
+      "message": ""
+    },
+     "backuploader": {
+      "description": "Making changes persistent to the Loader",
       "status": "warn",
       "message": ""
     },

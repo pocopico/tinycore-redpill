@@ -3,82 +3,87 @@
     "buildstatus": {
       "description": "Building started",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "downloadtools": {
       "description": "Downloading extraction tools",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "iscached": {
       "description": "Caching pat file",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "downloadingpat": {
       "description": "Downloading pat file",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "patextraction": {
       "description": "Pat file extracted",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "kernelpatch": {
       "description": "Kernel patching",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "extadd": {
       "description": "Extensions collection",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "ramdiskpatch": {
       "description": "Ramdisk patching",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "ramdiskcreation": {
       "description": "Ramdisk creation",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
-    "copyfilestodisk": {
+     "copyfilestodisk": {
       "description": "Copying all files to disk",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "frienddownload": {
       "description": "TCRP Friend downloading",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "gengrub": {
       "description": "Generating GRUB entries",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "cachingpat": {
       "description": "Caching pat file to disk",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "cleanbuild": {
       "description": "Cleaning build directory",
       "status": "warn",
-      "message": " "
+      "message": ""
     },
     "checkloader": {
       "description": "Last loader checks",
       "status": "warn",
-      "message": " "
+      "message": ""
+    },
+     "backuploader": {
+      "description": "Making changes persistent to the Loader",
+      "status": "warn",
+      "message": ""
     },
     "finishloader": {
       "description": "Loader build status",
       "status": "warn",
-      "message": " "
+      "message": ""
     }
   }
 }

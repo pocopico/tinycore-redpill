@@ -314,19 +314,20 @@ function backuploader() {
 
   getvars
 
-  echo "Backing up loader and making current home dir persistent"
+  [ -z $1 ] && echo "Backing up loader and making current home dir persistent" || status "backuploader" "warn" "Backing up loader and making current home dir persistent"
 
   HOMESIZE="$(du -sk . /home/tc/)"
   TCRPFREESPACE="$(df -k | grep $tcrppart | awk '{print $4}')"
   REMAINSPACE="$($TCRPFREESPACE-$HOMESIZE)"
 
   if [ $remainspace -le 150000 ]; then
-    wecho "Not enough space to backup"
+    [ -z "$1" ] && wecho "Not enough space to backup" || status "backuploader" "warn" "Not enough space to backup"
+
   else
-    wecho "There is enough space to backup"
-    echo y | backup >/dev/null
-    wecho "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')"
-    wecho "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')"
+    [ -z "$1" ] && wecho "There is enough space to backup" || status "backuploader" "warn" "There is enough space to backup"
+    [ -z "$1" ] && echo y | backup >/dev/null
+    [ -z "$1" ] && wecho "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')" || status "backuploader" "true" "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')"
+    [ -z "$1" ] && wecho "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')" || status "backuploader" "warn" "File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')"
   fi
 
 }
@@ -1972,6 +1973,8 @@ function build() {
   checkloader
 
   cleanbuild
+
+  backuploader silent
 
   echo "Finished building the loader. "
   status "setstatus" "finishloader" "true" "Finished building the loader at : $(date +"%A %b %Y Time: %H:%M:%S")"

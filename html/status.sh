@@ -17,7 +17,7 @@ msgstatus() {
     echo -e "<tr class=\"bg-success\"><td>$stage</td><td class=\"text-success\">$status</td><td>$msg</td></tr>"
     ;;
   fail)
-    echo -e "<tr class=\"bg-danger\"><td>$stage</td><td class=\"text-danger\">.$status</td><td>$msg</td></tr>"
+    echo -e "<tr class=\"bg-danger\"><td>$stage</td><td class=\"text-danger\">$status</td><td>$msg</td></tr>"
     ;;
   warn)
     echo -e "<tr class=\"bg-warning\"><td>$stage</td><td class=\"text-warning\">$status</td><td>$msg</td></tr>"

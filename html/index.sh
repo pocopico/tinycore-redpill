@@ -12,6 +12,10 @@ BUILDLOG="/home/tc/html/buildlog.txt"
 USERCONFIGFILE="/home/tc/user_config.json"
 TOOLSPATH="https://raw.githubusercontent.com/pocopico/tinycore-redpill/main/tools/"
 SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
+#extensionrepofile="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
+#extensionfile="rpext-index.json"
+extensionrepofile="https://github.com/pocopico/tcrp-addons/raw/main/addons.json"
+extensionfile="addons.json"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
 SCRIPTVERSION="0.10.0"
 
@@ -1212,7 +1216,7 @@ function getvars() {
   productid=$(cat $USERCONFIGFILE | jq -r -e ' .extra_cmdline .pid')
   vendorid=$(cat $USERCONFIGFILE | jq -r -e ' .extra_cmdline .vid')
   redpillmake=$(cat $USERCONFIGFILE | jq -r -e ' .general .redpillmake')
-  redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill/rpext-index.json"
+
   FILENAME="${OS_ID}.pat"
   realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}' | sed -s 's/://g')
   genmac="$(generateMacAddress $MODEL | sed -e "s/://g")"
@@ -1350,7 +1354,7 @@ function getstaticmodule() {
   wecho "Removing any old redpill.ko modules"
   [ -f ${HOMEPATH}/redpill.ko ] && rm -f ${HOMEPATH}/redpill.ko
 
-  extension=$(curl --insecure --silent --location "$redpillextension")
+  extension=$(curl --insecure --silent --location "$extensionrepofile")
 
   wecho "Looking for redpill for : $SYNOMODEL"
 
@@ -2218,14 +2222,14 @@ EOF
       cat /home/tc/payload/$ext/*json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq
     done
   )"
-  [ ! -f rpext-index.json ] && curl --insecure -sL https://github.com/pocopico/rp-ext/raw/main/rpext-index.json -O
-  extensionlist="$(cat rpext-index.json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq)"
+  [ ! -f $extensionfile ] && curl --insecure -sL $extensionrepofile -O
+  extensionlist="$(cat $extensionfile | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq)"
 
   echo "<div id=\"extmanagement\">"
   echo "<input type=\"hidden\" id=\"myplatform\" name=\"myplatform\" value=\"${BUILDMODEL}_${BUILDVERSION}\">"
   echo "<select rows=\"10\" id=\"extensionlist\" name=\"extensionlist\" class=\"form-select\" size=\"3\" aria-label=\"size 3 select example\">"
   while IFS=" " read -r extension exturl; do
-    tooltiptext="$(jq -r -e ". |  select(.id==\"$extension\") | .info.description " rpext-index.json | uniq)"
+    tooltiptext="$(jq -r -e ". |  select(.id==\"$extension\") | .info.description " $extensionfile | uniq)"
     echo "<option value=\"$exturl\" data-toggle=\"tooltip\" title=\"$tooltiptext\" >$extension</option>"
   done < <(printf '%s\n' "$extensionlist")
 

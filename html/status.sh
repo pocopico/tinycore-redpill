@@ -123,9 +123,9 @@ function clearstatus() {
   for stage in $stages; do
 
     json=$(jq ".stage.${stage}.status = \"warn\"" $statjson)
-    echo $json | jq . >status.json
+    echo $json | jq . >$statjson
     json=$(jq ".stage.${stage}.message = \" \"" $statjson)
-    echo $json | jq . >status.json
+    echo $json | jq . >$statjson
   done
 
 }

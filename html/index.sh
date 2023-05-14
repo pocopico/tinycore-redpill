@@ -314,20 +314,20 @@ function backuploader() {
 
   getvars
 
-  [ -z "$1" ] && echo "Backing up loader and making current home dir persistent" || status "setstatus" "backuploader" "warn" "Backing up loader and making current home dir persistent"
+  [ -z $1 ] && echo "Backing up loader and making current home dir persistent" || status "backuploader" "warn" "Backing up loader and making current home dir persistent"
 
   HOMESIZE="$(du -sk . /home/tc/)"
   TCRPFREESPACE="$(df -k | grep $tcrppart | awk '{print $4}')"
   REMAINSPACE="$($TCRPFREESPACE-$HOMESIZE)"
 
   if [ $remainspace -le 150000 ]; then
-    [ -z "$1" ] && wecho "Not enough space to backup" || status "setstatus" "backuploader" "warn" "Not enough space to backup"
+    [ -z "$1" ] && wecho "Not enough space to backup" || status "backuploader" "warn" "Not enough space to backup"
 
   else
-    [ -z "$1" ] && wecho "There is enough space to backup" || status "setstatus" "backuploader" "true" "There is enough space to backup"
+    [ -z "$1" ] && wecho "There is enough space to backup" || status "backuploader" "warn" "There is enough space to backup"
     [ -z "$1" ] && echo y | backup >/dev/null
-    [ -z "$1" ] && wecho "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')" || status "setstatus" "backuploader" "true" "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')"
-    [ -z "$1" ] && wecho "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')" || status "setstatus" "backuploader" "true" "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')"
+    [ -z "$1" ] && wecho "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')" || status "backuploader" "true" "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')"
+    [ -z "$1" ] && wecho "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')" || status "backuploader" "warn" "File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')"
   fi
 
 }
@@ -657,7 +657,7 @@ function breadcrumb() {
   echo "<div class=\"container\"><div class=\"row\"><div class=\"col-sm\">"
   echo "<nav aria-label=\"breadcrumb\">  <ol class=\"breadcrumb\">"
 
-  [ ! -z "$MODEL" ] && echo "<li class=\"breadcrumb-item\"><a href=\"${THISURL}?action=resetmodel\">$MODEL\</a></li>"
+  [ ! -z "$MODEL" ] && echo "<li class=\"breadcrumb-item\"><a href=\"#\">$MODEL\</a></li>"
   [ ! -z "$VERSION" ] && echo "<li class=\"breadcrumb-item\"><a href=\"index.sh?action=setversion\">$VERSION\</a></li>"
   echo "<li class=\"breadcrumb-item active\" aria-current=\"page\">Build</li>"
 
@@ -1029,6 +1029,7 @@ function bringoverfriend() {
 function buildform() {
 
   getvars
+  satamap
 
   updateuserconfigfield "general" "model" "$MODEL"
   updateuserconfigfield "general" "version" "$VERSION"
@@ -1047,6 +1048,9 @@ function buildform() {
     updateuserconfigfield "extra_cmdline" "vid" "$vendorid"
 
   fi
+
+  updateuserconfigfield "extra_cmdline" "SataPortMap" "$SATAPORTMAP"
+  updateuserconfigfield "extra_cmdline" "DiskIdxMap" "$DISKIDXMAP"
 
   cat <<EOF
    <div class="buildform" id="buildform">
@@ -1101,6 +1105,18 @@ EOF
   <input id="redpillmake" name="redpillmake" value="$redpillmake" required />
    </div>
   </div>
+  <div class="control-group">
+  <label  class="control-label" for="sataportmap">SataPortMap</label>
+  <div class="controls">
+  <input id="sataportmap" name="sataportmap" value="$SATAPORTMAP" required readonly/>
+   </div>
+  </div>
+    <div class="control-group">
+  <label  class="control-label" for="diskidxmap">DiskIdxMap</label>
+  <div class="controls">
+  <input id="diskidxmap" name="diskidxmap" value="$DISKIDXMAP" required readonly />
+   </div>
+  </div>
 <!--
   <div class="control-group">
   <label class="control-label"  class="form-check-label" for="addexts">Automatically add extensions</label>
@@ -1138,6 +1154,66 @@ EOF
 EOF
 
   extmanagement
+
+}
+
+function satamap() {
+
+  TEXT=""
+  SATAPORTMAP=""
+  DISKIDXMAP=""
+  PCIPORTS=0
+  NUMPORTS=0
+  ZEROPORTS=""
+  TOTALPORTS=0
+  LOOPPORTS=0
+
+  for PCI in $(lspci -d ::106 | awk '{print$1}'); do
+    NAME=$(lspci -s "${PCI}" | sed "s/\ .*://")
+    TEXT+="${NAME}/n Ports: "
+    unset HOSTPORTS
+    declare -A HOSTPORTS
+    while read LINE; do
+      ATAPORT="$(echo ${LINE} | grep -o 'ata[0-9]*')"
+      PORT=$(echo ${ATAPORT} | sed 's/ata//')
+      HOSTPORTS[${PORT}]=$(echo ${LINE} | grep -o 'host[0-9]*$')
+    done < <(ls -l /sys/class/scsi_host | fgrep "${PCI}")
+    while read PORT; do
+      ls -l /sys/block | fgrep -q "${PCI}/ata${PORT}" && ATTACH=1 || ATTACH=0
+      PCMD=$(cat /sys/class/scsi_host/${HOSTPORTS[${PORT}]}/ahci_port_cmd)
+      [ "${PCMD}" = "0" ] && DUMMY=1 || DUMMY=0
+      [ ${ATTACH} -eq 1 ] && TEXT+="ATTACH"
+      [ ${DUMMY} -eq 1 ] && TEXT+="DUMMY"
+
+      TEXT+="${PORT} "
+      NUMPORTS=$((${NUMPORTS} + 1))
+    done < <(echo ${!HOSTPORTS[@]} | tr ' ' '\n' | sort -n)
+    TEXT+="\n"
+  done
+
+  for PCI in $(lspci -d ::106 | awk '{print$1}'); do
+    MAP="$(echo -e "$TEXT" | grep -i "$PCI" | grep -o ATTACH | wc -w)"
+    [ "$MAP" -ge 1 ] && ZEROPORTS+="$MAP" && [ "$MAP" -le 8 ] && let MAP=8 && let PCIPORTS=$(($PCIPORTS + 1))
+    [ "$MAP" -eq 0 ] && ZEROPORTS+="$MAP" && let MAP=1 && let PCIPORTS=$(($PCIPORTS + 1))
+    TOTALPORTS=$(($TOTALPORTS + $MAP))
+    SATAPORTMAP+="$MAP"
+  done
+
+  for ((i = 0; i < ${#ZEROPORTS}; i++)); do
+    if [ "${ZEROPORTS:$i:1}" -eq 0 ]; then
+      DISKIDXMAP+="$(printf "%02X" $(($TOTALPORTS + 1)))"
+    elif [ "${ZEROPORTS:$i:1}" -le 8 ] && [ "$LOOPPORTS" -eq 0 ]; then
+      DISKIDXMAP+="$(printf "%02X" ${LOOPPORTS})"
+      TOTALPORTS=$(($TOTALPORTS - $LOOPPORTS))
+      LOOPPORTS=$(($LOOPPORTS + 8 + 1))
+    else
+      DISKIDXMAP+="$(printf "%02X" $(($LOOPPORTS)))"
+      LOOPPORTS=$(($LOOPPORTS + 8))
+    fi
+  done
+
+  #echo "SATAPORTMAP=${SATAPORTMAP}"
+  #echo "DISKIDXMAP=${DISKIDXMAP}"
 
 }
 
@@ -1577,7 +1653,7 @@ function addextensions() {
   wecho "Adding extensions for ${BUILDMODEL}_${BUILDVERSION}"
 
   for EXT in $EXTENSIONS_SOURCE_URL; do
-    wecho "Adding required extension $EXT for ${BUILDMODEL}_${BUILDVERSION}" && status "setstatus" "extadd" "warn" "Adding required extension $EXT for ${BUILDMODEL}_${BUILDVERSION}"
+    wecho "Adding required extension $EXT for ${BUILDMODEL}_${BUILDVERSION}"
     wecho "extadd $EXT ${BUILDMODEL}_${BUILDVERSION}"
 
     $HOMEPATH/include/extmgr.sh extadd $EXT "${BUILDMODEL}_${BUILDVERSION}"

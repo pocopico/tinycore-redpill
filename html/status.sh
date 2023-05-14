@@ -232,7 +232,6 @@ clearstatus)
   clearstatus
   ;;
 recreatejson)
-  echo "recreating json"
   recreatejson
   ;;
 status)

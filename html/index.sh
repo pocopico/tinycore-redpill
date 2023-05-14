@@ -314,7 +314,7 @@ function backuploader() {
 
   getvars
 
-  [ -z $1 ] && echo "Backing up loader and making current home dir persistent" || status "backuploader" "warn" "Backing up loader and making current home dir persistent"
+  [ -z "$1" ] && echo "Backing up loader and making current home dir persistent" || status "setstatus" "backuploader" "warn" "Backing up loader and making current home dir persistent"
 
   HOMESIZE="$(du -sk . /home/tc/)"
   TCRPFREESPACE="$(df -k | grep $tcrppart | awk '{print $4}')"
@@ -324,10 +324,10 @@ function backuploader() {
     [ -z "$1" ] && wecho "Not enough space to backup" || status "backuploader" "warn" "Not enough space to backup"
 
   else
-    [ -z "$1" ] && wecho "There is enough space to backup" || status "backuploader" "warn" "There is enough space to backup"
+    [ -z "$1" ] && wecho "There is enough space to backup" || status "setstatus" "backuploader" "true" "There is enough space to backup"
     [ -z "$1" ] && echo y | backup >/dev/null
-    [ -z "$1" ] && wecho "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')" || status "backuploader" "true" "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')"
-    [ -z "$1" ] && wecho "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')" || status "backuploader" "warn" "File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')"
+    [ -z "$1" ] && wecho "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')" || status "setstatus" "backuploader" "true" "Backup File Date : $(ls -l /mnt/$tcrppart/mydata.tgz | awk '{print $6 " " $7 " " $8}')"
+    [ -z "$1" ] && wecho "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')" || status "setstatus" "backuploader" "true" "Backup File size is : $(ls -lh /mnt/$tcrppart/mydata.tgz | awk '{print $5}')"
   fi
 
 }
@@ -657,7 +657,7 @@ function breadcrumb() {
   echo "<div class=\"container\"><div class=\"row\"><div class=\"col-sm\">"
   echo "<nav aria-label=\"breadcrumb\">  <ol class=\"breadcrumb\">"
 
-  [ ! -z "$MODEL" ] && echo "<li class=\"breadcrumb-item\"><a href=\"#\">$MODEL\</a></li>"
+  [ ! -z "$MODEL" ] && echo "<li class=\"breadcrumb-item\"><a href=\"${THISURL}?action=resetmodel\">$MODEL\</a></li>"
   [ ! -z "$VERSION" ] && echo "<li class=\"breadcrumb-item\"><a href=\"index.sh?action=setversion\">$VERSION\</a></li>"
   echo "<li class=\"breadcrumb-item active\" aria-current=\"page\">Build</li>"
 
@@ -1653,7 +1653,7 @@ function addextensions() {
   wecho "Adding extensions for ${BUILDMODEL}_${BUILDVERSION}"
 
   for EXT in $EXTENSIONS_SOURCE_URL; do
-    wecho "Adding required extension $EXT for ${BUILDMODEL}_${BUILDVERSION}"
+    wecho "Adding required extension $EXT for ${BUILDMODEL}_${BUILDVERSION}" && status "setstatus" "extadd" "warn" "Adding required extension $EXT for ${BUILDMODEL}_${BUILDVERSION}"
     wecho "extadd $EXT ${BUILDMODEL}_${BUILDVERSION}"
 
     $HOMEPATH/include/extmgr.sh extadd $EXT "${BUILDMODEL}_${BUILDVERSION}"
@@ -2573,7 +2573,7 @@ else
       breadcrumb
       buildstatus
       buildform
-      status clearstatus
+      status recreatejson
 
     fi
 

@@ -450,6 +450,7 @@ function monitor() {
     ping -c 5 $NEWGW >/dev/null &
     [ ! -d /lib64 ] && sudo ln -s /lib /lib64
     sudo chown -R tc:staff /home/tc
+    sudo chown -R tc:staff /opt
 
     while [ -z "$GATEWAY_INTERFACE" ]; do
         clear

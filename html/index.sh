@@ -2115,19 +2115,19 @@ setgrubentry() {
     usbentry="$(grep menuentry /mnt/${loaderdisk}1/boot/grub/grub.cfg | awk -F\' '{print $2}' | grep -i USB)"
     status "setstatus" "setgrubentry" "true" "Setting next grub entry to static USB : $usbentry"
     echo "Setting next grub entry to static USB : $usbentry" | tee -a $LOGFILE
-    sudo grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv set saved_entry="$usbentry"
+    sudo /usr/local/bin/grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv set saved_entry="$usbentry"
   elif [ "$staticboot" = "true " ] && [ "$ISUSB" = "0" ]; then
     sataentry="$(grep menuentry /mnt/${loaderdisk}1/boot/grub/grub.cfg | awk -F\' '{print $2}' | grep -i SATA)"
     status "setstatus" "setgrubentry" "true" "Setting next grub entry to static SATA : $sataentry"
     echo "Setting next grub entry to static SATA : $sataentry" | tee -a $LOGFILE
-    sudo grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv set saved_entry="$sataentry"
+    sudo /usr/local/bin/grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv set saved_entry="$sataentry"
   else
     status "setstatus" "setgrubentry" "true" "Setting next grub entry to : $default"
     echo "Setting next grub entry to Friend : $default" | tee -a $LOGFILE
-    sudo grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv set saved_entry="$default"
+    sudo /usr/local/bin/grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv set saved_entry="$default"
   fi
 
-  savedentry="$(sudo grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv list)"
+  savedentry="$(sudo /usr/local/bin/grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv list | awk -F= '{print $2}')"
   status "setstatus" "setgrubentry" "true" "Grub entry has been set to : $savedentry"
   echo "Grub entry has been set to : $savedentry" | tee -a $LOGFILE
 
@@ -2614,9 +2614,9 @@ else
 
     if [ $(jq . $USERCONFIGFILE | wc -l) -ge 38 ]; then
       echo "File $USERCONFIGFILE looks OK" | tee -a $BUILDLOG >/dev/null
-      cp $USERCONFIGFILE ${USERCONFIGFILE}.bak
+      cp -f $USERCONFIGFILE ${USERCONFIGFILE}.bak
     else
-      cp $USERCONFIGFILE.bak $USERCONFIGFILE
+      cp -f $USERCONFIGFILE.bak $USERCONFIGFILE
       if [ $(jq . $USERCONFIGFILE | wc -l) -ge 38 ]; then
         echo "File $USERCONFIGFILE looks OK" | tee -a $BUILDLOG >/dev/null
       else

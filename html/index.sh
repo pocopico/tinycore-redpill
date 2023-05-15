@@ -2091,9 +2091,37 @@ function build() {
 
   backuploader silent
 
+  setgrubentry
+
   echo "Finished building the loader. "
   status "setstatus" "finishloader" "true" "Finished building the loader at : $(date +"%A %b %Y Time: %H:%M:%S")"
   return
+
+}
+
+setgrubentry() {
+
+  status "setstatus" "setgrubentry" "warn" "Setting next grub entry"
+  echo "Setting next grub entry " | tee -a $LOGFILE
+
+  default="$(grep menuentry /mnt/${loaderdisk}1/boot/grub/grub.cfg | awk -F\' '{print $2}' | grep -i Friend)"
+  ISUSB="$(udevadm info --query property --name /dev/${loaderdisk} | grep -i DEVPATH | grep -i USB | wc -l)"
+
+  if [ "$staticboot" = "true " ] && [ "$ISUSB" = "1" ]; then
+    usbentry="$(grep menuentry /mnt/${loaderdisk}1/boot/grub/grub.cfg | awk -F\' '{print $2}' | grep -i USB)"
+    status "setstatus" "setgrubentry" "true" "Setting next grub entry to static USB : $usbentry"
+    echo "Setting next grub entry to static USB : $usbentry" | tee -a $LOGFILE
+    sudo grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv set saved_entry="$usbentry"
+  elif [ "$staticboot" = "true " ] && [ "$ISUSB" = "0" ]; then
+    sataentry="$(grep menuentry /mnt/${loaderdisk}1/boot/grub/grub.cfg | awk -F\' '{print $2}' | grep -i SATA)"
+    status "setstatus" "setgrubentry" "true" "Setting next grub entry to static SATA : $sataentry"
+    echo "Setting next grub entry to static SATA : $sataentry" | tee -a $LOGFILE
+    sudo grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv set saved_entry="$sataentry"
+  else
+    status "setstatus" "setgrubentry" "true" "Setting next grub entry to : $default"
+    echo "Setting next grub entry to Friend : $default" | tee -a $LOGFILE
+    sudo grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv set saved_entry="$default"
+  fi
 
 }
 
@@ -2578,9 +2606,16 @@ else
 
     if [ $(jq . $USERCONFIGFILE | wc -l) -ge 38 ]; then
       echo "File $USERCONFIGFILE looks OK" | tee -a $BUILDLOG >/dev/null
+      cp $USERCONFIGFILE ${USERCONFIGFILE}.bak
     else
-      wecho "Error file looks corrupted, reset model to recreate"
-      exit 99
+      cp $USERCONFIGFILE.bak $USERCONFIGFILE
+      if [ $(jq . $USERCONFIGFILE | wc -l) -ge 38 ]; then
+        echo "File $USERCONFIGFILE looks OK" | tee -a $BUILDLOG >/dev/null
+      else
+        wecho "Error both $USERCONFIGFILE and ${USERCONFIGFILE}.bak files look corrupted, select reset model to recreate"
+        pagefooter
+        exit 99
+      fi
     fi
 
     if [ ! -z "$MODEL" ] && [ ! -z "$VERSION" ] && [ ! -z "$serial" ] && [ ! -z "$macaddress" ] && [ ! -z "$buildit" ]; then

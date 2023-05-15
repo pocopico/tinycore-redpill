@@ -80,6 +80,11 @@
       "status": "warn",
       "message": ""
     },
+      "setgrubentry": {
+      "description": "Setting next boot entry",
+      "status": "warn",
+      "message": ""
+    },
     "finishloader": {
       "description": "Loader build status",
       "status": "warn",

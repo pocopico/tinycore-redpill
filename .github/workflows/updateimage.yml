@@ -81,7 +81,7 @@ jobs:
           cd $workdir/tempmydata
           sudo tar xvfz $workdir/partition3/mydata.tgz
           
-          chown -R tc:staff $workdir/tempmydata/home/tc/
+          chown -R 1001:50 $workdir/tempmydata/home/tc/
           cd $workdir/tempmydata/home/tc/
           
           cp -rf /opt/tinycore-redpill/* .
@@ -139,7 +139,7 @@ jobs:
           cd $workdir/tempmydata
           sudo tar xvfz $workdir/partition3/mydata.tgz
           
-          chown -R tc:staff $workdir/tempmydata/home/tc/
+          chown -R 1001:50 $workdir/tempmydata/home/tc/
           cd $workdir/tempmydata/home/tc/
           
           cp -rf /opt/tinycore-redpill/* .

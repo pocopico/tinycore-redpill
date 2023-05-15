@@ -669,7 +669,7 @@ function sysreboot() {
   sync
   backuploader
   wecho "Rebooting" | tee -a $LOGFILE
-  /home/tc/html/reboot.sh | tee -a $LOGFILE
+  /usr/bin/exitcheck.sh reboot | tee -a $LOGFILE
 
 }
 

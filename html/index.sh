@@ -1350,12 +1350,16 @@ function checkextractor() {
 
 function downloadextractor() {
 
+  status "setstatus" "patextraction" "warn" "Extractor not cached, downloading OLD PAT"
+
   mkdir -p ${PATCHEXTRACTOR}/
 
   cd ${PATCHEXTRACTOR}/
 
   curl --insecure --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output ${HOMEPATH}/oldpat.tar.gz
   #[ -f ${HOMEPATH}/oldpat.tar.gz ] && tar -C${temp_folder} -xf ${HOMEPATH}/oldpat.tar.gz rd.gz
+
+  status "setstatus" "patextraction" "warn" "OLD PAT downloaded, extracting"
 
   tar xvf ../oldpat.tar.gz hda1.tgz
   tar xf hda1.tgz usr/lib
@@ -1393,9 +1397,13 @@ function downloadextractor() {
 
   cp -r usr/syno/sbin/synoarchive ${PATCHEXTRACTOR}/
 
+  status "setstatus" "patextraction" "warn" "Extractor in place, removing unneeded temp files"
+
   sudo rm -rf usr
   sudo rm -rf ../oldpat.tar.gz
   sudo rm -rf hda1.tgz
+
+  status "setstatus" "patextraction" "warn" "Patching extraction binaries"
 
   curl --silent --location "https://github.com/pocopico/tinycore-redpill/blob/main/tools/xxd?raw=true" --output xxd
 
@@ -1406,6 +1414,8 @@ function downloadextractor() {
   ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0000/' | ./xxd -r >synoarchive.system
 
   chmod +x synoarchive.*
+
+  status "setstatus" "patextraction" "warn" "Caching extractor for future use"
 
   [ ! -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && mkdir -p /mnt/${tcrppart}/auxfiles/patch-extractor
 
@@ -1428,9 +1438,9 @@ function downloadextractor() {
   mkdir -p temp && cd temp
 
   if [ -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && [ -f /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.nano ]; then
-    LD_LIBRARY_PATH=/mnt/${tcrppart}/auxfiles/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.nano -xvf ${PATCHEXTRACTOR}/$patfile
+    status "setstatus" "patextraction" "warn" "Extracting pat file : ${PATCHEXTRACTOR}/$patfile" && LD_LIBRARY_PATH=/mnt/${tcrppart}/auxfiles/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.nano -xvf ${PATCHEXTRACTOR}/$patfile
   else
-    wecho "Extractor not found"
+    wecho "Extractor not found" && status "setstatus" "patextraction" "warn" "Extractor not found"
   fi
   ## Extract ramdisk
 
@@ -1597,7 +1607,7 @@ function extractpat() {
   mkdir -p $TEMPPAT
 
   if [ "$isencrypted" = "yes" ]; then
-    checkextractor && [ "$extractorcached" = "yes" ] && wecho "Extractor Cached, proceeding..."
+    checkextractor && [ "$extractorcached" = "yes" ] && wecho "Extractor Cached, proceeding..." && status "setstatus" "patextraction" "warn" "Extractor cached"
     wecho "Extracting encrypted PAT file $FILENAME"
     status "setstatus" "patextraction" "false" "Extracting encrypted PAT file $FILENAME"
     [ ! -d ${TEMPPAT} ] && mkdir -p ${TEMPPAT}

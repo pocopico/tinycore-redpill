@@ -85,8 +85,8 @@ jobs:
           
           sudo cp -rf /opt/tinycore-redpill/* .
                     
-          sudo rm modules.alias.3.json ; gunzip modules.alias.3.json.gz
-          sudo rm modules.alias.4.json ; gunzip modules.alias.4.json.gz
+          sudo rm modules.alias.3.json ; sudo gunzip modules.alias.3.json.gz
+          sudo rm modules.alias.4.json ; sudo gunzip modules.alias.4.json.gz
           
           cd $workdir/tempmydata
           
@@ -142,8 +142,8 @@ jobs:
           
           sudo cp -rf /opt/tinycore-redpill/* .
                     
-          sudo rm modules.alias.3.json ; gunzip modules.alias.3.json.gz
-          sudo rm modules.alias.4.json ; gunzip modules.alias.4.json.gz
+          sudo rm modules.alias.3.json ; sudo gunzip modules.alias.3.json.gz
+          sudo rm modules.alias.4.json ; sudo gunzip modules.alias.4.json.gz
           
           cd $workdir/tempmydata
           

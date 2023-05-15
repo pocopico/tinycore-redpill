@@ -2127,6 +2127,10 @@ setgrubentry() {
     sudo grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv set saved_entry="$default"
   fi
 
+  savedentry="$(sudo grub-editenv /mnt/${loaderdisk}1/boot/grub/grubenv list)"
+  status "setstatus" "setgrubentry" "true" "Grub entry has been set to : $savedentry"
+  echo "Grub entry has been set to : $savedentry" | tee -a $LOGFILE
+
 }
 
 function generategrub() {

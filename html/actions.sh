@@ -1,4 +1,4 @@
-#!/bin/sudo bash
+#!/usr/bin/sudo bash
 
 function pagehead() {
   cat <<EOF

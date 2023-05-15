@@ -360,6 +360,8 @@ function pagebody() {
                 <li><a class=" dropdown-item" href="${THISURL}?action=buildstatus">Last build status</a><li>
                 <hr class="dropdown-divider">
                 <li><a class="dropdown-item" href="${THISURL}?action=resetmodel" onclick="return confirm('About to reset the model are you sure?, this will permanently remove model info from /home/tc/user_config.json')" data-toggle="confirmation" data-title="Reset Model ?">Reset Model</a></li>
+                <hr class="dropdown-divider">
+                <li><a class="dropdown-item" href="${THISURL}?action=sysreboot" onclick="return confirm('About to reboot tinycore are you sure?')" data-toggle="confirmation" data-title="Reboot Tinycore ?">Reboot Tinycore</a></li>
               </ul>
               </li>
               <li><a href="https://github.com/pocopico/tinycore-redpill">Tinycore Redpill Repo</a></li>
@@ -649,6 +651,18 @@ EOF
   </body>
 </html>
 EOF
+
+}
+
+function sysreboot() {
+
+  wecho "System is going for reboot" | tee -a $LOGFILE
+  sync
+  sync
+  sync
+  backuploader
+  wecho "Rebooting" | tee -a $LOGFILE
+  /home/tc/html/reboot.sh | tee -a $LOGFILE
 
 }
 
@@ -2523,6 +2537,7 @@ else
   [ "$action" == "buildstatus" ] && result=$(buildstatus) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "updatescript" ] && result=$(updatescript) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "fullupgrade" ] && result=$(fullupgrade) && recho "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "sysreboot" ] && result=$(sysreboot) && recho "$result" | tee -a ${BUILDLOG}
 
   [ "$action" == "none" ] && loaderstatus
 

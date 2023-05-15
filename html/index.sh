@@ -2614,6 +2614,7 @@ else
 
     if [ $(jq . $USERCONFIGFILE | wc -l) -ge 38 ]; then
       echo "File $USERCONFIGFILE looks OK" | tee -a $BUILDLOG >/dev/null
+    else
       wecho "Error both $USERCONFIGFILE file looks corrupted, select Additional Actions -> Reset model to recreate"
       pagefooter
       exit 99

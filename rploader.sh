@@ -153,7 +153,7 @@ server.groupname            = "staff"
 server.port                 = 80
 alias.url       = ( "/rploader/" => "/home/tc/html/" )
 cgi.assign = ( ".sh" => "/usr/local/bin/bash" )
-index-file.names           = ( "index.html","index.htm", "index.sh" )
+index-file.names           = ( "index.sh", "index.html","index.htm" )
 
 EOF
 

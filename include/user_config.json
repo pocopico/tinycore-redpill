@@ -9,7 +9,8 @@
     "sata_line": "",
     "redpillmake": "prod",
     "friendautoupd": "true",
-    "hidesensitive": "false"
+    "hidesensitive": "false",
+	"staticboot": "false"
   },
   "ipsettings": {
     "ipset": "",

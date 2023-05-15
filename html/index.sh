@@ -637,6 +637,9 @@ function onModelChange() {
 \$('#redpillmake').tooltip({'trigger':'focus', 'title': 'Change the redpill make to development or production'});
 \$('#macaddress').tooltip({'trigger':'focus', 'title': 'Change the mac address to what you like or leave the generated one'});
 \$('#serial').tooltip({'trigger':'focus', 'title': 'Change the serial to what you like or leave the generated one'});
+\$('#sataportmap').tooltip({'trigger':'focus', 'title': 'Thats a calculated value, if you dont know what that does leave that as is'});
+\$('#diskidxmap').tooltip({'trigger':'focus', 'title': 'Thats a calculated value, if you dont know what that does leave that as is'});
+\$('#staticboot').tooltip({'trigger':'focus', 'title': 'Set this to true if you have issues with booting TCRP Friend'});
 
 
 </script>
@@ -1122,13 +1125,19 @@ EOF
   <div class="control-group">
   <label  class="control-label" for="sataportmap">SataPortMap</label>
   <div class="controls">
-  <input id="sataportmap" name="sataportmap" value="$SATAPORTMAP" required readonly/>
+  <input id="sataportmap" name="sataportmap" value="$SATAPORTMAP" required/>
    </div>
   </div>
     <div class="control-group">
   <label  class="control-label" for="diskidxmap">DiskIdxMap</label>
   <div class="controls">
-  <input id="diskidxmap" name="diskidxmap" value="$DISKIDXMAP" required readonly />
+  <input id="diskidxmap" name="diskidxmap" value="$DISKIDXMAP" required/>
+   </div>
+  </div>
+    <div class="control-group">
+  <label  class="control-label" for="staticboot">Static Boot</label>
+  <div class="controls">
+  <input id="staticboot" name="staticboot" value="false" required/>
    </div>
   </div>
 <!--
@@ -1754,7 +1763,7 @@ function patchramdisk() {
 
   status "setstatus" "copyfilestodisk" "false" "Copying all files to disk"
   status "setstatus" "copyfilestodisk" "false" "Copying  $HOMEPATH/custom.gz to /mnt/${tcrppart}/" && cp -f $HOMEPATH/custom.gz /mnt/${tcrppart}/ && status "setstatus" "copyfilestodisk" "false" "Copied $HOMEPATH/custom.gz to /mnt/${tcrppart}/"
-  status "setstatus" "copyfilestodisk" "false" "Copying  $HOMEPATH/custom.gz to /mnt/${loaderdisk}1/ " && cp -f $HOMEPATH/custom.gz /mnt/${loaderdisk}1/ && status "setstatus" "copyfilestodisk" "false" "Copied $HOMEPATH/custom.gz to /mnt/${loaderdisk}1/"
+  #status "setstatus" "copyfilestodisk" "false" "Copying  $HOMEPATH/custom.gz to /mnt/${loaderdisk}1/ " && cp -f $HOMEPATH/custom.gz /mnt/${loaderdisk}1/ && status "setstatus" "copyfilestodisk" "false" "Copied $HOMEPATH/custom.gz to /mnt/${loaderdisk}1/"
   status "setstatus" "copyfilestodisk" "false" "Copying  ${TEMPPAT}/zImage-dsm to /mnt/${tcrppart}/" && cp -f ${TEMPPAT}/zImage-dsm /mnt/${tcrppart}/ && status "setstatus" "copyfilestodisk" "false" "Copied ${TEMPPAT}/zImage-dsm to /mnt/${tcrppart}/"
   status "setstatus" "copyfilestodisk" "false" "Copying  ${TEMPPAT}/initrd-dsm to /mnt/${tcrppart}/" && cp -f ${TEMPPAT}/initrd-dsm /mnt/${tcrppart}/ && status "setstatus" "copyfilestodisk" "false" "Copied ${TEMPPAT}/initrd-dsm to /mnt/${tcrppart}/"
   status "setstatus" "copyfilestodisk" "true" "Copied all boot files to the loader disk"
@@ -2038,6 +2047,12 @@ function build() {
 
   #wecho "Clearing and testing $USERCONFIGFILE"
   json="$(cat $USERCONFIGFILE | sed -s 's/\\r//g' | jq .)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+
+  #updating user_config with build form data
+  echo "Updating $USERCONFIGFILE with build form data SataPortMap: $sataportmap DiskIdxMap: $diskidxmap StaticBoot: $staticboot" | tee -a $LOGFILE
+  updateuserconfigfield "extra_cmdline" "SataPortMap" "${sataportmap}"
+  updateuserconfigfield "extra_cmdline" "DiskIdxMap" "${diskidxmap}"
+  updateuserconfigfield "general" "staticboot" "${staticboot}"
 
   #wecho "Building CMD Line"
 
@@ -2482,6 +2497,9 @@ else
     REVISION="$(echo "${VERSION}" | awk -F- '{print $2}')"
     serial="$(echo "${post[serial]}" | sed -s "s/'//g")"
     macaddress="$(echo "${post[macaddress]}" | sed -s "s/'//g")"
+    staticboot="$(echo "${post[staticboot]}" | sed -s "s/'//g")"
+    sataportmap="$(echo "${post[sataportmap]}" | sed -s "s/'//g")"
+    diskidxmap="$(echo "${post[diskidxmap]}" | sed -s "s/'//g")"
     if [ -z "$(echo ${post[action]} | sed -s "s/'//g")" ]; then
       action="$(echo "${get[action]}" | sed -s "s/'//g")"
     else
@@ -2517,6 +2535,7 @@ else
   #echo "<br>REQUEST METHOD $REQUEST_METHOD , MODEL : $MODEL , VERSION : $VERSION"
   #echo "<br>Serial : $serial , MAC : $macaddress , Buildit : $buildit"
   #echo "<br>Build VARS : MODEL :$MODEL VERSION: $VERSION SN: $serial MAC: $macaddress BUILDIT: $buildit"
+  #echo "<br>Build VARS : sataportmap :$sataportmap diskidxmap: $diskidxmap RepillMake: $redpillmake Static Boot: $staticboot "
 
   [ "$action" == "backuploader" ] && result=$(backuploader) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "listplatforms" ] && result=$(listplatforms) && wecho "$result" | tee -a buildlog.log

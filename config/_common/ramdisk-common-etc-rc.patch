@@ -1,0 +1,9 @@
+--- a/etc/rc
++++ b/etc/rc
+@@ -469,5 +469,5 @@
+ echo "============ Date ============"
+ date
+ echo "=============================="
+-
++/usr/sbin/rungetty.sh
+ exit 0

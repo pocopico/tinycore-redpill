@@ -656,11 +656,11 @@ function downloadextractor() {
         cpio -idm <rd 2>&1 || echo "extract rd"
         mkdir extract
 
-        mkdir /mnt/${tcrppart}/auxfiles && cd /mnt/${tcrppart}/auxfiles
+        mkdir -p /mnt/${tcrppart}/auxfiles && cd /mnt/${tcrppart}/auxfiles
 
         echo "Copying required files to local cache folder for future use"
 
-        mkdir /mnt/${tcrppart}/auxfiles/extractor
+        mkdir -p /mnt/${tcrppart}/auxfiles/extractor
 
         for file in usr/lib/libcurl.so.4 usr/lib/libmbedcrypto.so.5 usr/lib/libmbedtls.so.13 usr/lib/libmbedx509.so.1 usr/lib/libmsgpackc.so.2 usr/lib/libsodium.so usr/lib/libsynocodesign-ng-virtual-junior-wins.so.7 usr/syno/bin/scemd; do
             echo "Copying $file to /mnt/${tcrppart}/auxfiles"
@@ -1424,7 +1424,7 @@ function downloadextractorv2() {
 
     chmod +x synoarchive.*
 
-    [ ! -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && mkdir /mnt/${tcrppart}/auxfiles/patch-extractor
+    [ ! -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && mkdir -p /mnt/${tcrppart}/auxfiles/patch-extractor
 
     cp -rf /home/tc/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/
     cp -rf /home/tc/patch-extractor/synoarchive* /mnt/${tcrppart}/auxfiles/patch-extractor/

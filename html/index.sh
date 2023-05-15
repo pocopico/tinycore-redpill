@@ -622,6 +622,10 @@ getLog();
       \$('#buildlog').show();
     }
 
+    function hidebuildlog() {
+      \$('#buildlog').hide();
+    }
+
  function togglemac(e) {
       let txt = e.innerText;
       e.innerText = txt == 'Real Mac' ? 'Gen Mac' : 'Real Mac';
@@ -2480,7 +2484,7 @@ function readlog() {
 
   cat <<EOF
 <div class="buildlog fixed-bottom pre-scrollable bg-dark" id="buildlog">
-<h3>Build output log</h3>
+<h3>Build output log<button id="hideoutputlog" class="btn btn-lg btn-success btn-left" onclick="return hidebuildlog()">Hide build log</button></h3>
 <pre id="buildlogtab"></pre>
 
 </div>

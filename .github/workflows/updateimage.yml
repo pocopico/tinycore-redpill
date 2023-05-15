@@ -107,12 +107,12 @@ jobs:
           
           gzip -9 $newimgfile
           
-          rm -rf $workdir/tempmydata
+          sudo rm -rf $workdir/tempmydata
           tar tvfz mydata.tgz > tar1.output
-          rm $workdir/mydata.tgz
+          sudo rm $workdir/mydata.tgz
           echo "Moving file ${newimgfile}.gz"
           
-          mv ${newimgfile}.gz $tgtdir
+          sudo mv ${newimgfile}.gz $tgtdir
           
           ###########################################################################
           
@@ -174,9 +174,9 @@ jobs:
           gzip -9 $newimgfile
           gzip -9 $vmdkfile
 
-          rm -rf $workdir/tempmydata
+          sudo rm -rf $workdir/tempmydata
           tar tvfz mydata.tgz > tar2.output
-          rm $workdir/mydata.tgz
+          sudo rm $workdir/mydata.tgz
           echo "Moving file ${newimgfile}.gz"
           
           mv ${newimgfile}.gz $tgtdir

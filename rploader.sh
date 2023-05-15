@@ -449,6 +449,7 @@ function monitor() {
     NETGW="$(route | grep -i def | awk '{print $2}')"
     ping -c 5 $NEWGW >/dev/null &
     [ ! -d /lib64 ] && sudo ln -s /lib /lib64
+    sudo chown -R tc:staff /home/tc
 
     while [ -z "$GATEWAY_INTERFACE" ]; do
         clear

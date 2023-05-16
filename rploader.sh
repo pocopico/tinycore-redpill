@@ -2247,9 +2247,36 @@ function generategrub() {
     ${HOMEPATH}/include/grubmgr.sh addentry tcrp && [ $(grep -i "Tiny Core Image Build" grub.cfg | wc -l) -gt 0 ] && echo "Added TCRP entry" || echo "Failed to add SATA entry"
     ${HOMEPATH}/include/grubmgr.sh addentry tcrpfriend && [ $(grep -i "Tiny Core Friend" grub.cfg | wc -l) -gt 0 ] && echo "Added TCRP FRIEND entry" || echo "Failed to add SATA entry"
 
-    [ -f /mnt/${loaderdisk}1/boot/grub/grub.cfg ] && cp /mnt/${loaderdisk}1/boot/grub/grub.cfg /mnt/${loaderdisk}1/boot/grub/grub.cfg.old
+    [ -f ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg ] && cp ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg
 
+    grep "menuentry" ${HOMEPATH}/grub.cfg
+    echo "Copying grub file ${HOMEPATH}/grub.cfg to ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg"
     sudo cp -f ${HOMEPATH}/grub.cfg ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg
+    grep "menuentry" ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg
+
+}
+
+setgrubentry() {
+
+    echo "Setting next grub entry "
+
+    default="$(grep menuentry ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg | awk -F\' '{print $2}' | grep -i Friend)"
+    ISUSB="$(udevadm info --query property --name /dev/${loaderdisk} | grep -i DEVPATH | grep -i USB | wc -l)"
+    if [ "$staticboot" = "true " ] && [ "$ISUSB" = "1" ]; then
+        usbentry="$(grep menuentry ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg | awk -F\' '{print $2}' | grep -i USB)"
+        echo "Setting next grub entry to static USB : $usbentry"
+        sudo /usr/local/bin/grub-editenv ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grubenv set saved_entry="$usbentry"
+    elif [ "$staticboot" = "true " ] && [ "$ISUSB" = "0" ]; then
+        sataentry="$(grep menuentry ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg | awk -F\' '{print $2}' | grep -i SATA)"
+        echo "Setting next grub entry to static SATA : $sataentry"
+        sudo /usr/local/bin/grub-editenv ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grubenv set saved_entry="$sataentry"
+    else
+        echo "Setting next grub entry to Friend : $default"
+        sudo /usr/local/bin/grub-editenv ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grubenv set saved_entry="$default"
+    fi
+
+    savedentry="$(sudo /usr/local/bin/grub-editenv ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grubenv list | awk -F= '{print $2}')"
+    echo "Grub entry has been set to : $savedentry"
 
 }
 
@@ -2698,7 +2725,7 @@ mountshare, version, monitor, bringfriend, downloadupgradepat, help
   Build the 💊 RedPill LKM and update the loader image for the specified platform version and update
   current loader.
 
-  Valid Options:     static/compile/manual/junmod/withfriend
+  Valid Options:     static/compile/manual/junmod/withfriend** (default: withfriend)
 
   ** withfriend add the TCRP friend and a boot option for auto patching 
   
@@ -3009,28 +3036,28 @@ function buildloader() {
     if [ $(mount | grep -i part1 | wc -l) -eq 1 ] && [ $(mount | grep -i part2 | wc -l) -eq 1 ] && [ $(mount | grep -i localdiskp1 | wc -l) -eq 1 ] && [ $(mount | grep -i localdiskp2 | wc -l) -eq 1 ]; then
         echo "Copying custom.gz to ${tcrppart}" && cp part1/custom.gz /mnt/${tcrppart}/custom.gz
 
-        generategrub
-
-        cd ${HOMEPATH}/redpill-load
         sudo rm -f part1/custom.gz && sudo cp -rf part1/* localdiskp1/
         sudo rm -f part1/custom.gz && sudo cp -rf part2/* localdiskp2/
+
+        generategrub
+
+        setgrubentry
+
+        cd ${HOMEPATH}/redpill-load
 
         ###echo "Replacing set root with filesystem UUID instead"
         ###sudo sed -i "s/set root=(hd0,msdos1)/search --set=root --fs-uuid $usbpart1uuid --hint hd0,msdos1/" localdiskp1/boot/grub/grub.cfg
         ###echo "Creating tinycore entry"
         ###tinyentry | sudo tee --append localdiskp1/boot/grub/grub.cfg
 
-        if [ "$WITHFRIEND" = "YES" ]; then
+        [ ! -f /home/tc/friend/initrd-friend ] && [ ! -f /home/tc/friend/bzImage-friend ] && bringoverfriend
 
-            [ ! -f /home/tc/friend/initrd-friend ] && [ ! -f /home/tc/friend/bzImage-friend ] && bringoverfriend
+        if [ -f /home/tc/friend/initrd-friend ] && [ -f /home/tc/friend/bzImage-friend ]; then
 
-            if [ -f /home/tc/friend/initrd-friend ] && [ -f /home/tc/friend/bzImage-friend ]; then
+            cp /home/tc/friend/initrd-friend /mnt/${loaderdisk}3/
+            cp /home/tc/friend/bzImage-friend /mnt/${loaderdisk}3/
 
-                cp /home/tc/friend/initrd-friend /mnt/${loaderdisk}3/
-                cp /home/tc/friend/bzImage-friend /mnt/${loaderdisk}3/
-
-                tcrpfriendentry | sudo tee --append /home/tc/redpill-load/localdiskp1/boot/grub/grub.cfg
-            fi
+            #tcrpfriendentry | sudo tee --append /home/tc/redpill-load/localdiskp1/boot/grub/grub.cfg
         fi
 
     else
@@ -3064,39 +3091,25 @@ function buildloader() {
 
     cp $userconfigfile /mnt/${loaderdisk}3/
 
-    if [ "$WITHFRIEND" = "YES" ]; then
+    cp localdiskp1/zImage /mnt/${loaderdisk}3/zImage-dsm
 
-        cp localdiskp1/zImage /mnt/${loaderdisk}3/zImage-dsm
+    # Compining rd.gz and custom.gz
 
-        # Compining rd.gz and custom.gz
+    [ ! -d /home/tc/rd.temp ] && mkdir /home/tc/rd.temp
+    [ -d /home/tc/rd.temp ] && cd /home/tc/rd.temp
+    RD_COMPRESSED=$(cat /home/tc/redpill-load/config/$MODEL/${TARGET_VERSION}-${TARGET_REVISION}/config.json | jq -r -e ' .extra .compress_rd')
 
-        [ ! -d /home/tc/rd.temp ] && mkdir /home/tc/rd.temp
-        [ -d /home/tc/rd.temp ] && cd /home/tc/rd.temp
-        RD_COMPRESSED=$(cat /home/tc/redpill-load/config/$MODEL/${TARGET_VERSION}-${TARGET_REVISION}/config.json | jq -r -e ' .extra .compress_rd')
-
-        if [ "$RD_COMPRESSED" = "false" ]; then
-            echo "Ramdisk in not compressed "
-            cat /home/tc/redpill-load/localdiskp1/rd.gz | sudo cpio -idm
-            cat /mnt/${tcrppart}/custom.gz | sudo cpio -idm
-            sudo chmod +x /home/tc/rd.temp/usr/sbin/modprobe
-            (cd /home/tc/rd.temp && sudo find . | sudo cpio -o -H newc -R root:root >/mnt/${loaderdisk}3/initrd-dsm) >/dev/null
-        else
-            unlzma -dc /home/tc/redpill-load/localdiskp1/rd.gz | sudo cpio -idm
-            cat /mnt/${tcrppart}/custom.gz | sudo cpio -idm
-            sudo chmod +x /home/tc/rd.temp/usr/sbin/modprobe
-            (cd /home/tc/rd.temp && sudo find . | sudo cpio -o -H newc -R root:root | xz -9 --format=lzma >/mnt/${loaderdisk}3/initrd-dsm) >/dev/null
-        fi
-
-        echo "Setting default boot entry to TCRP Friend"
-        cd /home/tc/redpill-load/ && sudo sed -i "/set default=\"*\"/cset default=\"3\"" localdiskp1/boot/grub/grub.cfg
-
+    if [ "$RD_COMPRESSED" = "false" ]; then
+        echo "Ramdisk in not compressed "
+        cat /home/tc/redpill-load/localdiskp1/rd.gz | sudo cpio -idm
+        cat /mnt/${tcrppart}/custom.gz | sudo cpio -idm
+        sudo chmod +x /home/tc/rd.temp/usr/sbin/modprobe
+        (cd /home/tc/rd.temp && sudo find . | sudo cpio -o -H newc -R root:root >/mnt/${loaderdisk}3/initrd-dsm) >/dev/null
     else
-
-        if [ "$MACHINE" = "VIRTUAL" ]; then
-            echo "Setting default boot entry to SATA"
-            cd /home/tc/redpill-load/ && sudo sed -i "/set default=\"*\"/cset default=\"1\"" localdiskp1/boot/grub/grub.cfg
-        fi
-
+        unlzma -dc /home/tc/redpill-load/localdiskp1/rd.gz | sudo cpio -idm
+        cat /mnt/${tcrppart}/custom.gz | sudo cpio -idm
+        sudo chmod +x /home/tc/rd.temp/usr/sbin/modprobe
+        (cd /home/tc/rd.temp && sudo find . | sudo cpio -o -H newc -R root:root | xz -9 --format=lzma >/mnt/${loaderdisk}3/initrd-dsm) >/dev/null
     fi
 
     cd /home/tc/redpill-load/
@@ -3591,7 +3604,7 @@ if [ -z "$GATEWAY_INTERFACE" ]; then
             echo "Using static compiled redpill extension"
             getstaticmodule
             echo "Got $REDPILL_MOD_NAME "
-            listmodules
+            #listmodules
             echo "Starting loader creation "
             buildloader junmod
             [ $? -eq 0 ] && savesession
@@ -3602,7 +3615,7 @@ if [ -z "$GATEWAY_INTERFACE" ]; then
             echo "Using static compiled redpill extension"
             getstaticmodule
             echo "Got $REDPILL_MOD_NAME "
-            listmodules
+            #listmodules
             echo "Starting loader creation "
             buildloader
             [ $? -eq 0 ] && savesession

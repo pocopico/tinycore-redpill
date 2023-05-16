@@ -3440,6 +3440,25 @@ function listpci() {
 
 }
 
+function deprecated() {
+
+    case $1 in
+
+    bringfriend)
+        echo "Deprecated function : $1, friend is included by default in this version of rploader"
+        ;;
+    removefriend)
+        echo "Deprecated function : $1, friend is included by default in this version of rploader"
+        ;;
+    *)
+        echo "Deprecated function : $1"
+        ;;
+
+    esac
+    exit 99
+
+}
+
 function getmodulealiasjson() {
 
     echo "{"
@@ -3739,11 +3758,13 @@ if [ -z "$GATEWAY_INTERFACE" ]; then
         exit 0
         ;;
     bringfriend)
-        bringfriend
+        deprecated $@
+        #bringfriend
         exit 0
         ;;
     removefriend)
-        removefriend
+        deprecated $@
+        #removefriend
         exit 0
         ;;
     downloadupgradepat)

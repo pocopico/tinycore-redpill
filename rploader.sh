@@ -753,7 +753,7 @@ function processpat() {
             echo "OK"
             configfile="/home/tc/redpill-load/config/$MODEL/${major}.${minor}.${micro}-${buildnumber}/config.json"
         else
-            echo "No config file found, please use the proper repo, clean and download again"
+            echo "Config file /home/tc/redpill-load/config/$MODEL/${major}.${minor}.${micro}-${buildnumber}/config.json not found, please use the proper repo, clean and download again"
             exit 99
         fi
 

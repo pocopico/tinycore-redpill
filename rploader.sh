@@ -2239,6 +2239,8 @@ function generategrub() {
 
     cd ${HOMEPATH}
 
+    sudo rm -rf grub.cfg
+
     echo "Generating GRUB entries for model :${SYNOMODEL} in $(pwd)"
 
     ${HOMEPATH}/include/grubmgr.sh generate "${SYNOMODEL}" && [ -f grub.cfg ] && echo "Generated successfully" || echo "Failed to generate grub.cfg"

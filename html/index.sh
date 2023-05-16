@@ -593,6 +593,7 @@ console.log("build result page");
       \$('#buildstatus').show();
 }
 
+
 });
 
 var buildlog = document.getElementById('buildlog');
@@ -669,7 +670,7 @@ function sysreboot() {
   sync
   backuploader
   wecho "Rebooting" | tee -a $LOGFILE
-  /usr/bin/exitcheck.sh reboot | tee -a $LOGFILE
+  sleep 2 && /usr/bin/exitcheck.sh reboot | tee -a $LOGFILE
 
 }
 
@@ -999,11 +1000,15 @@ function updateuserconfigfield() {
   value="$3"
 
   if [ -n "$1 " ] && [ -n "$2" ]; then
-    jsonfile=$(jq ".$block+={\"$field\":\"$value\"}" $USERCONFIGFILE)
-    echo $jsonfile | jq . >$USERCONFIGFILE
+    jsonfile=$(jq ".$block+={\"$field\":\"$value\"}" $USERCONFIGFILE >update.tmp && mv update.tmp $USERCONFIGFILE)
+    #echo $jsonfile | jq . >$USERCONFIGFILE
+    echo "Update field in $block to $value" >>updateconfig.log
+    verify="$(jq \".block.field\" $USERCONFIGFILE)"
+    echo "Verifying user config file : $verify" >>updateconfig.log
   else
     echo "No values to update specified"
   fi
+
 }
 
 function status() {

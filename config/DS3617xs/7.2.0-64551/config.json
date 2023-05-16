@@ -36,9 +36,9 @@
     "internalportcfg": "0x78FF",
     "esataportcfg": "0x0",
     "usbportcfg": "0x8700",
-    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/master/rss.xml",
-    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/master/rss.xml",
-    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/master/rss.json",
+    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json",
     "small_info_path": "https://example.com/null",
     "security_version_server": "https://example.com/smallupdate"
   },

@@ -3041,12 +3041,6 @@ function buildloader() {
         sudo rm -f part1/custom.gz && sudo cp -rf part1/* localdiskp1/
         sudo rm -f part1/custom.gz && sudo cp -rf part2/* localdiskp2/
 
-        generategrub
-
-        setgrubentry
-
-        cd ${HOMEPATH}/redpill-load
-
         ###echo "Replacing set root with filesystem UUID instead"
         ###sudo sed -i "s/set root=(hd0,msdos1)/search --set=root --fs-uuid $usbpart1uuid --hint hd0,msdos1/" localdiskp1/boot/grub/grub.cfg
         ###echo "Creating tinycore entry"
@@ -3094,6 +3088,12 @@ function buildloader() {
     cp $userconfigfile /mnt/${loaderdisk}3/
 
     cp localdiskp1/zImage /mnt/${loaderdisk}3/zImage-dsm
+
+    generategrub
+
+    setgrubentry
+
+    cd ${HOMEPATH}/redpill-load
 
     # Compining rd.gz and custom.gz
 

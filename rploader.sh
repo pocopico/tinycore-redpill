@@ -730,7 +730,7 @@ function processpat() {
                 patfile="/home/tc/redpill-load/cache/${SYNOMODEL}.pat"
             else
                 echo "Extracting encrypted pat file : ${patfile} to ${temp_pat_folder}"
-                sudo LD_LIBRARY_PATH=/home/tc/custom-module/auxfiles/patch-extractor/lib/ /home/tc/custom-module/patch-extractor/synoarchive.system -xvf ${patfile} -C ${temp_pat_folder}
+                sudo LD_LIBRARY_PATH=/home/tc/custom-module/patch-extractor/lib/ /home/tc/custom-module/patch-extractor/synoarchive.system -xvf ${patfile} -C ${temp_pat_folder}
                 echo "Creating unecrypted pat file ${SYNOMODEL}.pat to /home/tc/redpill-load/cache folder "
                 mkdir -p /home/tc/redpill-load/cache/
                 cd ${temp_pat_folder} && tar -czf /home/tc/redpill-load/cache/${SYNOMODEL}.pat ./

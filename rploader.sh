@@ -24,8 +24,9 @@ dtsfiles="https://raw.githubusercontent.com/pocopico/tinycore-redpill/$build"
 timezone="UTC"
 ntpserver="pool.ntp.org"
 userconfigfile="/home/tc/user_config.json"
-
-fullupdatefiles="custom_config.json custom_config_jun.json global_config.json modules.alias.3.json.gz modules.alias.4.json.gz rpext-index.json user_config.json rploader.sh"
+CUSTOMCONFIG="/home/tc/custom_config2.json"
+HOMEPATH="/home/tc"
+fullupdatefiles="${CUSTOMCONFIG} custom_config.json custom_config_jun.json global_config.json modules.alias.3.json.gz modules.alias.4.json.gz rpext-index.json user_config.json rploader.sh"
 
 # END Do not modify after this line
 ######################################################################################################
@@ -449,8 +450,8 @@ function monitor() {
     NETGW="$(route | grep -i def | awk '{print $2}')"
     ping -c 5 $NEWGW >/dev/null &
     [ ! -d /lib64 ] && sudo ln -s /lib /lib64
-    sudo chown -R tc:staff /home/tc
-    sudo chown -R tc:staff /opt
+    sudo chown -R tc:staff /home/tc >/dev/null 2>&1
+    sudo chown -R tc:staff /opt >/dev/null 2>&1
 
     while [ -z "$GATEWAY_INTERFACE" ]; do
         clear
@@ -720,9 +721,16 @@ function processpat() {
             if [ -f /home/tc/redpill-load/cache/${SYNOMODEL}.pat ] && [ ${isencrypted} = "no" ]; then
                 echo "Unecrypted file is already cached in :  /home/tc/redpill-load/cache/${SYNOMODEL}.pat"
                 patfile="/home/tc/redpill-load/cache/${SYNOMODEL}.pat"
-            else
+            elif [ -f /bin/syno_extract_system_patch ]; then
                 echo "Extracting encrypted pat file : ${patfile} to ${temp_pat_folder}"
                 sudo /bin/syno_extract_system_patch ${patfile} ${temp_pat_folder} || echo "extract latest pat"
+                echo "Creating unecrypted pat file ${SYNOMODEL}.pat to /home/tc/redpill-load/cache folder "
+                mkdir -p /home/tc/redpill-load/cache/
+                cd ${temp_pat_folder} && tar -czf /home/tc/redpill-load/cache/${SYNOMODEL}.pat ./
+                patfile="/home/tc/redpill-load/cache/${SYNOMODEL}.pat"
+            else
+                echo "Extracting encrypted pat file : ${patfile} to ${temp_pat_folder}"
+                sudo LD_LIBRARY_PATH=/home/tc/custom-module/auxfiles/patch-extractor/lib/ /home/tc/custom-module/patch-extractor/synoarchive.system -xvf ${patfile} -C ${temp_pat_folder}
                 echo "Creating unecrypted pat file ${SYNOMODEL}.pat to /home/tc/redpill-load/cache folder "
                 mkdir -p /home/tc/redpill-load/cache/
                 cd ${temp_pat_folder} && tar -czf /home/tc/redpill-load/cache/${SYNOMODEL}.pat ./
@@ -832,7 +840,7 @@ function testarchive() {
 
 function addrequiredexts() {
 
-    echo "Processing add_extensions entries found on custom_config.json file : ${EXTENSIONS}"
+    echo "Processing add_extensions entries found on ${CUSTOMCONFIG} file : ${EXTENSIONS}"
 
     for extension in ${EXTENSIONS_SOURCE_URL}; do
         echo "Adding extension ${extension} "
@@ -1369,69 +1377,80 @@ function removebundledexts() {
 
 function downloadextractorv2() {
 
-    [ ! -d /home/tc/patch-extractor/ ] && mkdir /home/tc/patch-extractor/
+    echo "Downloading extractor v2"
 
-    cd /home/tc/patch-extractor/
+    if [ -d /mnt/${tcrppart}/auxfiles/patch-extractor/lib/ ] && [ -f /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.system ]; then
 
-    [ -f /home/tc/oldpat.tar.gz ] || curl --insecure --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
+        echo "Extractor already cached"
+        echo "Copying to local directory" && cp -rf /mnt/${tcrppart}/auxfiles/patch-extractor /home/tc/patch-extractor/
 
-    tar xf ../oldpat.tar.gz hda1.tgz
-    tar xf hda1.tgz usr/lib
-    tar xf hda1.tgz usr/syno/sbin
+    else
 
-    [ ! -d /home/tc/patch-extractor/lib/ ] && mkdir /home/tc/patch-extractor/lib/
+        [ ! -d /home/tc/patch-extractor/ ] && mkdir -p /home/tc/patch-extractor/
 
-    cp usr/lib/libicudata.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libicui18n.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libicuuc.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libjson.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_program_options.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_locale.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_filesystem.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_thread.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_coroutine.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_regex.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libapparmor.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libjson-c.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libsodium.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_context.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libsynocrypto.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libsynocredentials.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_iostreams.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libsynocore.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libicuio.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_chrono.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_date_time.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_system.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libsynocodesign.so.7* /home/tc/patch-extractor/lib
-    cp usr/lib/libsynocredential.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libjson-glib-1.0.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libboost_serialization.so* /home/tc/patch-extractor/lib
-    cp usr/lib/libmsgpackc.so* /home/tc/patch-extractor/lib
+        cd /home/tc/patch-extractor/
 
-    cp -r usr/syno/sbin/synoarchive /home/tc/patch-extractor/
+        [ -f /home/tc/oldpat.tar.gz ] || curl --insecure --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
 
-    sudo rm -rf usr
-    sudo rm -rf ../oldpat.tar.gz
-    sudo rm -rf hda1.tgz
+        tar xf ../oldpat.tar.gz hda1.tgz
+        tar xf hda1.tgz usr/lib
+        tar xf hda1.tgz usr/syno/sbin
 
-    curl --insecure --silent --location https://github.com/pocopico/tinycore-redpill/blob/main/tools/xxd?raw=true --output xxd
+        [ ! -d /home/tc/patch-extractor/lib/ ] && mkdir /home/tc/patch-extractor/lib/
 
-    chmod +x xxd
+        cp usr/lib/libicudata.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libicui18n.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libicuuc.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libjson.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_program_options.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_locale.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_filesystem.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_thread.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_coroutine.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_regex.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libapparmor.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libjson-c.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libsodium.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_context.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libsynocrypto.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libsynocredentials.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_iostreams.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libsynocore.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libicuio.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_chrono.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_date_time.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_system.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libsynocodesign.so.7* /home/tc/patch-extractor/lib
+        cp usr/lib/libsynocredential.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libjson-glib-1.0.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libboost_serialization.so* /home/tc/patch-extractor/lib
+        cp usr/lib/libmsgpackc.so* /home/tc/patch-extractor/lib
 
-    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0100/' | ./xxd -r >synoarchive.nano
-    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0a00/' | ./xxd -r >synoarchive.smallpatch
-    ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0000/' | ./xxd -r >synoarchive.system
+        cp -r usr/syno/sbin/synoarchive /home/tc/patch-extractor/
 
-    chmod +x synoarchive.*
+        sudo rm -rf usr
+        sudo rm -rf ../oldpat.tar.gz
+        sudo rm -rf hda1.tgz
 
-    [ ! -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && mkdir -p /mnt/${tcrppart}/auxfiles/patch-extractor
+        curl --insecure --silent --location https://github.com/pocopico/tinycore-redpill/blob/main/tools/xxd?raw=true --output xxd
 
-    cp -rf /home/tc/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/
-    cp -rf /home/tc/patch-extractor/synoarchive* /mnt/${tcrppart}/auxfiles/patch-extractor/
+        chmod +x xxd
 
-    sudo cp -rf /home/tc/patch-extractor/lib /lib
-    sudo cp -rf /home/tc/patch-extractor/synoarchive.* /bin
+        ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0100/' | ./xxd -r >synoarchive.nano
+        ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0a00/' | ./xxd -r >synoarchive.smallpatch
+        ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0000/' | ./xxd -r >synoarchive.system
+
+        chmod +x synoarchive.*
+
+        [ ! -d /mnt/${tcrppart}/auxfiles/patch-extractor ] && mkdir -p /mnt/${tcrppart}/auxfiles/patch-extractor
+
+        cp -rf /home/tc/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/
+        cp -rf /home/tc/patch-extractor/synoarchive* /mnt/${tcrppart}/auxfiles/patch-extractor/
+
+        sudo cp -rf /home/tc/patch-extractor/lib /lib
+        sudo cp -rf /home/tc/patch-extractor/synoarchive.* /bin
+
+    fi
 
 }
 
@@ -2216,6 +2235,24 @@ function usbidentify() {
     fi
 }
 
+function generategrub() {
+
+    cd ${HOMEPATH}
+
+    echo "Generating GRUB entries for model :${SYNOMODEL} in $(pwd)"
+
+    ${HOMEPATH}/include/grubmgr.sh generate "${SYNOMODEL}" && [ -f grub.cfg ] && echo "Generated successfully" || echo "Failed to generate grub.cfg"
+    ${HOMEPATH}/include/grubmgr.sh addentry usb && [ $(grep -i USB grub.cfg | wc -l) -gt 0 ] && echo "Added USB entry" || echo "Failed to add USB entry"
+    ${HOMEPATH}/include/grubmgr.sh addentry sata && [ $(grep -i SATA grub.cfg | wc -l) -gt 0 ] && echo "Added SATA entry" || echo "Failed to add SATA entry"
+    ${HOMEPATH}/include/grubmgr.sh addentry tcrp && [ $(grep -i "Tiny Core Image Build" grub.cfg | wc -l) -gt 0 ] && echo "Added TCRP entry" || echo "Failed to add SATA entry"
+    ${HOMEPATH}/include/grubmgr.sh addentry tcrpfriend && [ $(grep -i "Tiny Core Friend" grub.cfg | wc -l) -gt 0 ] && echo "Added TCRP FRIEND entry" || echo "Failed to add SATA entry"
+
+    [ -f /mnt/${loaderdisk}1/boot/grub/grub.cfg ] && cp /mnt/${loaderdisk}1/boot/grub/grub.cfg /mnt/${loaderdisk}1/boot/grub/grub.cfg.old
+
+    sudo cp -f ${HOMEPATH}/grub.cfg ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg
+
+}
+
 function serialgen() {
 
     [ ! -z "$GATEWAY_INTERFACE" ] && shift 0 || shift 1
@@ -2475,14 +2512,14 @@ function gettoolchain() {
 
 function getPlatforms() {
 
-    platform_versions=$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq -r '.build_configs[].id')
+    platform_versions=$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json ${CUSTOMCONFIG} | jq -r '.build_configs[].id')
     echo "$platform_versions"
 
 }
 
 function selectPlatform() {
 
-    platform_selected=$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json | jq ".build_configs[] | select(.id==\"${1}\")")
+    platform_selected=$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json ${CUSTOMCONFIG} | jq ".build_configs[] | select(.id==\"${1}\")")
 
 }
 function getValueByJsonPath() {
@@ -2495,10 +2532,12 @@ function getValueByJsonPath() {
 
 function readConfig() {
 
-    if [ ! -e custom_config.json ]; then
-        cat global_config.json
+    if [ ! -e ${CUSTOMCONFIG} ]; then
+        echo "Custom config file not found, using default"
+        curl --insecure -L ${rploaderrepo}/custom_config2.json --output ${CUSTOMCONFIG}
+        #cat global_config.json
     else
-        jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json custom_config.json
+        jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' custom_config_jun.json ${CUSTOMCONFIG}
     fi
 
 }
@@ -2639,7 +2678,7 @@ Available platform versions:
 ----------------------------------------------------------------------------------------
 $(getPlatforms)
 ----------------------------------------------------------------------------------------
-Check custom_config.json for platform settings.
+Check ${CUSTOMCONFIG} for platform settings.
 EOF
 }
 
@@ -2903,7 +2942,7 @@ function buildloader() {
     if [ ${TARGET_REVISION} -gt 42218 ]; then
 
         echo "Found build request for revision greater than 42218"
-        downloadextractor
+        downloadextractorv2
         processpat
 
     else
@@ -2968,12 +3007,18 @@ function buildloader() {
     echo "Mounting /dev/${loaderdisk}2 to localdiskp2 "
 
     if [ $(mount | grep -i part1 | wc -l) -eq 1 ] && [ $(mount | grep -i part2 | wc -l) -eq 1 ] && [ $(mount | grep -i localdiskp1 | wc -l) -eq 1 ] && [ $(mount | grep -i localdiskp2 | wc -l) -eq 1 ]; then
-        sudo cp -rf part1/* localdiskp1/
-        sudo cp -rf part2/* localdiskp2/
-        echo "Replacing set root with filesystem UUID instead"
-        sudo sed -i "s/set root=(hd0,msdos1)/search --set=root --fs-uuid $usbpart1uuid --hint hd0,msdos1/" localdiskp1/boot/grub/grub.cfg
-        echo "Creating tinycore entry"
-        tinyentry | sudo tee --append localdiskp1/boot/grub/grub.cfg
+        echo "Copying custom.gz to ${tcrppart}" && cp part1/custom.gz /mnt/${tcrppart}/custom.gz
+
+        generategrub
+
+        cd ${HOMEPATH}/redpill-load
+        sudo rm -f part1/custom.gz && sudo cp -rf part1/* localdiskp1/
+        sudo rm -f part1/custom.gz && sudo cp -rf part2/* localdiskp2/
+
+        ###echo "Replacing set root with filesystem UUID instead"
+        ###sudo sed -i "s/set root=(hd0,msdos1)/search --set=root --fs-uuid $usbpart1uuid --hint hd0,msdos1/" localdiskp1/boot/grub/grub.cfg
+        ###echo "Creating tinycore entry"
+        ###tinyentry | sudo tee --append localdiskp1/boot/grub/grub.cfg
 
         if [ "$WITHFRIEND" = "YES" ]; then
 
@@ -3032,12 +3077,12 @@ function buildloader() {
         if [ "$RD_COMPRESSED" = "false" ]; then
             echo "Ramdisk in not compressed "
             cat /home/tc/redpill-load/localdiskp1/rd.gz | sudo cpio -idm
-            cat /home/tc/redpill-load/localdiskp1/custom.gz | sudo cpio -idm
+            cat /mnt/${tcrppart}/custom.gz | sudo cpio -idm
             sudo chmod +x /home/tc/rd.temp/usr/sbin/modprobe
             (cd /home/tc/rd.temp && sudo find . | sudo cpio -o -H newc -R root:root >/mnt/${loaderdisk}3/initrd-dsm) >/dev/null
         else
             unlzma -dc /home/tc/redpill-load/localdiskp1/rd.gz | sudo cpio -idm
-            cat /home/tc/redpill-load/localdiskp1/custom.gz | sudo cpio -idm
+            cat /mnt/${tcrppart}/custom.gz | sudo cpio -idm
             sudo chmod +x /home/tc/rd.temp/usr/sbin/modprobe
             (cd /home/tc/rd.temp && sudo find . | sudo cpio -o -H newc -R root:root | xz -9 --format=lzma >/mnt/${loaderdisk}3/initrd-dsm) >/dev/null
         fi
@@ -3253,7 +3298,7 @@ function getvars() {
 
     [ ! -h /lib64 ] && sudo ln -s /lib /lib64
 
-    sudo chown -R tc:staff /home/tc
+    sudo chown -R tc:staff /home/tc >/dev/null 2>&1
 
     if [ ! -n "$(which bspatch)" ]; then
 
@@ -3271,7 +3316,7 @@ function getvars() {
     [ ! -h /home/tc/custom-module ] && sudo ln -s $local_cache /home/tc/custom-module
 
     if [ -z "$TARGET_PLATFORM" ] || [ -z "$TARGET_VERSION" ] || [ -z "$TARGET_REVISION" ]; then
-        echo "Error : Platform not found "
+        echo "Error : Platform not found : $TARGET_PLATFORM $TARGET_VERSION $TARGET_REVISION"
         showhelp
         exit 99
     fi

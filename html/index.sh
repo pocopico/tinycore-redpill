@@ -27,7 +27,7 @@ function versionhistory() {
   cat <<EOF
 <h3> TCRP HTML, Version History : </h3>
 <br> 0.10.0, Initial release, most models tested and booted.
-<br>
+<br> 0.10.1, Added file download functions to the web interface, fixed some bugs.
 <br>
 <br>
 <br>
@@ -261,6 +261,55 @@ EOF
 
 }
 
+function filemanagement() {
+
+  getvars
+
+  SYNOMODEL="$(echo $MODEL | sed -s 's/+/p/g' | tr '[:upper:]' '[:lower:]')"
+  REVISION="$(echo "${VERSION}" | awk -F- '{print $2}')"
+  patfile="${SYNOMODEL}_${REVISION}.pat"
+  unencpatfile="${SYNOMODEL}_${REVISION}.pat-unenc"
+  cat <<EOF
+   <div class="filemanagement">
+      <div class="title-bar">
+        <h3>Files Download</h3>  
+     </div>
+<table class="table table-dark">
+<thead><tr><th title="Field #1">Filename</th>
+<th title="Field #2">Description</th>
+<th title="Field #3">Link</th>
+</tr></thead>
+<tbody><tr>
+EOF
+
+  testarchive /tmp/$patfile >/dev/null 2>&1
+
+  if [ "isencrypted" == "yes" ]; then
+    echo "    <td>Original downloaded PAT for $MODEL version $VERSION</td>"
+    echo "    <td>Use that for the installation</td>"
+    echo "    <td><a href=/$patfile>$patfile</a></td>"
+    echo "    </tr>"
+
+  fi
+
+  cat <<EOF
+    <td>Unencrypted PAT file for $MODEL version $VERSION</td>
+    <td>Keep that as a backup</td>
+    <td><a href=/$unencpatfile>$unencpatfile</a></td>
+    </tr>
+    <td>User Config file for $MODEL version $VERSION</td>
+    <td>Keep that as a backup</td>
+    <td><a href=/user_config.json>user_config.json</a></td>
+    </tr>
+
+</tr></tbody></table>
+
+      </div>
+    
+EOF
+
+}
+
 function selectmodel() {
 
   cat <<EOF
@@ -350,6 +399,7 @@ function pagebody() {
               Additional Actions
               </a>
               <ul class="dropdown-menu">
+                <li><a class=" dropdown-item" href="${THISURL}?action=filemanagement">Down/Upload Files</a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=backuploader">Backup Loader</a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=fullupgrade">Full upgrade loader</a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=cleanloader">Clean Loader </a></li>
@@ -999,16 +1049,20 @@ function updateuserconfigfield() {
   field="$2"
   value="$3"
 
-  if [ -n "$1 " ] && [ -n "$2" ]; then
-    jsonfile=$(jq ".$block+={\"$field\":\"$value\"}" $USERCONFIGFILE >update.tmp && mv update.tmp $USERCONFIGFILE)
-    #echo $jsonfile | jq . >$USERCONFIGFILE
-    echo "Update field in $block to $value" >>updateconfig.log
-    verify="$(jq \".block.field\" $USERCONFIGFILE)"
-    echo "Verifying user config file : $verify" >>updateconfig.log
-  else
-    echo "No values to update specified"
-  fi
+  if [ "$(jq -re ".$block.$field" $USERCONFIGFILE)" != "$value" ]; then
 
+    if [ -n "$1 " ] && [ -n "$2" ]; then
+      jsonfile=$(jq ".$block+={\"$field\":\"$value\"}" $USERCONFIGFILE >update.tmp && mv -f update.tmp $USERCONFIGFILE)
+      #echo $jsonfile | jq . >$USERCONFIGFILE
+      echo "Update field in $block to $value" >>updateconfig.log
+      verify="$(jq \".block.field\" $USERCONFIGFILE)"
+      echo "Verifying user config file : $verify" >>updateconfig.log
+    else
+      echo "No values to update specified"
+    fi
+  else
+    return
+  fi
 }
 
 function status() {
@@ -1068,12 +1122,9 @@ function buildform() {
 
   fi
 
-  if [ -z "$productid" ] || [ -z "$vendorid"]; then
-    usbidentify
-    updateuserconfigfield "extra_cmdline" "pid" "$productid"
-    updateuserconfigfield "extra_cmdline" "vid" "$vendorid"
-
-  fi
+  usbidentify
+  updateuserconfigfield "extra_cmdline" "pid" "$productid"
+  updateuserconfigfield "extra_cmdline" "vid" "$vendorid"
 
   updateuserconfigfield "extra_cmdline" "SataPortMap" "$SATAPORTMAP"
   updateuserconfigfield "extra_cmdline" "DiskIdxMap" "$DISKIDXMAP"
@@ -1669,10 +1720,18 @@ function cleanbuild() {
   status "setstatus" "cleanbuild" "true" "Removing /home/tc/custom.gz" && rm -rf /home/tc/custom.gz
   status "setstatus" "cleanbuild" "true" "Removing /home/tc/customtemp" && rm -rf /home/tc/customtemp
   status "setstatus" "cleanbuild" "true" "Removing ${TEMPPAT}" && rm -rf ${TEMPPAT}
-  status "setstatus" "cleanbuild" "true" "Removing ${HOMEPATH}/html/*.pat" && rm -rf ${HOMEPATH}/html/*.pat
+  status "setstatus" "cleanbuild" "true" "Removing ${HOMEPATH}/html/*.pat" && mv -f ${HOMEPATH}/html/*.pat /tmp/ && rm -rf ${HOMEPATH}/html/*.pat
   status "setstatus" "cleanbuild" "true" "Removing ${HOMEPATH}/friend" && rm -rf ${HOMEPATH}/friend
 
   status "setstatus" "cleanbuild" "true" "Build directory cleaned"
+
+}
+
+function createdownloadlinks() {
+
+  ln -sf /tmp/${BUILDMODEL}_${BUILDVERSION}.pat ${HOMEPATH}/html/${BUILDMODEL}_${BUILDVERSION}.pat
+  ln -sf ${HOMEPATH}/user_config.json ${HOMEPATH}/html/user_config.json
+  ln -sf /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat ${HOMEPATH}/html/${BUILDMODEL}_${BUILDVERSION}.pat-unenc
 
 }
 
@@ -2097,6 +2156,8 @@ function build() {
   checkloader
 
   cleanbuild
+
+  createdownloadlinks
 
   backuploader silent
 
@@ -2608,6 +2669,7 @@ else
   [ "$action" == "updatescript" ] && result=$(updatescript) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "fullupgrade" ] && result=$(fullupgrade) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "sysreboot" ] && result=$(sysreboot) && recho "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "filemanagement" ] && result=$(filemanagement) && echo "$result" | tee -a ${BUILDLOG}
 
   [ "$action" == "none" ] && loaderstatus
 

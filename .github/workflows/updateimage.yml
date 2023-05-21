@@ -101,6 +101,10 @@ jobs:
           sudo umount ${loopdev}p2
           sudo umount ${loopdev}p3
           
+          sudo fsck.msdos ${loopdev}p1
+          sudo fsck.msdos ${loopdev}p2
+          sudo fsck.msdos ${loopdev}p3
+
           sudo losetup -d $loopdev
           
           newimgfile="`echo $imgfile | sed -e "s/$imgversion/$VERSION/g"`"
@@ -159,6 +163,10 @@ jobs:
           sudo umount ${loopdev}p1
           sudo umount ${loopdev}p2
           sudo umount ${loopdev}p3
+          
+          sudo fsck.msdos ${loopdev}p1
+          sudo fsck.msdos ${loopdev}p2
+          sudo fsck.msdos ${loopdev}p3
           
           sudo losetup -d $loopdev
           

@@ -284,7 +284,7 @@ EOF
 
   testarchive /tmp/$patfile >/dev/null 2>&1
 
-  if [ "isencrypted" == "yes" ]; then
+  if [ "$isencrypted" == "yes" ]; then
     echo "    <td>Original downloaded PAT for $MODEL version $VERSION</td>"
     echo "    <td>Use that for the installation</td>"
     echo "    <td><a href=/assets/$patfile>$patfile</a></td>"

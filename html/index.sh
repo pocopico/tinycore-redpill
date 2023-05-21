@@ -17,7 +17,7 @@ SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 extensionrepofile="https://github.com/pocopico/tcrp-addons/raw/main/addons.json"
 extensionfile="addons.json"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
-SCRIPTVERSION="0.10.0"
+SCRIPTVERSION="0.10.1"
 
 #. ${HOMEPATH}/include/config.sh
 ############################################
@@ -287,7 +287,7 @@ EOF
   if [ "isencrypted" == "yes" ]; then
     echo "    <td>Original downloaded PAT for $MODEL version $VERSION</td>"
     echo "    <td>Use that for the installation</td>"
-    echo "    <td><a href=/$patfile>$patfile</a></td>"
+    echo "    <td><a href=/assets/$patfile>$patfile</a></td>"
     echo "    </tr>"
 
   fi
@@ -295,11 +295,11 @@ EOF
   cat <<EOF
     <td>Unencrypted PAT file for $MODEL version $VERSION</td>
     <td>Keep that as a backup</td>
-    <td><a href=/$unencpatfile>$unencpatfile</a></td>
+    <td><a href=/assets/$unencpatfile>$unencpatfile</a></td>
     </tr>
     <td>User Config file for $MODEL version $VERSION</td>
     <td>Keep that as a backup</td>
-    <td><a href=/user_config.json>user_config.json</a></td>
+    <td><a href=/assets/user_config.json>user_config.json</a></td>
     </tr>
 
 </tr></tbody></table>
@@ -1729,9 +1729,9 @@ function cleanbuild() {
 
 function createdownloadlinks() {
 
-  ln -sf /tmp/${BUILDMODEL}_${BUILDVERSION}.pat ${HOMEPATH}/html/${BUILDMODEL}_${BUILDVERSION}.pat
-  ln -sf ${HOMEPATH}/user_config.json ${HOMEPATH}/html/user_config.json
-  ln -sf /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat ${HOMEPATH}/html/${BUILDMODEL}_${BUILDVERSION}.pat-unenc
+  ln -sf /tmp/${BUILDMODEL}_${BUILDVERSION}.pat ${HOMEPATH}/html/assets/${BUILDMODEL}_${BUILDVERSION}.pat
+  ln -sf ${HOMEPATH}/user_config.json ${HOMEPATH}/html/assets/user_config.json
+  ln -sf /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat ${HOMEPATH}/html/assets/${BUILDMODEL}_${BUILDVERSION}.pat-unenc
 
 }
 

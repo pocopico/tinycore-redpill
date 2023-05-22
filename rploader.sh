@@ -726,14 +726,14 @@ function processpat() {
                 sudo /bin/syno_extract_system_patch ${patfile} ${temp_pat_folder} || echo "extract latest pat"
                 echo "Creating unecrypted pat file ${SYNOMODEL}.pat to /home/tc/redpill-load/cache folder "
                 mkdir -p /home/tc/redpill-load/cache/
-                cd ${temp_pat_folder} && tar -czf /home/tc/redpill-load/cache/${SYNOMODEL}.pat ./
+                cd ${temp_pat_folder} && tar -czf /home/tc/redpill-load/cache/${SYNOMODEL}.pat *
                 patfile="/home/tc/redpill-load/cache/${SYNOMODEL}.pat"
             else
                 echo "Extracting encrypted pat file : ${patfile} to ${temp_pat_folder}"
                 sudo LD_LIBRARY_PATH=/home/tc/custom-module/patch-extractor/lib/ /home/tc/custom-module/patch-extractor/synoarchive.system -xvf ${patfile} -C ${temp_pat_folder}
                 echo "Creating unecrypted pat file ${SYNOMODEL}.pat to /home/tc/redpill-load/cache folder "
                 mkdir -p /home/tc/redpill-load/cache/
-                cd ${temp_pat_folder} && tar -czf /home/tc/redpill-load/cache/${SYNOMODEL}.pat ./
+                cd ${temp_pat_folder} && tar -czf /home/tc/redpill-load/cache/${SYNOMODEL}.pat *
                 patfile="/home/tc/redpill-load/cache/${SYNOMODEL}.pat"
 
             fi
@@ -2941,7 +2941,7 @@ function buildloader() {
         echo "Missing serial and/or mac in userconfig.json , generating random"
         serial="$(generateSerial $MODEL)"
         macaddress="$(generateMacAddress $MODEL | sed -e 's/://g')"
-        echo "Randon serial = $serial, macaddress = $macaddress"
+        echo "Random serial = $serial, macaddress = $macaddress"
         json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
         json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
 

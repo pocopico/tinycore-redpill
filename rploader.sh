@@ -2,12 +2,12 @@
 #
 # Author :
 # Date : 2305011
-# Version : 0.9.4.5
+# Version : 0.9.4.6
 #
 #
 # User Variables :
 
-rploaderver="0.9.4.5"
+rploaderver="0.9.4.6"
 build="main"
 redpillmake="prod"
 
@@ -95,6 +95,7 @@ function history() {
     0.9.4.3 Added serial numbers prefixes for SA6400, added class 104 to listpci function
     0.9.4.4 Added cmdmonitor function
     0.9.4.5 Changed the way the system is updated to use the new build method
+    0.9.4.6 Updated configuration files, minor fixes, changed from 64551 to 64561
     --------------------------------------------------------------------------------------
 EOF
 

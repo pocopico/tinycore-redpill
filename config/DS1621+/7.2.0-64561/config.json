@@ -1,0 +1,115 @@
+{
+  "os": {
+    "id": "ds1621p_64561",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64561/DSM_DS1621%2B_64561.pat",
+    "sha256": "21cd3941aab30bf035006fd48242b28f3bb3d487f505cda72fc261d3ddad440e"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "d3e7a01c92eae0a85f0285459013768edbfad5c9850b88bc2a75ede9ce611f66"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "b39877325c6e705cde8e4533aeca997704a7b3724db5940d2747567d55bb3bc8"
+    },
+    "vmlinux": {
+      "sha256": "50650ddb411b2ede02e1a8015b7d4fe90bcf1689eca1df18046100b0c6dea9b1"
+    }
+  },
+  "patches": {
+    "zlinux": [
+      "zImage-001-1621p-64561-ramdisk-and-flag-NOP.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-004-network-hosts.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  "synoinfo": {
+    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json",
+    "small_info_path": "https://example.com/null",
+    "security_version_server": "https://example.com/smallupdate"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "DS1621+",
+      "SMBusHddDynamicPower": 1,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "synoboot2": null,
+      "elevator": "elevator",
+      "syno_ttyS0": "serial,0x3f8",
+      "syno_ttyS1": "serial,0x2f8",
+      "root": "/dev/md0",
+      "withefi": null,      
+      "earlycon": "uart8250,io,0x3f8,115200n8"
+    },
+    "menu_entries": {
+      "RedPill DS1621+ v7.2.0-64561 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd (hd0,msdos3)/initrd-dsm",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill DS1621+ v7.2.0-64561 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd (hd0,msdos3)/initrd-dsm",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.302+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

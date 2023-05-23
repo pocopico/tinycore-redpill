@@ -2505,7 +2505,7 @@ function latestscript() {
   cursha256sum="$(sha256sum /home/tc/html/index.sh | awk '{print $1}')"
 
   rm -f /tmp/index.sh
-  if [ "$curversion" != "$repoversion" ] || [ "$reposha256sum" != "$cursha256sum" ]; then
+  if [ "$curversion" != "$repoversion" ] || [ "$reposha256sum" != "$cursha256sum" ] && [ $(($(echo $repoversion | sed -e 's/'.//')-$(echo $curversion| sed -e 's/'.//'))) -gt 0 ]; then
     wecho "Current version : $curversion, new version available $repoversion, please update"
     echo "<a href=\"${THISURL}?action=updatescript\" class=\"btn btn-primary btn-lg active\" role=\"button\" aria-pressed=\"true\">UPDATE</a>"
   fi

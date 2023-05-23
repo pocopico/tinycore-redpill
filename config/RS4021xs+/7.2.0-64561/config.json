@@ -20,13 +20,13 @@
   "patches": {
     "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
     "zlinux": [
-      "zImage-001-4021xsp-64561-ramdisk-and-header.bsp"
+      "zImage-001-4021xsp-64561-ramdisk-and-flag-NOP.bsp"
     ],
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
-      "@@@COMMON@@@/v7.2.0/ramdisk-004-network-hosts.patch",
+      "@@@COMMON@@@/ramdisk-004-network-hosts.patch",
       "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch",
       "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
@@ -40,9 +40,9 @@
     "internalportcfg": "0xfffff",
     "SasIdxMap": "0",
     "esataportcfg": "0x00",
-    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
-    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
-    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json",
+    "rss_server": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.2.0/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.2.0/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.2.0/rss.json",
     "small_info_path": "https://example.com/null",
     "security_version_server": "https://example.com/smallupdate"
   },

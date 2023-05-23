@@ -17,7 +17,7 @@ SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 extensionrepofile="https://github.com/pocopico/tcrp-addons/raw/main/addons.json"
 extensionfile="addons.json"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
-SCRIPTVERSION="0.10.1"
+SCRIPTVERSION="0.10.2"
 
 #. ${HOMEPATH}/include/config.sh
 ############################################
@@ -28,7 +28,7 @@ function versionhistory() {
 <h3> TCRP HTML, Version History : </h3>
 <br> 0.10.0, Initial release, most models tested and booted.
 <br> 0.10.1, Added file download functions to the web interface, fixed some bugs.
-<br>
+<br> 0.10.2, Fixed some bugs, added more models.
 <br>
 <br>
 <br>
@@ -416,8 +416,7 @@ function pagebody() {
               </li>
               <li><a href="https://github.com/pocopico/tinycore-redpill">Tinycore Redpill Repo</a></li>
               <li><a href="https://xpenology.com/forum/topic/53817-redpill-tinycore-loader/">Contact</a></li>
-              <li><a href="${THISURL}?action=versionhistory">Version ${SCRIPTVERSION}</a></li>
-             
+              <li><a href="${THISURL}?action=versionhistory">Version ${SCRIPTVERSION}</a></li>           
             </ul>
              
           </div><!--/.nav-collapse -->
@@ -1054,9 +1053,9 @@ function updateuserconfigfield() {
     if [ -n "$1 " ] && [ -n "$2" ]; then
       jsonfile=$(jq ".$block+={\"$field\":\"$value\"}" $USERCONFIGFILE >update.tmp && mv -f update.tmp $USERCONFIGFILE)
       #echo $jsonfile | jq . >$USERCONFIGFILE
-      echo "Update field in $block to $value" >>updateconfig.log
-      verify="$(jq \".block.field\" $USERCONFIGFILE)"
-      echo "Verifying user config file : $verify" >>updateconfig.log
+      echo "Updating field in $block , $field to $value" >>updateconfig.log
+      verify="$(jq -re .${block}.${field} $USERCONFIGFILE)"
+      echo "Verifying user config file for values $block, $field, $value -> $verify" >>updateconfig.log
     else
       echo "No values to update specified"
     fi
@@ -1375,7 +1374,6 @@ function getvars() {
   RD_COMPRESSED=$(cat ${CONFIGFILES}/$MODEL/$VERSION/config.json | jq -r -e ' .extra .compress_rd')
   productid=$(cat $USERCONFIGFILE | jq -r -e ' .extra_cmdline .pid')
   vendorid=$(cat $USERCONFIGFILE | jq -r -e ' .extra_cmdline .vid')
-  redpillmake=$(cat $USERCONFIGFILE | jq -r -e ' .general .redpillmake')
 
   FILENAME="${OS_ID}.pat"
   realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}' | sed -s 's/://g')
@@ -1395,7 +1393,7 @@ function getvars() {
   [ -z "$VERSION" ] && VERSION="$(jq -r -e '.general .version' $USERCONFIGFILE)"
   [ -z "$serial" ] && serial="$(jq -r -e '.extra_cmdline .sn' $USERCONFIGFILE)"
   [ -z "$macaddress" ] && macaddress="$(jq -r -e '.extra_cmdline .mac1' $USERCONFIGFILE)"
-
+  [ -z "$redpillmake" ] && redpillmake="$(jq -r -e ' .general .redpillmake' $USERCONFIGFILE)"
 }
 
 function checkextractor() {
@@ -2070,8 +2068,15 @@ function build() {
   getvars
 
   wecho "Starting build"
-  wecho "Buildling loader for $MODEL, $VERSION, with serial number : $serial and macaddress : $macaddress"
-  wecho "extracommans : $extracmdline"
+  wecho "Building loader for $MODEL, $VERSION, with serial number : $serial and macaddress : $macaddress"
+  wecho "Redpill Make $redpillmake, SataPortMap: $sataportmap, DiskIdxMap: $diskidxmap, StaticBoot: $staticboot"
+  wecho "extracommands : $extracmdline"
+
+  #wecho "Updating user_config with serial : $serial and macaddress : $macaddress"
+  updateuserconfigfield "extra_cmdline" "sn" "$serial"
+  updateuserconfigfield "extra_cmdline" "mac1" "$macaddress"
+  # Update the redpillmake
+  updateuserconfigfield "general" "redpillmake" "$redpillmake"
 
   rm -rf ${HOMEPATH}/temppat
 
@@ -2137,9 +2142,6 @@ function build() {
   USB_LINE=$(getcmdline ${CONFIGFILES}/$MODEL/$VERSION/config.json $USERCONFIGFILE 2>&1 | grep linux | head -1 | cut -c 16-999)
   SATA_LINE=$(getcmdline ${CONFIGFILES}/$MODEL/$VERSION/config.json $USERCONFIGFILE 2>&1 | grep linux | tail -1 | cut -c 16-999)
 
-  #wecho "Updating user_config with serial : $serial and macaddress : $macaddress"
-  updateuserconfigfield "extra_cmdline" "sn" "$serial"
-  updateuserconfigfield "extra_cmdline" "mac1" "$macaddress"
   updateuserconfigfield "general" "usb_line" "${USB_LINE}"
   updateuserconfigfield "general" "sata_line" "${SATA_LINE}"
 
@@ -2612,6 +2614,7 @@ else
     staticboot="$(echo "${post[staticboot]}" | sed -s "s/'//g")"
     sataportmap="$(echo "${post[sataportmap]}" | sed -s "s/'//g")"
     diskidxmap="$(echo "${post[diskidxmap]}" | sed -s "s/'//g")"
+    redpillmake="$(echo "${post[redpillmake]}" | sed -s "s/'//g")"
     if [ -z "$(echo ${post[action]} | sed -s "s/'//g")" ]; then
       action="$(echo "${get[action]}" | sed -s "s/'//g")"
     else

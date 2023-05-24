@@ -17,7 +17,7 @@ SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 extensionrepofile="https://github.com/pocopico/tcrp-addons/raw/main/addons.json"
 extensionfile="addons.json"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
-SCRIPTVERSION="0.10.2"
+SCRIPTVERSION="0.10.3"
 
 #. ${HOMEPATH}/include/config.sh
 ############################################
@@ -29,7 +29,7 @@ function versionhistory() {
 <br> 0.10.0, Initial release, most models tested and booted.
 <br> 0.10.1, Added file download functions to the web interface, fixed some bugs.
 <br> 0.10.2, Fixed some bugs, added more models.
-<br>
+<br> 0.10.3, Added full image backup function
 <br>
 <br>
 
@@ -381,6 +381,50 @@ function backuploader() {
 
 }
 
+function imgbackuploader() {
+
+  loaderdisk="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)"
+  tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
+  homesize=$(du -sh /home/tc | awk '{print $1}')
+  backupdate="$(date +%Y-%b-%d-%H-%M)"
+
+  if [ ! -n "$loaderdisk" ] || [ ! -n "$tcrppart" ]; then
+    echo "No Loader disk or no TCRP partition found, return"
+    return
+  fi
+
+  wecho "Backing up current loader"
+  wecho "Checking backup folder existence"
+
+  [ ! -d /tmp/backup/${backupdate} ] && mkdir -p /tmp/backup/${backupdate}
+
+  wecho "Temporarily moving PAT files $(ls /mnt/${loaderdisk}3/auxfiles/*.pat) to /tmp/temppatdir"
+  mkdir -p /tmp/temppatdir
+  mv /mnt/${loaderdisk}3/auxfiles/*.pat /tmp/temppatdir/
+
+  availsize=$(df -m /mnt/sda3 | grep sda3 | awk '{print $4}')
+  wecho "Rezeroing free space on partition 3"
+  dd if=/dev/zero of=/mnt/${loaderdisk}3/zeros bs=1M count=$(($availsize - 1))
+  rm -f /mnt/${loaderdisk}3/zeros
+
+  wecho "Unmounting partition 1" && umount /dev/${loaderdisk}1
+  wecho "Unmounting partition 2" && umount /dev/${loaderdisk}2
+  wecho "Unmounting partition 3" && umount /dev/${loaderdisk}3
+
+  dd if=/dev/${loaderdisk} of=/tmp/backup/${backupdate}/tcrpimg-${backupdate}.img bs=1M
+
+  cd /tmp/backup/${backupdate} && 7z a -t7z -m0=lzma -mfb=64 -md=32m -ms=on /tmp/tcrpimg-${backupdate}.7z *
+  ln -s /tmp/tcrpimg-${backupdate}.7z /${HOMEPATH}/html/assets/tcrpimg-${backupdate}.7z
+  cd /tmp && rm -rf /tmp/backup/
+
+  wecho "Moving back PAT files to /mnt/${loaderdisk}3/auxfiles/"
+  mv /tmp/temppatdir/*.pat /mnt/${loaderdisk}3/auxfiles/
+
+  echo "<br> You can download the backup file : <a href=/assets/tcrpimg-${backupdate}.7z>tcrpimg-${backupdate}.7z</a></br>"
+  wecho "DONE"
+
+}
+
 function pagebody() {
   cat <<EOF
 
@@ -401,6 +445,7 @@ function pagebody() {
               <ul class="dropdown-menu">
                 <li><a class=" dropdown-item" href="${THISURL}?action=filemanagement">Down/Upload Files</a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=backuploader">Backup Loader</a></li>
+                <li><a class=" dropdown-item" href="${THISURL}?action=imgbackuploader">Image Backup Loader</a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=fullupgrade">Full upgrade loader</a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=cleanloader">Clean Loader </a></li>
                 <li><a class=" dropdown-item" href="${THISURL}?action=listplatforms">List Platforms</a><li>
@@ -2673,6 +2718,7 @@ else
   [ "$action" == "fullupgrade" ] && result=$(fullupgrade) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "sysreboot" ] && result=$(sysreboot) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "filemanagement" ] && result=$(filemanagement) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "imgbackuploader" ] && result=$(imgbackuploader) && echo "$result" | tee -a ${BUILDLOG}
 
   [ "$action" == "none" ] && loaderstatus
 

@@ -1,4 +1,4 @@
-diff --git a/passold b/passnew
+diff --git a/etc/passwd b/etc/passwd
 index 6d1974e..62d3359 100755
 --- a/etc/passwd
 +++ b/etc//passwd

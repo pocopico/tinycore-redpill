@@ -23,7 +23,7 @@
       "zImage-001-3617xs-64551-ramdisk-and-header.bsp"
     ],
     "ramdisk": [
-      "@@@COMMON@@@/_common/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
       "@@@COMMON@@@/v7.2.0/ramdisk-004-network-hosts.patch",

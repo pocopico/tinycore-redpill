@@ -1,14 +1,10 @@
 diff --git a/etc/passwd b/etc/passwd
-index 6d1974e..62d3359 100755
+index 6d1974e..2027fe0 100755
 --- a/etc/passwd
-+++ b/etc//passwd
++++ b/etc/passwd
 @@ -1,4 +1,4 @@
 -root:x:0:0::/root:/bin/ash
 +root::0:0::/root:/bin/ash
  system:x:1:1::/usr/syno/synoman:/usr/bin/nologin
  daemon:x:2:2::/:/bin/sh
  SYSTEM_ADMIN:x:3:101::/nonexist:/usr/bin/nologin
-@@ -28,3 +28,4 @@ synotss:x:942:942::/nonexist:/usr/bin/nologin
- http:x:1023:1023::/var/services/web:/bin/false
- admin:x:1024:100:System default user:/var/services/homes/admin:/bin/sh
- guest:x:1025:100:Guest:/nonexist:/usr/bin/nologin

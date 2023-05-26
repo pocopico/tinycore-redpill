@@ -40,7 +40,7 @@
     "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json",
     "small_info_path": "https://example.com/null",
     "security_version_server": "https://example.com/smallupdate"
-  }
+  },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
     "base_cmdline": {

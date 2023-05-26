@@ -44,7 +44,7 @@ function getstaticmodule() {
 function extadd() {
 
         shift 1
-        extvars $1 $2
+        extvars "$1" "$2"
 
         [ ! -d ${PAYLOADDIR} ] && mkdir ${PAYLOADDIR}
         cd ${PAYLOADDIR}
@@ -66,7 +66,7 @@ function extremove() {
 
         shift 1
 
-        extvars $1 $2
+        extvars "$1" "$2"
 
         [ ! -d ${PAYLOADDIR} ] && mkdir ${PAYLOADDIR}
 

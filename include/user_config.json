@@ -10,7 +10,7 @@
     "redpillmake": "prod",
     "friendautoupd": "true",
     "hidesensitive": "false",
-	"staticboot": "false"
+    "staticboot": "false"
   },
   "ipsettings": {
     "ipset": "",

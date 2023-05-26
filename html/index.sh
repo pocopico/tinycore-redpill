@@ -17,7 +17,7 @@ SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 extensionrepofile="https://github.com/pocopico/tcrp-addons/raw/main/addons.json"
 extensionfile="addons.json"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
-SCRIPTVERSION="0.10.3"
+SCRIPTVERSION="0.10.4"
 
 #. ${HOMEPATH}/include/config.sh
 ############################################
@@ -30,7 +30,7 @@ function versionhistory() {
 <br> 0.10.1, Added file download functions to the web interface, fixed some bugs.
 <br> 0.10.2, Fixed some bugs, added more models.
 <br> 0.10.3, Added full image backup function
-<br>
+<br> 0.10.4, Fixed long standing issue with the corruption of the user_config.json file.
 <br>
 
 EOF
@@ -339,8 +339,8 @@ function selectversion() {
 <input id="mymodel" name="mymodel" value="$MODEL" required readonly/>
 <label for="myversion">Version</label>
 <select id="myversion" name="myversion">
+<option value="Please Select OS Version">Select version</option>
 EOF
-  echo "<option value=\"'Please Select OS Version\">Select version</option>"
   for version in $(ls ${CONFIGFILES}/$MODEL/ | grep -v comm | sed -e 's/\///'); do
     echo "<option value=\"'$version\">$version</option>"
   done
@@ -1093,6 +1093,11 @@ function updateuserconfigfield() {
   field="$2"
   value="$3"
 
+  while [ -f update.tmp ]; do
+    echo "$(date) - Waiting for update.tmp to be removed" >>updateconfig.log
+    sleep 1
+  done
+
   if [ "$(jq -re ".$block.$field" $USERCONFIGFILE)" != "$value" ]; then
 
     if [ -n "$1 " ] && [ -n "$2" ]; then
@@ -1154,6 +1159,10 @@ function buildform() {
 
   getvars
   satamap
+
+  checkuserconfig "$MODEL" "$VERSION"
+
+  #echo "$(date) : step 1 $(jq . $USERCONFIGFILE | wc -l)" >>${BUILDLOG}
 
   updateuserconfigfield "general" "model" "$MODEL"
   updateuserconfigfield "general" "version" "$VERSION"
@@ -1352,11 +1361,11 @@ function checkcached() {
 
   if [ ! -z "$patfile" ] && [ -f "$patfile" ]; then
     iscached="yes"
-    echo "PATFILE for ${MODEL}_${VERSION} is CACHED as file ${patfile}" >>${BUILDLOG}
+    echo "PATFILE for ${MODEL}_${VERSION} is CACHED as file ${patfile}" >>$BUILDLOG
     status "setstatus" "iscached" "true" "Patfile $patfile is cached"
   else
     iscached="no"
-    echo "PATFILE for ${MODEL}_${VERSION} is NOT CACHED" >>${BUILDLOG}
+    echo "PATFILE for ${MODEL}_${VERSION} is NOT CACHED" >>$BUILDLOG
     status "setstatus" "iscached" "false" "Patfile not cached"
   fi
 
@@ -2134,20 +2143,20 @@ function build() {
   extractpat "$patfile"
 
   if [ "$extractedzImagesha" = "$ZIMAGE_SHA" ]; then
-    wecho "Copying original zImage to partitions ${loaderdisk}1 and ${loaderdisk}2"
+    wecho "Copying original zImage to partitions ${loaderdisk}1 and ${loaderdisk}2" && status "setstatus" "kernelpatch" "warn" "Copying original zImage to partitions ${loaderdisk}1 and ${loaderdisk}2"
     cp -f ${TEMPPAT}/zImage /mnt/${loaderdisk}1/
     cp -f ${TEMPPAT}/zImage /mnt/${loaderdisk}2/
-    wecho "zImage sha256sum matches expected sha256sum, patching kernel"
+    wecho "zImage sha256sum matches expected sha256sum, patching kernel" && status "setstatus" "kernelpatch" "warn" "zImage sha256sum matches expected sha256sum, patching kernel"
     patchkernel
   else
     wecho "zImage does not match sha256sum : $extractedzImagesha"
   fi
 
   if [ "$extractedrdsha" = "$RD_SHA" ]; then
-    wecho "Copying original ramdisk to partitions ${loaderdisk}1 and ${loaderdisk}2"
+    wecho "Copying original ramdisk to partitions ${loaderdisk}1 and ${loaderdisk}2" && status "setstatus" "ramdiskpatch" "warn" "Copying original ramdisk to partitions ${loaderdisk}1 and ${loaderdisk}2"
     cp -f ${TEMPPAT}/rd.gz /mnt/${loaderdisk}1/
     cp -f ${TEMPPAT}/rd.gz /mnt/${loaderdisk}2/
-    wecho "ramdisk sha256sum matches expected sha256sum, patching kernel"
+    wecho "ramdisk sha256sum matches expected sha256sum, patching kernel" && status "setstatus" "ramdiskpatch" "warn" "ramdisk sha256sum matches expected sha256sum, patching kernel"
     patchramdisk
   else
     wecho "rd.gz  does not match sha256sum : $extractedrdsha"
@@ -2597,11 +2606,42 @@ function buildstatus() {
 
 }
 
+checkuserconfig() {
+
+  retries=0
+  MODEL="$1"
+  VERSION="$2"
+
+  if [ $(jq . $USERCONFIGFILE | wc -l) -ge 38 ]; then
+    echo "File $USERCONFIGFILE looks OK" >>${BUILDLOG}
+  else
+    if [ -n "$MODEL " ] && [ -n "$VERSION " ]; then
+      wecho "Error, $USERCONFIGFILE looks corrupted, trying to fix it"
+      cp -f ${HOMEPATH}/include/user_config.json $USERCONFIGFILE
+      while [ "$testmodel" != "$MODEL" ] && [ "$testversion" != "$VERSION" ] && [ $retries -le 5 ]; do
+        updateuserconfigfield "general" "model" "$MODEL"
+        updateuserconfigfield "general" "version" "$VERSION"
+        testmodel="$(jq .general.model $USERCONFIGFILE | sed -e 's/"//g')"
+        testversion="$(jq .general.model $USERCONFIGFILE | sed -e 's/"//g')"
+        echo "$MODEL , $VERSION, retries=$retries"
+        let retries=$retries+1
+        wecho "Retrying $retries"
+      done
+      [ "$testmodel" != "$MODEL" ] && [ "$testversion" != "$VERSION" ] && pagefooter && exit 99
+    else
+      wecho "Error both $USERCONFIGFILE file looks corrupted, select Additional Actions -> Reset model to recreate"
+    fi
+    pagefooter
+    exit 99
+  fi
+
+}
+
 function readlog() {
 
   cat <<EOF
 <div class="buildlog fixed-bottom pre-scrollable bg-dark" id="buildlog">
-<h3>Build output log<button id="hideoutputlog" class="btn btn-lg btn-success btn-left" onclick="return hidebuildlog()">Hide build log</button></h3>
+<h3 class="fixed">Build output log<button id="hideoutputlog" class="btn btn-lg btn-success btn-right hideoutputlog" onclick="return hidebuildlog()">Hide build log</button><a id="downloadlog" href="buildlog.txt" class="btn btn-lg btn-success btn-right downloadlog">Download log</a></h3>
 <pre id="buildlogtab"></pre>
 
 </div>
@@ -2698,7 +2738,7 @@ else
   #echo "<br>Build VARS : sataportmap :$sataportmap diskidxmap: $diskidxmap RepillMake: $redpillmake Static Boot: $staticboot "
 
   [ "$action" == "backuploader" ] && result=$(backuploader) && recho "$result" | tee -a ${BUILDLOG}
-  [ "$action" == "listplatforms" ] && result=$(listplatforms) && wecho "$result" | tee -a buildlog.log
+  [ "$action" == "listplatforms" ] && result=$(listplatforms) && wecho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "cleanloader" ] && result=$(cleanbuild) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "extensions" ] && result=$(extmanagement) && wecho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "extadd" ] && wecho "Extadd" && result=$($HOMEPATH/include/extmgr.sh extadd $exturl $MODEL) && wecho "$result" | tee -a ${BUILDLOG}
@@ -2728,13 +2768,7 @@ else
 
     getvars
 
-    if [ $(jq . $USERCONFIGFILE | wc -l) -ge 38 ]; then
-      echo "File $USERCONFIGFILE looks OK" | tee -a $BUILDLOG >/dev/null
-    else
-      wecho "Error both $USERCONFIGFILE file looks corrupted, select Additional Actions -> Reset model to recreate"
-      pagefooter
-      exit 99
-    fi
+    #checkuserconfig
 
     if [ ! -z "$MODEL" ] && [ ! -z "$VERSION" ] && [ ! -z "$serial" ] && [ ! -z "$macaddress" ] && [ ! -z "$buildit" ]; then
 

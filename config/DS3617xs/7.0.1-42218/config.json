@@ -14,7 +14,7 @@
       "sha256": "eaddd97c40a35bbcf4092417364ca4376925fb3eb322cad0cf602d4c7973d147"
     },
     "vmlinux": {
-      "sha256": "74ff31a80a99d42974470a83cea20961bd4e294c525eefd0770fa0575f755ada"
+      "sha256": "94a866840ac1f41100a6fe3bfe71bd8b111ad71f3ed951550dd4c4e263df281e"
     }
   },
   "patches": {

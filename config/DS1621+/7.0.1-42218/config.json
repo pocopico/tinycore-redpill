@@ -2,20 +2,20 @@
   "os": {
     "id": "ds1621p_42218",
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS1621%2B_42218.pat",
-    "sha256": "19f56827ba8bf0397d42cd1d6f83c447f092c2c1bbb70d8a2ad3fbd427e866df"
+    "sha256": "396144fdcd94d441b4ad665099395cf24a14606742bee9438745ea30bf12b9ef"
   },
 
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "f4648d0dd6b29ef6149b0ff46afe1fe32f81730aa79af72f37ffd3647c76f586"
+      "sha256": "0ab3bf0ff027fb94863ef8822df787194f2d21079ecc66c0b0d4e46d24598855"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "73512c7bceb34cf7f7f93c2703db60496da0e27274fc45e5aefa0366c9734d6e"
+      "sha256": "127a12bab3835cdf5af4e7ad2a23e78f889408302c55e5052080671cff6da5b7"
     },
     "vmlinux": {
-      "sha256": "1b5dfa049df20c00bb5fe33ac561daf994248ca3e536a2c2eac9b6ec236f13c7"
+      "sha256": "d3af4f63e63d2517be7e753919b5248e1c0d8271f238f57c62286d998edee2bf"
     }
   },
 

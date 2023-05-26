@@ -2,20 +2,20 @@
   "os": {
     "id": "rs3413xsp_42218",
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3413xs+_42218.pat",
-    "sha256": "9796536979407817ca96aef07aaabb3f03252a8e54df0f64ff7caf3c737f0da9"
+    "sha256": "b5f5505a4ee0d623c562db43a0be6aba64a5bc57c6d6dcb796d80a60ea5fc7cd"
   },
 
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "d29b695612710376734cb5c5b5ae4f2d8afc49ffd640387e1c86010f6c7d2c8a"
+      "sha256": "354f0bb13c898a7b24f2942d8015f591f7acce1739e2060580c0f38c41addaf7"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "bd9ceaaffbdbca676029797386262b262f101d469ecb7d8b709b59070cc6a050"
+      "sha256": "ad2b7c6ffabf348a14df0558ab89bc2ac62226b33dfe5b19114f7beed11ae41f"
     },
     "vmlinux": {
-      "sha256": "69569a0703fcd0a3a492dd1066eb6c3b90ea41e5793a5eac960d27b6f3afa916"
+      "sha256": "64c8f33198e31798a7d222b9845e821dd57ebeb5539d9efdaa4e68968b43a5b2"
     }
   },
 

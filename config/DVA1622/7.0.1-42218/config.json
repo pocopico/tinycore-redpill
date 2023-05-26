@@ -1,38 +1,34 @@
 {
   "os": {
-    "id": "fs2500_42218",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_FS2500_42218.pat",
-    "sha256": "3fbd5defbc0fef0d152494033f3e817c330525b70e356a9e9acd2b72d9806b59"
+    "id": "dva1622_42218",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS920%2B_42218.pat",
+    "sha256": "fe2a4648f76adeb65c3230632503ea36bbac64ee88b459eb9bfb5f3b8c8cebb3"
   },
-
   "files": {
     "zlinux": {
       "name": "zImage",
-      "sha256": "e083a8aec10537582ed0dd6d79bc358d9aff828b3e256996ef1e4f4bf418dd5d"
+      "sha256": "346b68f662b50f47d3ee6c2bc9de6302e4b60436142c24ee88b620c7afd1ba06"
     },
     "ramdisk": {
       "name": "rd.gz",
-      "sha256": "8d66ddfa947b38c0e407d4c5efd7558b1a9392e04fd83fe9f162e1aa546f8da8"
+      "sha256": "f7dd1317f24ec6b9bac839e37f66b59030218c7f97c06f73f1f54ed0f892c4aa"
     },
     "vmlinux": {
-      "sha256": "781b22b5af7b0c2629e2872e37d88d475b11d8469309be168b9200f801795bd8"
+      "sha256": "6494b4c4789ed887ddfaf0fe0e45e100cfcc4ec719b7f3ab6bcc26b05e97c829"
     }
   },
-
   "patches": {
     "zlinux": [
-      "zImage-001-fs2500-42218-ramdisk-and-flag-NOP.bsp"
+      "zImage-001-dva1622-42218-ramdisk-and-flag-NOP.bsp"
     ],
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch"
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
-
-  "synoinfo": {
-  },
-
+  "synoinfo": {},
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
     "base_cmdline": {
@@ -41,21 +37,21 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-
-      "syno_hw_version": "FS2500",
-      "SMBusHddDynamicPower": 1,
+      "syno_hw_version": "DVA1622",
+      "intel_iommu": "igfx_off",
+      "HddEnableDynamicPower": 1,
       "vender_format_version": 2,
       "console": "ttyS0,115200n8",
       "synoboot2": null,
       "elevator": "elevator",
       "syno_ttyS0": "serial,0x3f8",
-      "syno_ttyS1": "serial,0x2f8",
       "root": "/dev/md0",
-      "earlycon": "uart8250,io,0x3f8,115200n8"
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "withefi": null,
+      "syno_ttyS1": "serial,0x2f8"
     },
-
     "menu_entries": {
-      "Jun`s Mod x RedPill FS2500 v7.0.1-42218 (USB, Verbose)": {
+      "Yet Another Jun`s Mod x RedPill DVA1622 v7.0.1-42218 (USB, Verbose)": {
         "options": [
           "savedefault",
           "set root=(hd0,msdos2)",
@@ -69,7 +65,7 @@
           "log_buf_len": "32M"
         }
       },
-      "Jun`s Mod x RedPill FS2500 v7.0.1-42218 (SATA, Verbose)": {
+      "Yet Another Jun`s Mod x RedPill DVA1622 v7.0.1-42218 (SATA, Verbose)": {
         "options": [
           "savedefault",
           "set root=(hd0,msdos2)",
@@ -83,43 +79,10 @@
           "loglevel": 15,
           "synoboot_satadom": 2,
           "log_buf_len": "32M"
-        }
-      },
-      "Jun`s Mod x RedPill FS2500 v7.0.1-42218 (USB, Verbose, Re-Install DSM)": {
-        "options": [
-          "savedefault",
-          "set root=(hd0,msdos2)",
-          "echo Loading Linux...",
-          "linux /bzImage @@@CMDLINE@@@",
-          "echo Starting kernel with USB boot"
-        ],
-        "cmdline": {
-          "earlyprintk": null,
-          "loglevel": 15,
-          "log_buf_len": "32M",
-          "force_junior": null
-        }
-      },
-      "Jun`s Mod x RedPill FS2500 v7.0.1-42218 (SATA, Verbose, Re-Install DSM)": {
-        "options": [
-          "savedefault",
-          "set root=(hd0,msdos2)",
-          "echo Loading Linux...",
-          "linux /bzImage @@@CMDLINE@@@",
-          "echo Starting kernel with SATA boot",
-          "echo WARNING: SATA boot support on this platform is experimental!"
-        ],
-        "cmdline": {
-          "earlyprintk": null,
-          "loglevel": 15,
-          "synoboot_satadom": 2,
-          "log_buf_len": "32M",
-          "force_junior": null
         }
       }
     }
   },
-
   "extra": {
     "compress_rd": false,
     "ramdisk_copy": {

@@ -2,20 +2,20 @@
     "os": {
         "id": "ds3622xsp_42218",
         "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs+_42218.pat",
-        "sha256": "f38329b8cdc5824a8f01fb1e377d3b1b6bd23da365142a01e2158beff5b8a424"
+        "sha256": "a222d37f369d71042057ccb592f40c7c81e9b988a95d69fa166c7c2a611da99c"
     },
 
     "files": {
         "zlinux": {
             "name": "zImage",
-            "sha256": "06964b68e5ccdedd4363dff3986f99686d3c9cb5225e8e4c3d840a1d9cd1330b"
+            "sha256": "d6059bcd7160ed1f775a9323599ac8860b60ada32f0a4f3e5ca166c15a17784e"
         },
         "ramdisk": {
             "name": "rd.gz",
-            "sha256": "a95d4ab06189460f3b3d13a33e421887b5f3ea09a10535ae0d4c92beb7ff631d"
+            "sha256": "11ebadba5d831ad6f31258ab317ed1f7cbfe18243413f9f81291b894b5f7a591"
         },
         "vmlinux": {
-            "sha256": "0c5e4da2e3745a6ae7d63787442dbd2c3b2239bce857f0451e9e87bbc6456b15"
+            "sha256": "e952895df7c0d25509b46885bc73f420b91251efea2432cb793ccc06fac39b47"
         }
     },
 

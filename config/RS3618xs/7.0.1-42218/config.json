@@ -2,20 +2,20 @@
     "os": {
         "id": "rs3618xs_42218",
         "pat_url": "https://download.synology.com/download/DSM/release/7.0.1/42218/DSM_RS3618xs_42218.pat",
-        "sha256": "2b7623a6781fe10e0eface1665d41dfe2e5adb033b26e50e27c3449aee5fe4b0"
+        "sha256": "941886bee9a0929c6bd078c5f2c465d9599721fc885a1e3835d6b60631f419af"
     },
 
     "files": {
         "zlinux": {
             "name": "zImage",
-            "sha256": "58e6c4b8068cc7e5cc21d3bfce579669f891607f30f0dd6d58fba18fce695143"
+            "sha256": "41993de949af53def17ca6190bfff503044b9ebc0beccf7a3d54ab050998e9db"
         },
         "ramdisk": {
             "name": "rd.gz",
-            "sha256": "ded7d2d33b006b1ff554e6f59c28e52d4277c14146679cba7fdfacf8f309d14a"
+            "sha256": "cd7c7ed0fba15b2d3eae70b9d6f680a8dfbe1138164e6312d98482177746f544"
         },
         "vmlinux": {
-            "sha256": "c3170c181749c0a29d59daee10d3abe06d6d68291c69fc3d526828187eacc888"
+            "sha256": "64bbf0db7d3b5f131af414e5505da4fe516502284186876af20f3bb54aabd58a"
         }
     },
 

@@ -64,6 +64,15 @@
   max-height: 200px;
   }
 
+  #manualexturl{
+/*position: absolute;
+  top: 160;
+  left: 1200;*/
+  margin-left: auto;
+  padding-left: 10px;
+  min-width: 480px;
+  }
+
   #addextbutton{
     padding-left: 10px;
     margin-left: auto;
@@ -187,8 +196,29 @@
    min-width: 100%;
  }
 
+ .downloadlog{
+    float: right;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+ }
+ .hideoutputlog{
+    float: right;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+ }
+ 
+ 
+
   .form-horizontal .control-label{
   /* text-align:right; */
   text-align:left;
   
 }
+
+.table-hover tbody tr:hover td {
+    background: blue;
+}
+

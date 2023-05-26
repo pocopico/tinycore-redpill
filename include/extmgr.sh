@@ -2,7 +2,7 @@
 
 HOMEPATH="/home/tc"
 PAYLOADDIR="${HOMEPATH}/payload"
-CONFIGFILES="${HOMEPATH}/redpill-load/config"
+CONFIGFILES="${HOMEPATH}/config"
 
 function getstaticmodule() {
         redpillextension="https://github.com/pocopico/rp-ext/raw/main/redpill${redpillmake}/rpext-index.json"
@@ -44,7 +44,7 @@ function getstaticmodule() {
 function extadd() {
 
         shift 1
-        extvars $1 $2
+        extvars "$1" "$2"
 
         [ ! -d ${PAYLOADDIR} ] && mkdir ${PAYLOADDIR}
         cd ${PAYLOADDIR}
@@ -66,7 +66,7 @@ function extremove() {
 
         shift 1
 
-        extvars $1 $2
+        extvars "$1" "$2"
 
         [ ! -d ${PAYLOADDIR} ] && mkdir ${PAYLOADDIR}
 
@@ -163,9 +163,9 @@ function processexts() {
                 fi
         done
 
-         find . -type f -name "*.sh" -exec chmod 777 {} \;
-         chmod 777 *.sh
-         chmod 777 */*.sh
+        find . -type f -name "*.sh" -exec chmod 777 {} \;
+        chmod 777 *.sh
+        chmod 777 */*.sh
 
 }
 
@@ -204,7 +204,7 @@ function createcustominitfile() {
 
         #### CREATE modprobe file
 
-        MODPROBE=$(cat ${CONFIGFILES}/${model}/${version}/config.json | jq -r -e ' .extra .ramdisk_copy' | sed -e 's/"//g' | grep modprobe | sed -s 's/@@@COMMON@@@/\/home\/tc\/redpill-load\/config\/_common/' | awk -F: '{print $1}')
+        MODPROBE=$(cat ${CONFIGFILES}/${model}/${version}/config.json | jq -r -e ' .extra .ramdisk_copy' | sed -e 's/"//g' | grep modprobe | sed -s 's/@@@COMMON@@@/\/home\/tc\/config\/_common/' | awk -F: '{print $1}')
 
         cat $MODPROBE >usr/sbin/modprobe
 
@@ -228,8 +228,10 @@ EXTENSION_IDS="$extensionids"
 
 _load_kmods(){
 
+if [ -f ./mods_load.sh ] ; then
 echo ":: Loading custom modules... [  OK  ]"       
 ./mods_load.sh
+fi
 
 }
 
@@ -313,6 +315,8 @@ function syntaxcheck() {
 
 # ./newcustom.sh extadd https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/rpext-index.json ds3622xsp_42951
 #$1 $2 $3
+
+echo "CMD LOGGED : $0 , $@" >>$0.log
 
 case $1 in
 

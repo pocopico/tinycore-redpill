@@ -4,7 +4,6 @@
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS1520%2B_42218.pat",
     "sha256": "b8864e2becd8ce5a6083db993564c8c0b982df8300a006b56695a0495a670aa3"
   },
-
   "files": {
     "zlinux": {
       "name": "zImage",
@@ -18,7 +17,6 @@
       "sha256": "84e5e1a238e73ffe2ccf08d51e3f9ad13385fcdcac18163678de3f6ad1447bc4"
     }
   },
-
   "patches": {
     "zlinux": [
       "zImage-001-1520p-42218-ramdisk-and-flag-NOP.bsp"
@@ -26,13 +24,24 @@
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch"
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
-
   "synoinfo": {
+    "maxdisks": "16",
+    "internalportcfg": "0xffff",
+    "esataportcfg": "0x0",
+    "HddHotplug": "",
+    "support_led_brightness_adjustment": "",
+    "support_leds_lp3943": "",
+    "buzzeroffen": "0xffff",
+    "rss_server": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.json",
+    "small_info_path": "https://example.com/null",
+    "security_version_server": "https://example.com/smallupdate"  
   },
-
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
     "base_cmdline": {
@@ -41,7 +50,6 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-
       "syno_hw_version": "DS1520+",
       "intel_iommu": "igfx_off",
       "HddEnableDynamicPower": 1,
@@ -50,18 +58,20 @@
       "synoboot2": null,
       "elevator": "elevator",
       "syno_ttyS0": "serial,0x3f8",
-      "syno_ttyS1": "serial,0x2f8",
       "root": "/dev/md0",
-      "earlycon": "uart8250,io,0x3f8,115200n8"
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "withefi": null,
+      "syno_ttyS1": "serial,0x2f8"
     },
-
     "menu_entries": {
-      "Jun`s Mod x RedPill DS1520+ v7.0.1-42218 (USB, Verbose)": {
+      "RedPill DS1520+ v7.0.1-42218 (USB, Verbose)": {
         "options": [
           "savedefault",
-          "set root=(hd0,msdos2)",
+          "set root=(hd0,msdos1)",
           "echo Loading Linux...",
-          "linux /bzImage @@@CMDLINE@@@",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd (hd0,msdos3)/initrd-dsm",
           "echo Starting kernel with USB boot"
         ],
         "cmdline": {
@@ -70,12 +80,14 @@
           "log_buf_len": "32M"
         }
       },
-      "Jun`s Mod x RedPill DS1520+ v7.0.1-42218 (SATA, Verbose)": {
+      "RedPill DS1520+ v7.0.1-42218 (SATA, Verbose)": {
         "options": [
-         "savedefault",
-          "set root=(hd0,msdos2)",
+          "savedefault",
+          "set root=(hd0,msdos1)",
           "echo Loading Linux...",
-          "linux /bzImage @@@CMDLINE@@@",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd (hd0,msdos3)/initrd-dsm",
           "echo Starting kernel with SATA boot",
           "echo WARNING: SATA boot support on this platform is experimental!"
         ],
@@ -84,43 +96,10 @@
           "loglevel": 15,
           "synoboot_satadom": 2,
           "log_buf_len": "32M"
-        }
-      },
-      "Jun`s Mod x RedPill DS1520+ v7.0.1-42218 (USB, Verbose, Re-Install DSM)": {
-        "options": [
-          "savedefault",
-          "set root=(hd0,msdos2)",
-          "echo Loading Linux...",
-          "linux /bzImage @@@CMDLINE@@@",
-          "echo Starting kernel with USB boot"
-        ],
-        "cmdline": {
-          "earlyprintk": null,
-          "loglevel": 15,
-          "log_buf_len": "32M",
-          "force_junior": null
-        }
-      },
-      "Jun`s Mod x RedPill DS1520+ v7.0.1-42218 (SATA, Verbose, Re-Install DSM)": {
-        "options": [
-         "savedefault",
-          "set root=(hd0,msdos2)",
-          "echo Loading Linux...",
-          "linux /bzImage @@@CMDLINE@@@",
-          "echo Starting kernel with SATA boot",
-          "echo WARNING: SATA boot support on this platform is experimental!"
-        ],
-        "cmdline": {
-          "earlyprintk": null,
-          "loglevel": 15,
-          "synoboot_satadom": 2,
-          "log_buf_len": "32M",
-          "force_junior": null
         }
       }
     }
   },
-
   "extra": {
     "compress_rd": false,
     "ramdisk_copy": {
@@ -133,7 +112,6 @@
       "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
     },
     "bootp2_copy": {
-      "@@@COMMON@@@/bzImage": "bzImage",
       "@@@PAT@@@/GRUB_VER": "GRUB_VER",
       "@@@COMMON@@@/EFI": "EFI",
       "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",

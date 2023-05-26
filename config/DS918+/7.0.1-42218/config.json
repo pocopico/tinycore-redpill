@@ -4,7 +4,6 @@
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS918%2B_42218.pat",
     "sha256": "a662d11999c266dfa86c54f7ba01045c6644c191124195a22d056d618790dffe"
   },
-
   "files": {
     "zlinux": {
       "name": "zImage",
@@ -18,7 +17,6 @@
       "sha256": "e5eea089bcb76dc6dce6476be43a4e64c8acd52ba8b9c095a7d165acf196c529"
     }
   },
-
   "patches": {
     "zlinux": [
       "zImage-001-918p-42218-ramdisk-and-flag-NOP.bsp"
@@ -27,22 +25,24 @@
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
       "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
-      "@@@COMMON@@@/ramdisk-004-network-hosts.patch"    
+      "@@@COMMON@@@/ramdisk-004-network-hosts.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
-
   "synoinfo": {
     "maxdisks": "16",
     "internalportcfg": "0xffff",
     "esataportcfg": "0x0",
+    "HddHotplug": "",
+    "support_led_brightness_adjustment": "",
+    "support_leds_lp3943": "",
     "buzzeroffen": "0xffff",
-    "rss_server": "http://example.com/null.xml",
-    "rss_server_ssl": "https://example.com/null.xml",
+    "rss_server": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.json",
     "small_info_path": "https://example.com/null",
-    "updateurl": "http://example.com/",
-    "myds_region_api_base_url": "https://example.com"
+    "security_version_server": "https://example.com/smallupdate"    
   },
-
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
     "base_cmdline": {
@@ -51,20 +51,18 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-
       "syno_hw_version": "DS918+",
       "syno_hdd_powerup_seq": 1,
       "HddHotplug": 0,
       "vender_format_version": 2,
       "console": "ttyS0,115200n8",
-      "withefi": null,
       "elevator": "elevator",
       "syno_port_thaw": 1,
       "syno_hdd_detect": 0,
       "root": "/dev/md0",
-      "earlycon": "uart8250,io,0x3f8,115200n8"
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "withefi": null
     },
-
     "menu_entries": {
       "RedPill DS918+ v7.0.1-42218 (USB, Verbose)": {
         "options": [
@@ -73,7 +71,7 @@
           "echo Loading Linux...",
           "linux /zImage @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd /rd.gz /custom.gz",
+          "initrd (hd0,msdos3)/initrd-dsm",
           "echo Starting kernel with USB boot"
         ],
         "cmdline": {
@@ -89,7 +87,7 @@
           "echo Loading Linux...",
           "linux /zImage @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd /rd.gz /custom.gz",
+          "initrd (hd0,msdos3)/initrd-dsm",
           "echo Starting kernel with SATA boot",
           "echo WARNING: SATA boot support on this platform is experimental!"
         ],
@@ -102,7 +100,6 @@
       }
     }
   },
-
   "extra": {
     "compress_rd": false,
     "ramdisk_copy": {
@@ -123,4 +120,3 @@
     }
   }
 }
-

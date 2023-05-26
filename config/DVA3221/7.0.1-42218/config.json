@@ -1,38 +1,46 @@
 {
-    "os": {
-        "id": "dva3221_42218",
-        "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DVA3221_42218.pat",
-        "sha256": "6722c73c51070dde2f542659d7728c497fc846256da2c9cf017177476de0bb09"
+  "os": {
+    "id": "dva3221_42218",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DVA3221_42218.pat",
+    "sha256": "6722c73c51070dde2f542659d7728c497fc846256da2c9cf017177476de0bb09"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "8b58e602317286bdd25481c4927a791507589ce0b7c29f1ad394d08b634d41a3"
     },
-
-    "files": {
-        "zlinux": {
-            "name": "zImage",
-            "sha256": "8b58e602317286bdd25481c4927a791507589ce0b7c29f1ad394d08b634d41a3"
-        },
-        "ramdisk": {
-            "name": "rd.gz",
-            "sha256": "86a7450cdc461049c4cefe3fe3a1f9d241ea3c484f72f5667d7cd27f2842c8d6"
-        },
-        "vmlinux": {
-            "sha256": "27313fc53c455278c81945612212fb588973048fdb1486ce2df94d0c106436a7"
-        }
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "86a7450cdc461049c4cefe3fe3a1f9d241ea3c484f72f5667d7cd27f2842c8d6"
     },
-
+    "vmlinux": {
+      "sha256": "27313fc53c455278c81945612212fb588973048fdb1486ce2df94d0c106436a7"
+    }
+  },
   "patches": {
-    "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
     "zlinux": [
-      "zImage-001-dav3221-42218-ramdisk-and-header.bsp"
+      "zImage-001-dav3221-42218-ramdisk-and-flag-NOP.bsp"
     ],
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch"
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
   "synoinfo": {
-    "support_bde_internal_10g": "no",
-    "support_disk_compatibility": "no"
+    "maxdisks": "16",
+    "internalportcfg": "0xffff",
+    "esataportcfg": "0x0",
+    "HddHotplug": "",
+    "support_led_brightness_adjustment": "",
+    "support_leds_lp3943": "",
+    "buzzeroffen": "0xffff",
+    "rss_server": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.json",
+    "small_info_path": "https://example.com/null",
+    "security_version_server": "https://example.com/smallupdate"  
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
@@ -42,28 +50,28 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-
       "syno_hw_version": "DVA3221",
       "syno_hdd_powerup_seq": 0,
       "HddHotplug": 0,
       "vender_format_version": 2,
       "console": "ttyS0,115200n8",
-      "withefi": null,
       "elevator": "elevator",
       "syno_port_thaw": 1,
       "syno_hdd_detect": 0,
       "root": "/dev/md0",
-      "earlycon": "uart8250,io,0x3f8,115200n8"
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "withefi": null
     },
     "menu_entries": {
-      "Jun’s Mod × RedPill DVA3221 v7.0.1-42218 (USB, Verbose)": {
+      "RedPill DVA3221 v7.0.1-42218 (USB, Verbose)": {
         "options": [
           "savedefault",
-          "set root=(hd0,msdos2)",
+          "set root=(hd0,msdos1)",
           "echo Loading Linux...",
-          "linux /bzImage @@@CMDLINE@@@",
-          "echo Starting kernel with USB boot",
-          "echo Thanks jumkey hard work"
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd (hd0,msdos3)/initrd-dsm",
+          "echo Starting kernel with USB boot"
         ],
         "cmdline": {
           "earlyprintk": null,
@@ -71,14 +79,15 @@
           "log_buf_len": "32M"
         }
       },
-      "Jun`s Mod x RedPill DVA3221 v7.0.1-42218 (SATA, Verbose)": {
+      "RedPill DVA3221 v7.0.1-42218 (SATA, Verbose)": {
         "options": [
           "savedefault",
-          "set root=(hd0,msdos2)",
+          "set root=(hd0,msdos1)",
           "echo Loading Linux...",
-          "linux /bzImage @@@CMDLINE@@@",
-          "echo Starting kernel with SATA boot",
-          "echo WARNING: SATA boot support on this platform is experimental!"
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd (hd0,msdos3)/initrd-dsm",
+          "echo Starting kernel with SATA boot"
         ],
         "cmdline": {
           "earlyprintk": null,
@@ -86,40 +95,7 @@
           "synoboot_satadom": 2,
           "log_buf_len": "32M"
         }
-      },
-      "Jun’s Mod × RedPill DVA3221 v7.0.1-42218 (USB, Verbose, Re-Install DSM)": {
-        "options": [
-          "savedefault",
-          "set root=(hd0,msdos2)",
-          "echo Loading Linux...",
-          "linux /bzImage @@@CMDLINE@@@",
-          "echo Starting kernel with USB boot",
-          "echo Thanks jumkey hard work"
-        ],
-        "cmdline": {
-          "earlyprintk": null,
-          "loglevel": 15,
-          "log_buf_len": "32M",
-          "force_junior": null
-        }
-      },
-      "Jun`s Mod x RedPill DVA3221 v7.0.1-42218 (SATA, Verbose, Re-Install DSM)": {
-        "options": [
-          "savedefault",
-          "set root=(hd0,msdos2)",
-          "echo Loading Linux...",
-          "linux /bzImage @@@CMDLINE@@@",
-          "echo Starting kernel with SATA boot",
-          "echo WARNING: SATA boot support on this platform is experimental!"
-        ],
-        "cmdline": {
-          "earlyprintk": null,
-          "loglevel": 15,
-          "synoboot_satadom": 2,
-          "log_buf_len": "32M",
-          "force_junior": null
-        }
-      }  
+      }
     }
   },
   "extra": {
@@ -136,7 +112,6 @@
     "bootp2_copy": {
       "@@@PAT@@@/GRUB_VER": "GRUB_VER",
       "@@@COMMON@@@/EFI": "EFI",
-      "@@@COMMON@@@/bzImage": "bzImage",
       "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
       "@@@PAT@@@/rd.gz": "rd.gz",
       "@@@PAT@@@/zImage": "zImage"

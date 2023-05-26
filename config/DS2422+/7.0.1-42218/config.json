@@ -4,7 +4,6 @@
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS2422%2B_42218.pat",
     "sha256": "5a6cfbc690facdfaef9fbcc55215eac38c73ca6a85965a910af11cede5e2cd5d"
   },
-
   "files": {
     "zlinux": {
       "name": "zImage",
@@ -18,26 +17,31 @@
       "sha256": "781b22b5af7b0c2629e2872e37d88d475b11d8469309be168b9200f801795bd8"
     }
   },
-
   "patches": {
-    "zlinux": [ 
-     "zImage-001-2422p-42218-ramdisk-and-flag-NOP.bsp"
+    "zlinux": [
+      "zImage-001-2422p-42218-ramdisk-and-flag-NOP.bsp"
     ],
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch"
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
-
   "synoinfo": {
-    "rss_server": "http://example.com/autoupdate/genRSS.php",
-    "rss_server_ssl": "https://example.com/autoupdate/genRSS.php",
-    "small_info_path": "https://example.com/smallupdate",
-    "updateurl": "http://example.com/",
-    "myds_region_api_base_url": "https://example.com/"
+    "maxdisks": "16",
+    "internalportcfg": "0xffff",
+    "esataportcfg": "0x0",
+    "HddHotplug": "",
+    "support_led_brightness_adjustment": "",
+    "support_leds_lp3943": "",
+    "buzzeroffen": "0xffff",
+    "rss_server": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.json",
+    "small_info_path": "https://example.com/null",
+    "security_version_server": "https://example.com/smallupdate"  
   },
-
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
     "base_cmdline": {
@@ -46,7 +50,6 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-
       "syno_hw_version": "DS2422+",
       "SMBusHddDynamicPower": 1,
       "vender_format_version": 2,
@@ -54,11 +57,11 @@
       "synoboot2": null,
       "elevator": "elevator",
       "syno_ttyS0": "serial,0x3f8",
-      "syno_ttyS1": "serial,0x2f8",
       "root": "/dev/md0",
-      "earlycon": "uart8250,io,0x3f8,115200n8"
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "withefi": null,
+      "syno_ttyS1": "serial,0x2f8"
     },
-
     "menu_entries": {
       "RedPill DS2422+ v7.0.1-42218 (USB, Verbose)": {
         "options": [
@@ -67,7 +70,7 @@
           "echo Loading Linux...",
           "linux /zImage @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd /rd.gz /custom.gz",
+          "initrd (hd0,msdos3)/initrd-dsm",
           "echo Starting kernel with USB boot"
         ],
         "cmdline": {
@@ -83,9 +86,8 @@
           "echo Loading Linux...",
           "linux /zImage @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd /rd.gz /custom.gz",
-          "echo Starting kernel with SATA boot",
-          "echo WARNING: SATA boot support on this platform is experimental!"
+          "initrd (hd0,msdos3)/initrd-dsm",
+          "echo Starting kernel with SATA boot"
         ],
         "cmdline": {
           "earlyprintk": null,
@@ -96,7 +98,6 @@
       }
     }
   },
-
   "extra": {
     "compress_rd": false,
     "ramdisk_copy": {
@@ -117,4 +118,3 @@
     }
   }
 }
-

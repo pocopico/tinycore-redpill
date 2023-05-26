@@ -4,7 +4,6 @@
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3615xs_42218.pat",
     "sha256": "ae1aca3b178a00689b93e97cca680b56af3f453174b852e0047496120dee2ee3"
   },
-
   "files": {
     "zlinux": {
       "name": "zImage",
@@ -18,16 +17,15 @@
       "sha256": "64c8f33198e31798a7d222b9845e821dd57ebeb5539d9efdaa4e68968b43a5b2"
     }
   },
-
   "patches": {
-    "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
     "zlinux": [
-      "zImage-001-3615xs-42218-ramdisk-and-header.bsp"
+      "zImage-001-3615xs-42218-ramdisk-and-flag-NOP.bsp"
     ],
     "ramdisk": [
       "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
       "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
-      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch"
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
     ]
   },
   "synoinfo": {
@@ -35,11 +33,15 @@
     "internalportcfg": "0x78FF",
     "esataportcfg": "0x0",
     "usbportcfg": "0x8700",
-    "rss_server": "http://example.com/null.xml",
-    "rss_server_ssl": "https://example.com/null.xml",
+    "HddHotplug": "",
+    "support_led_brightness_adjustment": "",
+    "support_leds_lp3943": "",
+    "buzzeroffen": "0xffff",
+    "rss_server": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.0.1/rss.json",
     "small_info_path": "https://example.com/null",
-    "updateurl": "http://example.com/",
-    "myds_region_api_base_url": "https://example.com"
+    "security_version_server": "https://example.com/smallupdate"  
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",
@@ -49,18 +51,17 @@
       "pid": "0x0001",
       "mac1": "",
       "netif_num": 1,
-
       "syno_hw_version": "DS3615xs",
       "syno_hdd_powerup_seq": 0,
       "HddHotplug": 0,
       "vender_format_version": 2,
       "console": "ttyS0,115200n8",
-      "withefi": null,
       "elevator": "elevator",
       "syno_port_thaw": 1,
       "syno_hdd_detect": 0,
       "root": "/dev/md0",
-      "earlycon": "uart8250,io,0x3f8,115200n8"
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "withefi": null
     },
     "menu_entries": {
       "RedPill DS3615xs v7.0.1-42218 (USB, Verbose)": {
@@ -70,7 +71,7 @@
           "echo Loading Linux...",
           "linux /zImage @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd /rd.gz /custom.gz",
+          "initrd (hd0,msdos3)/initrd-dsm",
           "echo Starting kernel with USB boot"
         ],
         "cmdline": {
@@ -86,7 +87,7 @@
           "echo Loading Linux...",
           "linux /zImage @@@CMDLINE@@@",
           "echo Loading initramfs...",
-          "initrd /rd.gz /custom.gz",
+          "initrd (hd0,msdos3)/initrd-dsm",
           "echo Starting kernel with SATA boot"
         ],
         "cmdline": {
@@ -118,4 +119,3 @@
     }
   }
 }
-

@@ -1355,9 +1355,9 @@ function satamap() {
 
 function checkcached() {
 
-  patfile="$(find /mnt/$tcrppart/auxfiles/ | grep -i $OS_ID)"
+  patfile="$(find /mnt/$tcrppart/auxfiles/ -maxdepth 1 | grep -i $OS_ID)"
 
-  [ -z "$patfile" ] && patfile="$(find /home/tc/html/ | grep -i $OS_ID)"
+  [ -z "$patfile" ] && patfile="$(find /home/tc/html/ -maxdepth 1 | grep -i $OS_ID)"
 
   if [ ! -z "$patfile" ] && [ -f "$patfile" ]; then
     iscached="yes"
@@ -1726,7 +1726,7 @@ function extractpat() {
 
     LD_LIBRARY_PATH=/mnt/${tcrppart}/auxfiles/patch-extractor/lib /mnt/${tcrppart}/auxfiles/patch-extractor/synoarchive.system -C ${TEMPPAT} -xf $FILENAME
   else
-    wecho "Extracting unencrypted PAT file $FILENAME to $TEMPPAT"
+    wecho "Extracting unencrypted PAT file ${FILENAME} to ${TEMPPAT}"
     status "setstatus" "patextraction" "false" "Extracting unencrypted PAT file $FILENAME to $TEMPPAT"
     tar xf $FILENAME -C ${TEMPPAT} && status "setstatus" "patextraction" "false" "File $FILENAME extracted to $TEMPPAT"
   fi
@@ -1812,8 +1812,10 @@ function addextensions() {
     $HOMEPATH/include/extmgr.sh extadd $EXT "${BUILDMODEL}_${BUILDVERSION}"
 
   done
-  status "setstatus" "extadd" "false" "Auto detecting required extensions"
-  $HOMEPATH/include/listmodules.sh "${BUILDMODEL}_${BUILDVERSION}"
+
+  # DISABLE AUTO ADDING EXTENSIONS
+  #status "setstatus" "extadd" "false" "Auto detecting required extensions"
+  #$HOMEPATH/include/listmodules.sh "${BUILDMODEL}_${BUILDVERSION}"
 
   status "setstatus" "extadd" "false" "Processing extensions"
   wecho "Processing extensions"

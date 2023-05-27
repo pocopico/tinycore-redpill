@@ -1,1 +1,131 @@
-{ "os": { "id": "sa6400_64216", "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_SA6400_64216.pat", "sha256": "" }, "files": { "zlinux": { "name": "zImage", "sha256": "" }, "ramdisk": { "name": "rd.gz", "sha256": "" }, "vmlinux": { "sha256": "" } }, "patches": { "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)", "zlinux": [ "zImage-001-SA6400-64216-ramdisk-and-header.bsp" ], "ramdisk": [ "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch", "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch", "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch", "@@@COMMON@@@/v7.2.0/ramdisk-004-network-hosts.patch" ] }, "synoinfo": { "maxdisks": "25", "support_bde_internal_10g": "no", "support_disk_compatibility": "no", "internalportcfg": "0xFFFF", "esataportcfg": "0x00", "usbportcfg": "0x10000", "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "small_info_path": "https://example.com/null", "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json", "security_version_server": "https://example.com/smallupdate", "updateurl": "http://example.com/", "update_server": "http://example.com/", "update_server_ssl": "https//example.com/", "myds_region_api_base_url": "https://example.com" }, "grub": { "template": "@@@COMMON@@@/grub-template.conf", "base_cmdline": { "sn": "", "vid": "0x46f4", "pid": "0x0001", "SasIdxMap": "0", "SataPortMap": "1", "DiskIdxMap": "0", "mac1": "", "netif_num": 1, "syno_hw_version": "SA6400", "syno_hdd_powerup_seq": 0, "HddHotplug": 0, "vender_format_version": 2, "console": "ttyS0,115200n8", "withefi": null, "elevator": "elevator", "syno_port_thaw": 1, "syno_hdd_detect": 0, "root": "/dev/md0", "earlycon": "uart8250,io,0x3f8,115200n8", "sataboot2": null, "SMBusHddDynamicPower": "0", "syno_ttyS0": "serial,0x3f8", "syno_ttyS1": "serial,0x2f8" }, "menu_entries": { "RedPill SA6400 v7.2.0-64216 Beta (USB, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos1)", "echo Loading Linux...", "linux /zImage @@@CMDLINE@@@", "echo Loading initramfs...", "initrd /rd.gz /custom.gz", "echo Starting kernel with USB boot" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "log_buf_len": "32M" } }, "RedPill SA6400 v7.2.0-64216 Beta (SATA, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos1)", "echo Loading Linux...", "linux /zImage @@@CMDLINE@@@", "echo Loading initramfs...", "initrd /rd.gz /custom.gz", "echo Starting kernel with SATA boot" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "synoboot_satadom": 1, "log_buf_len": "32M" } } } }, "extra": { "compress_rd": false, "ramdisk_copy": { "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.302+.ko": "usr/lib/modules/rp.ko", "@@@COMMON@@@/iosched-trampoline5.sh": "usr/sbin/modprobe" }, "bootp1_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/", "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/" }, "bootp2_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@COMMON@@@/EFI": "EFI", "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno", "@@@PAT@@@/rd.gz": "rd.gz", "@@@PAT@@@/zImage": "zImage" } } }
+{
+  "os": {
+    "id": "sa6400_64216",
+    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_SA6400_64216.pat",
+    "sha256": ""
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": ""
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": ""
+    },
+    "vmlinux": {
+      "sha256": ""
+    }
+  },
+  "patches": {
+    "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
+    "zlinux": [
+      "zImage-001-SA6400-64216-ramdisk-and-header.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-004-network-hosts.patch"
+    ]
+  },
+  "synoinfo": {
+    "maxdisks": "25",
+    "support_bde_internal_10g": "no",
+    "support_disk_compatibility": "no",
+    "internalportcfg": "0xFFFF",
+    "esataportcfg": "0x00",
+    "usbportcfg": "0x10000",
+    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "small_info_path": "https://example.com/null",
+    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json",
+    "security_version_server": "https://example.com/smallupdate",
+    "updateurl": "http://example.com/",
+    "update_server": "http://example.com/",
+    "update_server_ssl": "https//example.com/",
+    "myds_region_api_base_url": "https://example.com"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "SasIdxMap": "0",
+      "SataPortMap": "1",
+      "DiskIdxMap": "0",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "SA6400",
+      "syno_hdd_powerup_seq": 0,
+      "HddHotplug": 0,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "withefi": null,
+      "elevator": "elevator",
+      "syno_port_thaw": 1,
+      "syno_hdd_detect": 0,
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "sataboot2": null,
+      "SMBusHddDynamicPower": "0",
+      "syno_ttyS0": "serial,0x3f8",
+      "syno_ttyS1": "serial,0x2f8"
+    },
+    "menu_entries": {
+      "RedPill SA6400 v7.2.0-64216 Beta (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill SA6400 v7.2.0-64216 Beta (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with SATA boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 1,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.302+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline5.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

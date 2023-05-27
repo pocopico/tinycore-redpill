@@ -1,1 +1,118 @@
-{ "os": { "id": "ds918p_41890", "pat_url": "https://global.download.synology.com/download/DSM/release/7.0/41890/DSM_DS918%2B_41890.pat", "sha256": "d7348d18d81ebf66eb690848cf6254d896eddf764d06a17b4bd591679e400434" }, "files": { "zlinux": { "name": "zImage", "sha256": "3466ec40925078c75dfc6900da7a7a52eedbe38c556e7cee58e8eda4c27a1755" }, "ramdisk": { "name": "rd.gz", "sha256": "c45e5fcfb5ac4d9395496e0c7d0433a9600eae45e8d9de31666439818c7cfcfe" }, "vmlinux": { "sha256": "aeeb8fd775f7b3d149e0ad6534c4ada162556e4c5c3d171808b9a1cbd93266cf" } }, "patches": { "zlinux": [ "zImage-001-918p-41890-ramdisk-and-flag-NOP.bsp" ], "ramdisk": [ "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch", "@@@COMMON@@@/ramdisk-002-init-script-NEW-name.patch", "@@@COMMON@@@/ramdisk-003-post-init-script-UPPER.patch" ] }, "synoinfo": { "maxdisks": "16", "internalportcfg": "0xffff", "esataportcfg": "0x0", "buzzeroffen": "0xffff", "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "small_info_path": "https://example.com/null", "updateurl": "http://example.com/", "myds_region_api_base_url": "https://example.com", "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json" }, "grub": { "template": "@@@COMMON@@@/grub-template.conf", "base_cmdline": { "sn": "", "vid": "0x46f4", "pid": "0x0001", "mac1": "", "netif_num": 1, "syno_hw_version": "DS918+", "syno_hdd_powerup_seq": 1, "HddHotplug": 0, "vender_format_version": 2, "console": "ttyS0,115200n8", "withefi": null, "elevator": "elevator", "syno_port_thaw": 1, "syno_hdd_detect": 0, "root": "/dev/md0", "earlycon": "uart8250,io,0x3f8,115200n8" }, "menu_entries": { "RedPill DS918+ v7.0-41890 (USB, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos1)", "echo Loading Linux...", "linux /zImage @@@CMDLINE@@@", "echo Loading initramfs...", "initrd /rd.gz /custom.gz", "echo Starting kernel with USB boot" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "log_buf_len": "32M" } }, "RedPill DS918+ v7.0-41890 (SATA, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos1)", "echo Loading Linux...", "linux /zImage @@@CMDLINE@@@", "echo Loading initramfs...", "initrd /rd.gz /custom.gz", "echo Starting kernel with SATA boot", "echo WARNING: SATA boot support on this platform is experimental!" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "synoboot_satadom": 2, "log_buf_len": "32M" } } } }, "extra": { "compress_rd": false, "ramdisk_copy": { "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.180+.ko": "usr/lib/modules/rp.ko", "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe" }, "bootp1_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/", "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/" }, "bootp2_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@COMMON@@@/EFI": "EFI", "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno", "@@@PAT@@@/rd.gz": "rd.gz", "@@@PAT@@@/zImage": "zImage" } } }
+{
+  "os": {
+    "id": "ds918p_41890",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.0/41890/DSM_DS918%2B_41890.pat",
+    "sha256": "d7348d18d81ebf66eb690848cf6254d896eddf764d06a17b4bd591679e400434"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "3466ec40925078c75dfc6900da7a7a52eedbe38c556e7cee58e8eda4c27a1755"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "c45e5fcfb5ac4d9395496e0c7d0433a9600eae45e8d9de31666439818c7cfcfe"
+    },
+    "vmlinux": {
+      "sha256": "aeeb8fd775f7b3d149e0ad6534c4ada162556e4c5c3d171808b9a1cbd93266cf"
+    }
+  },
+  "patches": {
+    "zlinux": [
+      "zImage-001-918p-41890-ramdisk-and-flag-NOP.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/ramdisk-002-init-script-NEW-name.patch",
+      "@@@COMMON@@@/ramdisk-003-post-init-script-UPPER.patch"
+    ]
+  },
+  "synoinfo": {
+    "maxdisks": "16",
+    "internalportcfg": "0xffff",
+    "esataportcfg": "0x0",
+    "buzzeroffen": "0xffff",
+    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "small_info_path": "https://example.com/null",
+    "updateurl": "http://example.com/",
+    "myds_region_api_base_url": "https://example.com",
+    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "DS918+",
+      "syno_hdd_powerup_seq": 1,
+      "HddHotplug": 0,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "withefi": null,
+      "elevator": "elevator",
+      "syno_port_thaw": 1,
+      "syno_hdd_detect": 0,
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8"
+    },
+    "menu_entries": {
+      "RedPill DS918+ v7.0-41890 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill DS918+ v7.0-41890 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.180+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

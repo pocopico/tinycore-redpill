@@ -1,1 +1,120 @@
-{ "os": { "id": "ds3615xs_42962", "pat_url": "https://global.download.synology.com/download/DSM/release/7.1.1/42962/DSM_DS3615xs_42962.pat", "sha256": "b79c129354c203b7340010573d16b2d6ebc6a676c946579a959c891a70b8bcfc" }, "files": { "zlinux": { "name": "zImage", "sha256": "b7d2ca699195a1990f838690be32a65158d4ed01e8126af2ddb27a0f08e177ca" }, "ramdisk": { "name": "rd.gz", "sha256": "e4bdca874027b603a18d7b44cc312f3eb6d6cbf2e49329ef51753fc322d880c0" }, "vmlinux": { "sha256": "d68f5559fd2030e6b10799dedd5fdfb537aaa5e68d6168981c1712f05151eb8d " } }, "patches": { "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)", "zlinux": [ "zImage-001-3615xs-42962-ramdisk-and-header.bsp" ], "ramdisk": [ "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch", "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch", "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch", "@@@COMMON@@@/ramdisk-004-network-hosts.patch", "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch" ] }, "synoinfo": { "maxdisks": "15", "internalportcfg": "0x78FF", "esataportcfg": "0x0", "usbportcfg": "0x8700", "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "small_info_path": "https://example.com/null", "updateurl": "http://example.com/", "myds_region_api_base_url": "https://example.com", "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json" }, "grub": { "template": "@@@COMMON@@@/grub-template.conf", "base_cmdline": { "sn": "", "vid": "0x46f4", "pid": "0x0001", "mac1": "", "netif_num": 1, "syno_hw_version": "DS3615xs", "syno_hdd_powerup_seq": 0, "HddHotplug": 0, "vender_format_version": 2, "console": "ttyS0,115200n8", "withefi": null, "elevator": "elevator", "syno_port_thaw": 1, "syno_hdd_detect": 0, "root": "/dev/md0", "earlycon": "uart8250,io,0x3f8,115200n8" }, "menu_entries": { "RedPill DS3615xs v7.1.1-42962 (USB, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos1)", "echo Loading Linux...", "linux /zImage @@@CMDLINE@@@", "echo Loading initramfs...", "initrd /rd.gz /custom.gz", "echo Starting kernel with USB boot" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "log_buf_len": "32M" } }, "RedPill DS3615xs v7.1.1-42962 (SATA, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos1)", "echo Loading Linux...", "linux /zImage @@@CMDLINE@@@", "echo Loading initramfs...", "initrd /rd.gz /custom.gz", "echo Starting kernel with SATA boot" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "synoboot_satadom": 1, "log_buf_len": "32M" } } } }, "extra": { "compress_rd": false, "ramdisk_copy": { "@@@EXT@@@/rp-lkm/redpill-linux-v3.10.108.ko": "usr/lib/modules/rp.ko", "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe" }, "bootp1_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/", "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/" }, "bootp2_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@COMMON@@@/EFI": "EFI", "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno", "@@@PAT@@@/rd.gz": "rd.gz", "@@@PAT@@@/zImage": "zImage" } } }
+{
+  "os": {
+    "id": "ds3615xs_42962",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.1.1/42962/DSM_DS3615xs_42962.pat",
+    "sha256": "b79c129354c203b7340010573d16b2d6ebc6a676c946579a959c891a70b8bcfc"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "b7d2ca699195a1990f838690be32a65158d4ed01e8126af2ddb27a0f08e177ca"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "e4bdca874027b603a18d7b44cc312f3eb6d6cbf2e49329ef51753fc322d880c0"
+    },
+    "vmlinux": {
+      "sha256": "d68f5559fd2030e6b10799dedd5fdfb537aaa5e68d6168981c1712f05151eb8d "
+    }
+  },
+  "patches": {
+    "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
+    "zlinux": [
+      "zImage-001-3615xs-42962-ramdisk-and-header.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-004-network-hosts.patch",
+      "@@@COMMON@@@/ramdisk-005-disable-disabled-ports.patch"
+    ]
+  },
+  "synoinfo": {
+    "maxdisks": "15",
+    "internalportcfg": "0x78FF",
+    "esataportcfg": "0x0",
+    "usbportcfg": "0x8700",
+    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "small_info_path": "https://example.com/null",
+    "updateurl": "http://example.com/",
+    "myds_region_api_base_url": "https://example.com",
+    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "DS3615xs",
+      "syno_hdd_powerup_seq": 0,
+      "HddHotplug": 0,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "withefi": null,
+      "elevator": "elevator",
+      "syno_port_thaw": 1,
+      "syno_hdd_detect": 0,
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8"
+    },
+    "menu_entries": {
+      "RedPill DS3615xs v7.1.1-42962 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill DS3615xs v7.1.1-42962 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with SATA boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 1,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v3.10.108.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

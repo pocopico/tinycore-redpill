@@ -1,1 +1,121 @@
-{ "os": { "id": "rs3618xs_64216", "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_RS3618xs_64216.pat", "sha256": "be35633cd368aeede2f5f6e309b936cd849d6a80975622e6155a2fe1f72d2e60" }, "files": { "zlinux": { "name": "zImage", "sha256": "c12b541e6fea5949124ed074029446423da2b33879b333d2b6c2f0305185a847" }, "ramdisk": { "name": "rd.gz", "sha256": "0824a937f186c72b1583c1bdd282af350a6edddb67d09a73a73a00407e216527" }, "vmlinux": { "sha256": "edceab7bfb5f9f4514920b25cb7904d5a3d5eaeabc3d073bd6c85b3840d0f546" } }, "patches": { "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)", "zlinux": [ "zImage-001-3618xs-64216-ramdisk-and-header.bsp" ], "ramdisk": [ "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch", "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch", "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch" ] }, "synoinfo": { "maxdisks": "24", "support_bde_internal_10g": "no", "support_disk_compatibility": "no", "internalportcfg": "0xfffff", "SasIdxMap": "0", "esataportcfg": "0x00", "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json", "small_info_path": "https://example.com/null", "security_version_server": "https://example.com/smallupdate" }, "grub": { "template": "@@@COMMON@@@/grub-template.conf", "base_cmdline": { "sn": "", "vid": "0x46f4", "pid": "0x0001", "SataPortMap": "1", "DiskIdxMap": "0", "mac1": "", "netif_num": 1, "syno_hw_version": "RS3618xs", "syno_hdd_powerup_seq": 0, "HddHotplug": 0, "vender_format_version": 2, "console": "ttyS0,115200n8", "withefi": null, "elevator": "elevator", "syno_port_thaw": 1, "syno_hdd_detect": 0, "root": "/dev/md0", "earlycon": "uart8250,io,0x3f8,115200n8" }, "menu_entries": { "RedPill RS3618xs v7.2.0-64216 (USB, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos1)", "echo Loading Linux...", "linux /zImage @@@CMDLINE@@@", "echo Loading initramfs...", "initrd /rd.gz /custom.gz", "echo Starting kernel with USB boot" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "log_buf_len": "32M" } }, "RedPill RS3618xs v7.2.0-64216 (SATA, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos1)", "echo Loading Linux...", "linux /zImage @@@CMDLINE@@@", "echo Loading initramfs...", "initrd /rd.gz /custom.gz", "echo Starting kernel with SATA boot" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "synoboot_satadom": 2, "log_buf_len": "32M" } } } }, "extra": { "compress_rd": false, "ramdisk_copy": { "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.302+.ko": "usr/lib/modules/rp.ko", "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe" }, "bootp1_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/", "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/" }, "bootp2_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@COMMON@@@/EFI": "EFI", "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno", "@@@PAT@@@/rd.gz": "rd.gz", "@@@PAT@@@/zImage": "zImage" } } }
+{
+  "os": {
+    "id": "rs3618xs_64216",
+    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64216/DSM_RS3618xs_64216.pat",
+    "sha256": "be35633cd368aeede2f5f6e309b936cd849d6a80975622e6155a2fe1f72d2e60"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "c12b541e6fea5949124ed074029446423da2b33879b333d2b6c2f0305185a847"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "0824a937f186c72b1583c1bdd282af350a6edddb67d09a73a73a00407e216527"
+    },
+    "vmlinux": {
+      "sha256": "edceab7bfb5f9f4514920b25cb7904d5a3d5eaeabc3d073bd6c85b3840d0f546"
+    }
+  },
+  "patches": {
+    "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
+    "zlinux": [
+      "zImage-001-3618xs-64216-ramdisk-and-header.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch"
+    ]
+  },
+  "synoinfo": {
+    "maxdisks": "24",
+    "support_bde_internal_10g": "no",
+    "support_disk_compatibility": "no",
+    "internalportcfg": "0xfffff",
+    "SasIdxMap": "0",
+    "esataportcfg": "0x00",
+    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json",
+    "small_info_path": "https://example.com/null",
+    "security_version_server": "https://example.com/smallupdate"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "SataPortMap": "1",
+      "DiskIdxMap": "0",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "RS3618xs",
+      "syno_hdd_powerup_seq": 0,
+      "HddHotplug": 0,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "withefi": null,
+      "elevator": "elevator",
+      "syno_port_thaw": 1,
+      "syno_hdd_detect": 0,
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8"
+    },
+    "menu_entries": {
+      "RedPill RS3618xs v7.2.0-64216 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill RS3618xs v7.2.0-64216 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with SATA boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.302+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

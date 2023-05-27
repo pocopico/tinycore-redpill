@@ -1,1 +1,110 @@
-{ "os": { "id": "dva1622_42218", "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS920%2B_42218.pat", "sha256": "fe2a4648f76adeb65c3230632503ea36bbac64ee88b459eb9bfb5f3b8c8cebb3" }, "files": { "zlinux": { "name": "zImage", "sha256": "346b68f662b50f47d3ee6c2bc9de6302e4b60436142c24ee88b620c7afd1ba06" }, "ramdisk": { "name": "rd.gz", "sha256": "f7dd1317f24ec6b9bac839e37f66b59030218c7f97c06f73f1f54ed0f892c4aa" }, "vmlinux": { "sha256": "6494b4c4789ed887ddfaf0fe0e45e100cfcc4ec719b7f3ab6bcc26b05e97c829" } }, "patches": { "zlinux": [ "zImage-001-dva1622-42218-ramdisk-and-flag-NOP.bsp" ], "ramdisk": [ "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch", "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch", "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch", "@@@COMMON@@@/ramdisk-common-etc-rc.patch" ] }, "synoinfo": { "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json" }, "grub": { "template": "@@@COMMON@@@/grub-template.conf", "base_cmdline": { "sn": "", "vid": "0x46f4", "pid": "0x0001", "mac1": "", "netif_num": 1, "syno_hw_version": "DVA1622", "intel_iommu": "igfx_off", "HddEnableDynamicPower": 1, "vender_format_version": 2, "console": "ttyS0,115200n8", "synoboot2": null, "elevator": "elevator", "syno_ttyS0": "serial,0x3f8", "root": "/dev/md0", "earlycon": "uart8250,io,0x3f8,115200n8", "withefi": null, "syno_ttyS1": "serial,0x2f8" }, "menu_entries": { "Yet Another Jun`s Mod x RedPill DVA1622 v7.0.1-42218 (USB, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos2)", "echo Loading Linux...", "linux /bzImage @@@CMDLINE@@@", "echo Starting kernel with USB boot" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "log_buf_len": "32M" } }, "Yet Another Jun`s Mod x RedPill DVA1622 v7.0.1-42218 (SATA, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos2)", "echo Loading Linux...", "linux /bzImage @@@CMDLINE@@@", "echo Starting kernel with SATA boot", "echo WARNING: SATA boot support on this platform is experimental!" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "synoboot_satadom": 2, "log_buf_len": "32M" } } } }, "extra": { "compress_rd": false, "ramdisk_copy": { "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.180+.ko": "usr/lib/modules/rp.ko", "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe" }, "bootp1_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/", "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/" }, "bootp2_copy": { "@@@COMMON@@@/bzImage": "bzImage", "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@COMMON@@@/EFI": "EFI", "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno", "@@@PAT@@@/rd.gz": "rd.gz", "@@@PAT@@@/zImage": "zImage" } } }
+{
+  "os": {
+    "id": "dva1622_42218",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS920%2B_42218.pat",
+    "sha256": "fe2a4648f76adeb65c3230632503ea36bbac64ee88b459eb9bfb5f3b8c8cebb3"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "346b68f662b50f47d3ee6c2bc9de6302e4b60436142c24ee88b620c7afd1ba06"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "f7dd1317f24ec6b9bac839e37f66b59030218c7f97c06f73f1f54ed0f892c4aa"
+    },
+    "vmlinux": {
+      "sha256": "6494b4c4789ed887ddfaf0fe0e45e100cfcc4ec719b7f3ab6bcc26b05e97c829"
+    }
+  },
+  "patches": {
+    "zlinux": [
+      "zImage-001-dva1622-42218-ramdisk-and-flag-NOP.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.0.1/ramdisk-003-post-init-script.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  "synoinfo": {
+    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "DVA1622",
+      "intel_iommu": "igfx_off",
+      "HddEnableDynamicPower": 1,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "synoboot2": null,
+      "elevator": "elevator",
+      "syno_ttyS0": "serial,0x3f8",
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "withefi": null,
+      "syno_ttyS1": "serial,0x2f8"
+    },
+    "menu_entries": {
+      "Yet Another Jun`s Mod x RedPill DVA1622 v7.0.1-42218 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos2)",
+          "echo Loading Linux...",
+          "linux /bzImage @@@CMDLINE@@@",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "Yet Another Jun`s Mod x RedPill DVA1622 v7.0.1-42218 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos2)",
+          "echo Loading Linux...",
+          "linux /bzImage @@@CMDLINE@@@",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.180+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@COMMON@@@/bzImage": "bzImage",
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

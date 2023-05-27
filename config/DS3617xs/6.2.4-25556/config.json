@@ -1,1 +1,114 @@
-{ "os": { "id": "ds3615xs_25556", "pat_url": "https://global.download.synology.com/download/DSM/release/6.2.4/25556/DSM_DS3615xs_25556.pat", "sha256": "c817adb5c8f7e34dd5fd939da1102deddd80fbc4aad6e01b0aea8a8471c0009b" }, "files": { "zlinux": { "name": "zImage", "sha256": "d36be7f6a223b29f5643530f39ff1d974dbd0aea0f826f6193b4c354e58e85b1" }, "ramdisk": { "name": "rd.gz", "sha256": "0873eb295f2a479f22af718291e7a89b8f953e687b3707a2d9cac2d2b1b2cdf4" }, "vmlinux": { "sha256": "0145d5e0cbe7cbb27a022f92884419c843045f278db1cbb5af34f9bf6b4220be" } }, "patches": { "zlinux": [ "zImage-001-3615xs-25556-ramdisk-and-header.bsp" ], "ramdisk": [ "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch", "@@@COMMON@@@/ramdisk-002-init-script-OLD-name.patch", "@@@COMMON@@@/ramdisk-003-post-init-script-LOWER.patch" ] }, "synoinfo": { "maxdisks": "15", "internalportcfg": "0x78FF", "esataportcfg": "0x0", "usbportcfg": "0x8700", "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml", "small_info_path": "https://example.com/null", "updateurl": "http://example.com/", "myds_region_api_base_url": "https://example.com", "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json" }, "grub": { "template": "@@@COMMON@@@/grub-template.conf", "base_cmdline": { "sn": "", "vid": "0x46f4", "pid": "0x0001", "mac1": "", "netif_num": 1, "syno_hw_version": "DS3615xs", "syno_hdd_powerup_seq": 0, "HddHotplug": 0, "vender_format_version": 2, "console": "ttyS0,115200n8", "withefi": null, "elevator": "elevator", "syno_port_thaw": 1, "syno_hdd_detect": 0, "root": "/dev/md0", "earlycon": "uart8250,io,0x3f8,115200n8" }, "menu_entries": { "RedPill DS3615xs v6.2.4-25556 (USB, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos1)", "echo Loading Linux...", "linux /zImage @@@CMDLINE@@@", "echo Loading initramfs...", "initrd /rd.gz /custom.gz", "echo Starting kernel with USB boot" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "log_buf_len": "32M" } }, "RedPill DS3615xs v6.2.4-25556 (SATA, Verbose)": { "options": [ "savedefault", "set root=(hd0,msdos1)", "echo Loading Linux...", "linux /zImage @@@CMDLINE@@@", "echo Loading initramfs...", "initrd /rd.gz /custom.gz", "echo Starting kernel with SATA boot" ], "cmdline": { "earlyprintk": null, "loglevel": 15, "synoboot_satadom": 1, "log_buf_len": "32M" } } } }, "extra": { "compress_rd": true, "ramdisk_copy": { "@@@EXT@@@/rp-lkm/redpill-linux-v3.10.105.ko": "usr/lib/modules/rp.ko", "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe" }, "bootp1_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER" }, "bootp2_copy": { "@@@PAT@@@/GRUB_VER": "GRUB_VER", "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno", "@@@PAT@@@/rd.gz": "rd.gz", "@@@PAT@@@/zImage": "zImage" } } }
+{
+  "os": {
+    "id": "ds3615xs_25556",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/6.2.4/25556/DSM_DS3615xs_25556.pat",
+    "sha256": "c817adb5c8f7e34dd5fd939da1102deddd80fbc4aad6e01b0aea8a8471c0009b"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "d36be7f6a223b29f5643530f39ff1d974dbd0aea0f826f6193b4c354e58e85b1"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "0873eb295f2a479f22af718291e7a89b8f953e687b3707a2d9cac2d2b1b2cdf4"
+    },
+    "vmlinux": {
+      "sha256": "0145d5e0cbe7cbb27a022f92884419c843045f278db1cbb5af34f9bf6b4220be"
+    }
+  },
+  "patches": {
+    "zlinux": [
+      "zImage-001-3615xs-25556-ramdisk-and-header.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/ramdisk-002-init-script-OLD-name.patch",
+      "@@@COMMON@@@/ramdisk-003-post-init-script-LOWER.patch"
+    ]
+  },
+  "synoinfo": {
+    "maxdisks": "15",
+    "internalportcfg": "0x78FF",
+    "esataportcfg": "0x0",
+    "usbportcfg": "0x8700",
+    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "small_info_path": "https://example.com/null",
+    "updateurl": "http://example.com/",
+    "myds_region_api_base_url": "https://example.com",
+    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "DS3615xs",
+      "syno_hdd_powerup_seq": 0,
+      "HddHotplug": 0,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "withefi": null,
+      "elevator": "elevator",
+      "syno_port_thaw": 1,
+      "syno_hdd_detect": 0,
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8"
+    },
+    "menu_entries": {
+      "RedPill DS3615xs v6.2.4-25556 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill DS3615xs v6.2.4-25556 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd /rd.gz /custom.gz",
+          "echo Starting kernel with SATA boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 1,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": true,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v3.10.105.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

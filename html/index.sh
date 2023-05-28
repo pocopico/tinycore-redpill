@@ -17,7 +17,7 @@ SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 extensionrepofile="https://github.com/pocopico/tcrp-addons/raw/main/addons.json"
 extensionfile="addons.json"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
-SCRIPTVERSION="0.10.4"
+SCRIPTVERSION="0.10.5"
 
 #. ${HOMEPATH}/include/config.sh
 ############################################
@@ -31,6 +31,7 @@ function versionhistory() {
 <br> 0.10.2, Fixed some bugs, added more models.
 <br> 0.10.3, Added full image backup function
 <br> 0.10.4, Fixed long standing issue with the corruption of the user_config.json file.
+<br> 0.10.5, Various fixes
 <br>
 
 EOF
@@ -1755,6 +1756,7 @@ function patchkernel() {
 function cachepat() {
 
   echo "Caching PAT file"
+  mkdir -p /mnt/$tcrppart/auxfiles/
   status "setstatus" "cachingpat" "false" "Caching PAT file"
   cd ${TEMPPAT}
   rm -rf rd.temp && rm -rf vmlinux* && rm -rf zImage-dsm && rm -rf initrd-dsm && status "setstatus" "cachingpat" "false" "Removing temp files from ${TEMPPAT}"
@@ -2158,7 +2160,7 @@ function build() {
     wecho "Copying original ramdisk to partitions ${loaderdisk}1 and ${loaderdisk}2" && status "setstatus" "ramdiskpatch" "warn" "Copying original ramdisk to partitions ${loaderdisk}1 and ${loaderdisk}2"
     cp -f ${TEMPPAT}/rd.gz /mnt/${loaderdisk}1/
     cp -f ${TEMPPAT}/rd.gz /mnt/${loaderdisk}2/
-    wecho "ramdisk sha256sum matches expected sha256sum, patching kernel" && status "setstatus" "ramdiskpatch" "warn" "ramdisk sha256sum matches expected sha256sum, patching kernel"
+    wecho "ramdisk sha256sum matches expected sha256sum, patching ramdisk" && status "setstatus" "ramdiskpatch" "warn" "ramdisk sha256sum matches expected sha256sum, patching ramdisk"
     patchramdisk
   else
     wecho "rd.gz  does not match sha256sum : $extractedrdsha"
@@ -2480,7 +2482,11 @@ EOF
   EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
   EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
   BUILDVERSION="$(echo $VERSION | awk -F- '{print $2}')"
-  wecho "Please note that for MODEL ${BUILDMODEL}_${BUILDVERSION}, the following extensions are added automatically: $EXTENSIONS <br>"
+  if [ -z "$EXTENSIONS" ]; then
+    wecho "No auto included extensions found for MODEL ${BUILDMODEL}_${BUILDVERSION}, check ${CUSTOMCONFIG} for this model"
+  else
+    wecho "Please note that for MODEL ${BUILDMODEL}_${BUILDVERSION}, the following extensions are added automatically: $EXTENSIONS <br>"
+  fi
 
   for exturl in $EXTENSIONS_SOURCE_URL; do
 
@@ -2500,6 +2506,7 @@ EOF
       cat /home/tc/payload/$ext/*json | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq
     done
   )"
+
   [ ! -f $extensionfile ] && curl --insecure -sL $extensionrepofile -O
   extensionlist="$(cat $extensionfile | jq -r -e '. | .id,.url ' | paste -d " " - - | sort | uniq)"
 

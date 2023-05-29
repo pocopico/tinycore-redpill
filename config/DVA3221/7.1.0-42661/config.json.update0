@@ -22,7 +22,7 @@
     "patches": {
         "_comment": ".bsp patches are applied to FILES using bspatch(1); .patch are applied to DIRECTORIES using patch(1)",
         "zlinux": [
-            "zImage-001-dav3221-42661-ramdisk-and-header.bsp"
+            "zImage-001-dva3221-42661-ramdisk-and-header.bsp"
         ],
         "ramdisk": [
             "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",

@@ -1856,6 +1856,11 @@ function patchramdisk() {
     _set_conf_kv $KEY $VALUE $temprd/etc/synoinfo.conf
   done <<<$(echo $SYNOINFO_PATCH | jq . | grep ":" | sed -s 's/"//g' | sed -s 's/,//g')
 
+  echo "Checking synoinfo.conf for config values we've set"
+  for key in $(echo $SYNOINFO_PATCH | jq -re '. | keys_unsorted' | sed -e 's/\[//g' -e 's/\]//g' -e 's/"//g' -e 's/,//g'); do
+    [ $(grep $key ${temprd}/etc/synoinfo.conf | wc -l) -le 0 ] && echo "Key $key : not found in synoinfo.conf" || echo "Key $key : OK "
+  done
+
   wecho "Applying user synoinfo settings"
   status "setstatus" "ramdiskpatch" "false" "Applying user synoinfo settings"
 
@@ -1863,6 +1868,11 @@ function patchramdisk() {
     echo "Key :$KEY Value: $VALUE"
     _set_conf_kv $KEY $VALUE $temprd/etc/synoinfo.conf
   done <<<$(echo $SYNOINFO_USER | jq . | grep ":" | sed -s 's/"//g' | sed -s 's/,//g')
+
+  echo "Checking synoinfo.conf for user_config.json values we've set"
+  for key in $(echo $SYNOINFO_USER | jq -re '. | keys_unsorted' | sed -e 's/\[//g' -e 's/\]//g' -e 's/"//g' -e 's/,//g'); do
+    [ $(grep $key ${temprd}/etc/synoinfo.conf | wc -l) -le 0 ] && echo "Key $key : not found in synoinfo.conf" || echo "Key $key : OK "
+  done
 
   wecho "Copying extra ramdisk files "
   status "setstatus" "ramdiskpatch" "false" "Copying extra ramdisk files"

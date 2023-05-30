@@ -17,7 +17,7 @@ SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 extensionrepofile="https://github.com/pocopico/tcrp-addons/raw/main/addons.json"
 extensionfile="addons.json"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
-SCRIPTVERSION="0.10.5"
+SCRIPTVERSION="0.10.6"
 
 #. ${HOMEPATH}/include/config.sh
 ############################################
@@ -32,6 +32,7 @@ function versionhistory() {
 <br> 0.10.3, Added full image backup function
 <br> 0.10.4, Fixed long standing issue with the corruption of the user_config.json file.
 <br> 0.10.5, Various fixes
+<br> 0.10.6, Added, Logs viewer, and fixed some bugs.
 <br>
 
 EOF
@@ -426,6 +427,14 @@ function imgbackuploader() {
 
 }
 
+function showlogs() {
+
+  wecho "<h3>Current Logs</h3><br>"
+
+  [ -f ${BUILDLOG} ] && echo "<a href=/buildlog.txt>Build Log</a>"
+
+}
+
 function pagebody() {
   cat <<EOF
 
@@ -460,6 +469,7 @@ function pagebody() {
                 <li><a class="dropdown-item" href="${THISURL}?action=sysreboot" onclick="return confirm('About to reboot tinycore are you sure?')" data-toggle="confirmation" data-title="Reboot Tinycore ?">Reboot Tinycore</a></li>
               </ul>
               </li>
+              <li><a href="${THISURL}?action=showlogs">Logs</a></li>
               <li><a href="https://github.com/pocopico/tinycore-redpill">Tinycore Redpill Repo</a></li>
               <li><a href="https://xpenology.com/forum/topic/53817-redpill-tinycore-loader/">Contact</a></li>
               <li><a href="${THISURL}?action=versionhistory">Version ${SCRIPTVERSION}</a></li>           
@@ -2778,6 +2788,7 @@ else
   [ "$action" == "sysreboot" ] && result=$(sysreboot) && recho "$result" | tee -a ${BUILDLOG}
   [ "$action" == "filemanagement" ] && result=$(filemanagement) && echo "$result" | tee -a ${BUILDLOG}
   [ "$action" == "imgbackuploader" ] && result=$(imgbackuploader) && echo "$result" | tee -a ${BUILDLOG}
+  [ "$action" == "showlogs" ] && result=$(showlogs) && echo "$result" | tee -a ${BUILDLOG}
 
   [ "$action" == "none" ] && loaderstatus
 

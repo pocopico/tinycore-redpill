@@ -254,13 +254,14 @@ cd /exts
 
 case \$1 in
 load_kmods)
-  _load_kmods
+  _load_kmods >> /exts/extlog.log
   ;;
 on_boot_scripts)
-  _run_scripts 'on_boot'
+  _run_scripts "on_boot" >> /exts/extlog.log
   ;;
 on_os_load_scripts)
-  _run_scripts 'on_os_load'
+  _run_scripts "on_os_load" >> /exts/extlog.log
+   cp /exts/extlog.log /tmpRoot/.log.junior/
   ;;
 *)
   if [ \$# -lt 1 ]; then

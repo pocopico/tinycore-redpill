@@ -117,8 +117,7 @@
         "cmdline": {
           "earlyprintk": null,
           "loglevel": 15,
-          "log_buf_len": "32M",
-          "force_junior": null
+          "log_buf_len": "32M"
         }
       },
       "RedPill DVA3221 v7.1.0-42661 (SATA, Verbose, Re-Install DSM)": {
@@ -135,8 +134,7 @@
           "earlyprintk": null,
           "loglevel": 15,
           "synoboot_satadom": 2,
-          "log_buf_len": "32M",
-          "force_junior": null
+          "log_buf_len": "32M"
         }
       }
     }

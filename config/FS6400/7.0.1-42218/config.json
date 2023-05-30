@@ -117,8 +117,7 @@
         "cmdline": {
           "earlyprintk": null,
           "loglevel": 15,
-          "log_buf_len": "32M",
-          "force_junior": null
+          "log_buf_len": "32M"
         }
       },
       "Jun`s Mod x RedPill FS6400 v7.0.1-42218 Beta (SATA, Verbose, Re-Install DSM)": {
@@ -135,8 +134,7 @@
           "earlyprintk": null,
           "loglevel": 15,
           "synoboot_satadom": 1,
-          "log_buf_len": "32M",
-          "force_junior": null
+          "log_buf_len": "32M"
         }
       }
     }

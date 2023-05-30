@@ -102,8 +102,7 @@
         "cmdline": {
           "earlyprintk": null,
           "loglevel": 15,
-          "log_buf_len": "32M",
-          "force_junior": null
+          "log_buf_len": "32M"
         }
       },
       "RedPill FS2500 v7.1.0-42661 (SATA, Verbose, Re-Install DSM)": {
@@ -121,8 +120,7 @@
           "earlyprintk": null,
           "loglevel": 15,
           "synoboot_satadom": 3,
-          "log_buf_len": "32M",
-          "force_junior": null
+          "log_buf_len": "32M"
         }
       }
     }

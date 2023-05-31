@@ -25,7 +25,8 @@ function build_config() {
           "all-modules": "https://github.com/pocopico/tcrp-addons/raw/main/all-modules/rpext-index.json",
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
-          "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json"
+          "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },

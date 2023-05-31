@@ -1,6 +1,7 @@
 {
   "docker": {},
   "build_configs": [
+
     {
       "id": "ds1019p-7.0.1-42218",
       "platform_version": "ds1019p-7.0.1-42218",
@@ -11,10 +12,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1019p-7.1.0-42661",
       "platform_version": "ds1019p-7.1.0-42661",
@@ -25,10 +27,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1019p-7.1.1-42962",
       "platform_version": "ds1019p-7.1.1-42962",
@@ -39,10 +42,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1019p-7.2.0-64561",
       "platform_version": "ds1019p-7.2.0-64561",
@@ -53,10 +57,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1520p-7.0.1-42218",
       "platform_version": "ds1520p-7.0.1-42218",
@@ -67,10 +72,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1520p-7.1.0-42661",
       "platform_version": "ds1520p-7.1.0-42661",
@@ -81,10 +87,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1520p-7.1.1-42962",
       "platform_version": "ds1520p-7.1.1-42962",
@@ -95,10 +102,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1520p-7.2.0-64561",
       "platform_version": "ds1520p-7.2.0-64561",
@@ -109,10 +117,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1621p-7.0.1-42218",
       "platform_version": "ds1621p-7.0.1-42218",
@@ -123,10 +132,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1621p-7.1.0-42661",
       "platform_version": "ds1621p-7.1.0-42661",
@@ -137,10 +147,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1621p-7.1.1-42962",
       "platform_version": "ds1621p-7.1.1-42962",
@@ -151,10 +162,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1621p-7.2.0-64561",
       "platform_version": "ds1621p-7.2.0-64561",
@@ -165,66 +177,71 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1621xsp-7.0.1-42218",
       "platform_version": "ds1621xsp-7.0.1-42218",
-      "user_config_json": "v1000_user_config.json",
+      "user_config_json": "broadwellnk_user_config.json",
       "add_extensions": [
         {
           "all-modules": "https://github.com/pocopico/tcrp-addons/raw/main/all-modules/rpext-index.json",
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1621xsp-7.1.0-42661",
       "platform_version": "ds1621xsp-7.1.0-42661",
-      "user_config_json": "v1000_user_config.json",
+      "user_config_json": "broadwellnk_user_config.json",
       "add_extensions": [
         {
           "all-modules": "https://github.com/pocopico/tcrp-addons/raw/main/all-modules/rpext-index.json",
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1621xsp-7.1.1-42962",
       "platform_version": "ds1621xsp-7.1.1-42962",
-      "user_config_json": "v1000_user_config.json",
+      "user_config_json": "broadwellnk_user_config.json",
       "add_extensions": [
         {
           "all-modules": "https://github.com/pocopico/tcrp-addons/raw/main/all-modules/rpext-index.json",
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds1621xsp-7.2.0-64561",
       "platform_version": "ds1621xsp-7.2.0-64561",
-      "user_config_json": "v1000_user_config.json",
+      "user_config_json": "broadwellnk_user_config.json",
       "add_extensions": [
         {
           "all-modules": "https://github.com/pocopico/tcrp-addons/raw/main/all-modules/rpext-index.json",
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds2422p-7.0.1-42218",
       "platform_version": "ds2422p-7.0.1-42218",
@@ -235,10 +252,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds2422p-7.1.0-42661",
       "platform_version": "ds2422p-7.1.0-42661",
@@ -249,10 +267,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds2422p-7.1.1-42962",
       "platform_version": "ds2422p-7.1.1-42962",
@@ -263,10 +282,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds2422p-7.2.0-64561",
       "platform_version": "ds2422p-7.2.0-64561",
@@ -277,10 +297,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3615xs-7.0.1-42218",
       "platform_version": "ds3615xs-7.0.1-42218",
@@ -291,10 +312,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3615xs-7.1.0-42661",
       "platform_version": "ds3615xs-7.1.0-42661",
@@ -305,10 +327,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3615xs-7.1.1-42962",
       "platform_version": "ds3615xs-7.1.1-42962",
@@ -319,10 +342,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3615xs-7.2.0-64561",
       "platform_version": "ds3615xs-7.2.0-64561",
@@ -333,10 +357,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3617xs-7.0.1-42218",
       "platform_version": "ds3617xs-7.0.1-42218",
@@ -347,10 +372,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3617xs-7.1.0-42661",
       "platform_version": "ds3617xs-7.1.0-42661",
@@ -361,10 +387,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3617xs-7.1.1-42962",
       "platform_version": "ds3617xs-7.1.1-42962",
@@ -375,10 +402,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3617xs-7.2.0-64561",
       "platform_version": "ds3617xs-7.2.0-64561",
@@ -389,10 +417,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3615xs-7.0.1-42218",
       "platform_version": "ds3615xs-7.0.1-42218",
@@ -403,10 +432,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3615xs-7.1.0-42661",
       "platform_version": "ds3615xs-7.1.0-42661",
@@ -417,10 +447,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3615xs-7.1.1-42962",
       "platform_version": "ds3615xs-7.1.1-42962",
@@ -431,10 +462,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3615xs-7.2.0-64561",
       "platform_version": "ds3615xs-7.2.0-64561",
@@ -445,10 +477,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3617xs-7.0.1-42218",
       "platform_version": "ds3617xs-7.0.1-42218",
@@ -459,10 +492,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3617xs-7.1.0-42661",
       "platform_version": "ds3617xs-7.1.0-42661",
@@ -473,10 +507,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3617xs-7.1.1-42962",
       "platform_version": "ds3617xs-7.1.1-42962",
@@ -487,10 +522,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3617xs-7.2.0-64561",
       "platform_version": "ds3617xs-7.2.0-64561",
@@ -501,10 +537,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3622xsp-7.0.1-42218",
       "platform_version": "ds3622xsp-7.0.1-42218",
@@ -515,10 +552,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3622xsp-7.1.0-42661",
       "platform_version": "ds3622xsp-7.1.0-42661",
@@ -529,10 +567,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3622xsp-7.1.1-42962",
       "platform_version": "ds3622xsp-7.1.1-42962",
@@ -543,10 +582,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds3622xsp-7.2.0-64561",
       "platform_version": "ds3622xsp-7.2.0-64561",
@@ -557,10 +597,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds723p-7.0.1-42218",
       "platform_version": "ds723p-7.0.1-42218",
@@ -571,10 +612,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds723p-7.1.0-42661",
       "platform_version": "ds723p-7.1.0-42661",
@@ -585,10 +627,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds723p-7.1.1-42962",
       "platform_version": "ds723p-7.1.1-42962",
@@ -599,10 +642,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds723p-7.2.0-64561",
       "platform_version": "ds723p-7.2.0-64561",
@@ -613,10 +657,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds918p-7.0.1-42218",
       "platform_version": "ds918p-7.0.1-42218",
@@ -627,10 +672,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds918p-7.1.0-42661",
       "platform_version": "ds918p-7.1.0-42661",
@@ -641,10 +687,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds918p-7.1.1-42962",
       "platform_version": "ds918p-7.1.1-42962",
@@ -655,10 +702,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds918p-7.2.0-64561",
       "platform_version": "ds918p-7.2.0-64561",
@@ -669,10 +717,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds920p-7.0.1-42218",
       "platform_version": "ds920p-7.0.1-42218",
@@ -683,10 +732,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds920p-7.1.0-42661",
       "platform_version": "ds920p-7.1.0-42661",
@@ -697,10 +747,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds920p-7.1.1-42962",
       "platform_version": "ds920p-7.1.1-42962",
@@ -711,10 +762,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds920p-7.2.0-64561",
       "platform_version": "ds920p-7.2.0-64561",
@@ -725,10 +777,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds923p-7.0.1-42218",
       "platform_version": "ds923p-7.0.1-42218",
@@ -739,10 +792,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds923p-7.1.0-42661",
       "platform_version": "ds923p-7.1.0-42661",
@@ -753,10 +807,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds923p-7.1.1-42962",
       "platform_version": "ds923p-7.1.1-42962",
@@ -767,10 +822,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "ds923p-7.2.0-64561",
       "platform_version": "ds923p-7.2.0-64561",
@@ -781,10 +837,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva1622-7.0.1-42218",
       "platform_version": "dva1622-7.0.1-42218",
@@ -795,10 +852,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva1622-7.1.0-42661",
       "platform_version": "dva1622-7.1.0-42661",
@@ -809,10 +867,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva1622-7.1.1-42962",
       "platform_version": "dva1622-7.1.1-42962",
@@ -823,10 +882,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva1622-7.2.0-64561",
       "platform_version": "dva1622-7.2.0-64561",
@@ -837,10 +897,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva3219-7.0.1-42218",
       "platform_version": "dva3219-7.0.1-42218",
@@ -851,10 +912,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva3219-7.1.0-42661",
       "platform_version": "dva3219-7.1.0-42661",
@@ -865,10 +927,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva3219-7.1.1-42962",
       "platform_version": "dva3219-7.1.1-42962",
@@ -879,10 +942,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva3219-7.2.0-64561",
       "platform_version": "dva3219-7.2.0-64561",
@@ -893,10 +957,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva3221-7.0.1-42218",
       "platform_version": "dva3221-7.0.1-42218",
@@ -907,10 +972,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva3221-7.1.0-42661",
       "platform_version": "dva3221-7.1.0-42661",
@@ -921,10 +987,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva3221-7.1.1-42962",
       "platform_version": "dva3221-7.1.1-42962",
@@ -935,10 +1002,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "dva3221-7.2.0-64561",
       "platform_version": "dva3221-7.2.0-64561",
@@ -949,10 +1017,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "fs2500-7.0.1-42218",
       "platform_version": "fs2500-7.0.1-42218",
@@ -963,10 +1032,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "fs2500-7.1.0-42661",
       "platform_version": "fs2500-7.1.0-42661",
@@ -977,10 +1047,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "fs2500-7.1.1-42962",
       "platform_version": "fs2500-7.1.1-42962",
@@ -991,10 +1062,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "fs2500-7.2.0-64561",
       "platform_version": "fs2500-7.2.0-64561",
@@ -1005,10 +1077,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "fs6400-7.0.1-42218",
       "platform_version": "fs6400-7.0.1-42218",
@@ -1019,10 +1092,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "fs6400-7.1.0-42661",
       "platform_version": "fs6400-7.1.0-42661",
@@ -1033,10 +1107,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "fs6400-7.1.1-42962",
       "platform_version": "fs6400-7.1.1-42962",
@@ -1047,10 +1122,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "fs6400-7.2.0-64561",
       "platform_version": "fs6400-7.2.0-64561",
@@ -1061,10 +1137,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs3413xsp-7.0.1-42218",
       "platform_version": "rs3413xsp-7.0.1-42218",
@@ -1075,10 +1152,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs3413xsp-7.1.0-42661",
       "platform_version": "rs3413xsp-7.1.0-42661",
@@ -1089,10 +1167,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs3413xsp-7.1.1-42962",
       "platform_version": "rs3413xsp-7.1.1-42962",
@@ -1103,10 +1182,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs3413xsp-7.2.0-64561",
       "platform_version": "rs3413xsp-7.2.0-64561",
@@ -1117,10 +1197,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs3618xs-7.0.1-42218",
       "platform_version": "rs3618xs-7.0.1-42218",
@@ -1131,10 +1212,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs3618xs-7.1.0-42661",
       "platform_version": "rs3618xs-7.1.0-42661",
@@ -1145,10 +1227,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs3618xs-7.1.1-42962",
       "platform_version": "rs3618xs-7.1.1-42962",
@@ -1159,10 +1242,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs3618xs-7.2.0-64561",
       "platform_version": "rs3618xs-7.2.0-64561",
@@ -1173,10 +1257,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs4021xsp-7.0.1-42218",
       "platform_version": "rs4021xsp-7.0.1-42218",
@@ -1187,10 +1272,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs4021xsp-7.1.0-42661",
       "platform_version": "rs4021xsp-7.1.0-42661",
@@ -1201,10 +1287,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs4021xsp-7.1.1-42962",
       "platform_version": "rs4021xsp-7.1.1-42962",
@@ -1215,10 +1302,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "rs4021xsp-7.2.0-64561",
       "platform_version": "rs4021xsp-7.2.0-64561",
@@ -1229,10 +1317,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "sa6400-7.0.1-42218",
       "platform_version": "sa6400-7.0.1-42218",
@@ -1243,10 +1332,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "sa6400-7.1.0-42661",
       "platform_version": "sa6400-7.1.0-42661",
@@ -1257,10 +1347,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "sa6400-7.1.1-42962",
       "platform_version": "sa6400-7.1.1-42962",
@@ -1271,10 +1362,11 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
+
     {
       "id": "sa6400-7.2.0-64561",
       "platform_version": "sa6400-7.2.0-64561",
@@ -1285,17 +1377,18 @@
           "eudev": "https://github.com/pocopico/tcrp-addons/raw/main/eudev/rpext-index.json",
           "disks": "https://github.com/pocopico/tcrp-addons/raw/main/disks/rpext-index.json",
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json",
-          "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
+	  "boot-wait": "https://github.com/pocopico/tcrp-addons/raw/main/boot-wait/rpext-index.json"
         }
       ]
     },
-    {
-      "id": "",
-      "platform_version": "",
-      "user_config_json": "",
+
+ {
+      "id": "endofids",
+      "platform_version": "endofplatforms",
+      "user_config_json": "endofuserconfig",
       "add_extensions": [
         {
-          "extensions": ""
+          "extensions": "endofextensions"
         }
       ]
     }

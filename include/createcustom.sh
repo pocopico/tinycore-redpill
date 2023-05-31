@@ -37,12 +37,12 @@ EOF
 function footer() {
 	cat <<EOF
  {
-      "id": "",
-      "platform_version": "",
-      "user_config_json": "",
+      "id": "endofids",
+      "platform_version": "endofplatforms",
+      "user_config_json": "endofuserconfig",
       "add_extensions": [
         {
-          "extensions": ""
+          "extensions": "endofextensions"
         }
       ]
     }
@@ -64,7 +64,7 @@ function platforms() {
 	ds1621p | ds2422p | fs2500)
 		platform="v1000"
 		;;
-	ds1621xs | ds3622xs | rs4021xsp)
+	ds1621xsp | ds3622xs | rs4021xsp)
 		platform="broadwellnk"
 		;;
 	ds3615xs | rs3413xsp)

@@ -43,7 +43,9 @@
     "updateurl": "http://example.com/",
     "update_server": "http://example.com/",
     "update_server_ssl": "https//example.com/",
-    "myds_region_api_base_url": "https://example.com"
+    "myds_region_api_base_url": "https://example.com",
+    "maxlanport": "8",
+    "netif_seq": "0 1 2 3 4 5 6 7"
   },
   "grub": {
     "template": "@@@COMMON@@@/grub-template.conf",

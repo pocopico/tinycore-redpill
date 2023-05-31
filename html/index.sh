@@ -2621,7 +2621,7 @@ function fullupgrade() {
   echo "Backuping up current files to /mnt/$tcrppart/backup/loaderbackup-${backupdate}.tgz"
   tar cfz /mnt/$tcrppart/backup/loaderbackup-${backupdate}.tgz /home/tc 2>&1 >/dev/null
   git --git-dir=/dev/null clone --depth=1 $rploadergit
-  cd /home/tc/tinycore-redpill && sudo cp -frp * /home/tc && cd /home/tc
+  cd /home/tc/tinycore-redpill && cp -frp * /home/tc && cd /home/tc
   rm -rf tinycore-redpill
   find /home/tc -type f -name "*.sh" -exec chmod +x {} \;
   find /home/tc/tools -type f -exec chmod +x {} \;

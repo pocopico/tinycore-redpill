@@ -15,8 +15,15 @@ function getstaticmodule() {
 
         echo "Looking for redpill for : $SYNOMODEL"
 
-        release=$(echo $extension | jq -r -e --arg SYNOMODEL $SYNOMODEL '.releases[$SYNOMODEL]')
-        files=$(curl --insecure --silent --location "$release" | jq -r '.files[] .url' | grep -v ".sh")
+        release="$(echo $extension | jq -r -e --arg SYNOMODEL $SYNOMODEL '.releases[$SYNOMODEL]')"
+        files="$(curl --insecure --silent --location "$release" | jq -r '.files[] .url' | grep -v ".sh")"
+
+        if [ -n "$files" ] && [ "$files" != "null" ]; then
+                echo "SynoModel: $SYNOMODEL, Redpill Make : $redpillmake, Release : $release "
+                echo "Adding RP LKM files : $files"
+        else
+                echo "No RP LKM files found for $SYNOMODEL"
+        fi
 
         for file in $files; do
                 echo "Getting file $file"
@@ -321,7 +328,7 @@ function syntaxcheck() {
 # ./newcustom.sh extadd https://raw.githubusercontent.com/pocopico/rp-ext/master/vmxnet3/rpext-index.json ds3622xsp_42951
 #$1 $2 $3
 
-echo "CMD LOGGED : $0 , $@" >>$0.log
+echo "$(date "+%Y-%b-%d-%H:%m") CMD LOGGED : $0 , $@" >>$0.log
 
 case $1 in
 

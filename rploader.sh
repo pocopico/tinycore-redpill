@@ -1454,6 +1454,12 @@ function downloadextractorv2() {
         sudo cp -rf /home/tc/patch-extractor/lib /lib
         sudo cp -rf /home/tc/patch-extractor/synoarchive.* /bin
 
+        LD_LIBRARY_PATH=/home/tc/patch-extractor/lib /bin/synoarchive.nano >/dev/null 2>&1
+        retVal=$?
+        if [ $retVal -ne 3 ]; then
+            echo "Error : could not execute synoarchive.nano, maybe corrupted" && exit $retval
+        fi
+
     fi
 
 }

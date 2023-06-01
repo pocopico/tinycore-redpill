@@ -17,7 +17,7 @@ SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 extensionrepofile="https://github.com/pocopico/tcrp-addons/raw/main/addons.json"
 extensionfile="addons.json"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
-SCRIPTVERSION="0.10.6"
+SCRIPTVERSION="0.10.7"
 
 #. ${HOMEPATH}/include/config.sh
 ############################################
@@ -33,7 +33,7 @@ function versionhistory() {
 <br> 0.10.4, Fixed long standing issue with the corruption of the user_config.json file.
 <br> 0.10.5, Various fixes
 <br> 0.10.6, Added, Logs viewer, and fixed some bugs.
-<br>
+<br> 0.10.7, Enhanced the redpill model detection as some modules failed to be included.
 
 EOF
 
@@ -1606,7 +1606,7 @@ function getstaticmodule() {
     fi
   done
 
-  if [ -f ${HOMEPATH}/redpill.ko ] && [ -n $(strings ${HOMEPATH}/redpill.ko | grep -i $MODEL) ]; then
+  if [ -f ${HOMEPATH}/redpill.ko ] && [ -n $(strings ${HOMEPATH}/redpill.ko | grep -i $MODEL | head -1) ]; then
     wecho "Copying redpill.ko module to ramdisk"
     cp ${HOMEPATH}/redpill.ko ${TEMPPAT}/rd.temp/usr/lib/modules/rp.ko
   else

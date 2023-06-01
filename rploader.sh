@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 2305011
-# Version : 0.9.4.6
+# Date : 230601
+# Version : 0.9.4.7
 #
 #
 # User Variables :
 
-rploaderver="0.9.4.6"
+rploaderver="0.9.4.7"
 build="main"
 redpillmake="prod"
 
@@ -96,6 +96,7 @@ function history() {
     0.9.4.4 Added cmdmonitor function
     0.9.4.5 Changed the way the system is updated to use the new build method
     0.9.4.6 Updated configuration files, minor fixes, changed from 64551 to 64561
+    0.9.4.7 Added missing configs
     --------------------------------------------------------------------------------------
 EOF
 

@@ -3220,17 +3220,6 @@
           "misc": "https://github.com/pocopico/tcrp-addons/raw/main/misc/rpext-index.json"
         }
       ]
-    },
-
- {
-      "id": "endofids",
-      "platform_version": "endofplatforms",
-      "user_config_json": "endofuserconfig",
-      "add_extensions": [
-        {
-          "extensions": "endofextensions"
-        }
-      ]
     }
   ]
 }

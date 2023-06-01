@@ -2902,8 +2902,6 @@ function getstaticmodule() {
     release=$(echo $extension | jq -r -e --arg SYNOMODEL $SYNOMODEL '.releases[$SYNOMODEL]')
     files=$(curl --insecure -s --location "$release" | jq -r '.files[] .url')
 
-    echo "$release $files"
-
     for file in $files; do
         echo "Getting file $file"
         curl --insecure -s -O $file

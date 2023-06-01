@@ -2259,7 +2259,7 @@ function generategrub() {
     ${HOMEPATH}/include/grubmgr.sh addentry tcrp && [ $(grep -i "Tiny Core Image Build" grub.cfg | wc -l) -gt 0 ] && echo "Added TCRP entry" || echo "Failed to add SATA entry"
     ${HOMEPATH}/include/grubmgr.sh addentry tcrpfriend && [ $(grep -i "Tiny Core Friend" grub.cfg | wc -l) -gt 0 ] && echo "Added TCRP FRIEND entry" || echo "Failed to add SATA entry"
 
-    [ -f ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg ] && cp ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg
+    [ -f ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg ] && cp ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg ${HOMEPATH}/redpill-load/part1/boot/grub/grub.cfg
 
     grep "menuentry" ${HOMEPATH}/grub.cfg
     echo "Copying grub file ${HOMEPATH}/grub.cfg to ${HOMEPATH}/redpill-load/localdiskp1/boot/grub/grub.cfg"

@@ -20,6 +20,27 @@ function build_config() {
       "id": "${model}-${version}",
       "platform_version": "${model}-${version}",
       "user_config_json": "${platform}_user_config.json",
+	   "docker_base_image": "debian:8-slim",
+      "compile_with": "toolkit_dev",
+      "redpill_lkm_make_target": "dev-v7",
+      "downloads": {
+        "kernel": {
+          "url": "https://sourceforge.net/projects/dsgpl/files/Synology%20NAS%20GPL%20Source/25426branch/bromolow-source/linux-3.10.x.txz/download",
+          "sha256": "18aecead760526d652a731121d5b8eae5d6e45087efede0da057413af0b489ed"
+        },
+        "toolkit_dev": {
+          "url": "https://sourceforge.net/projects/dsgpl/files/toolkit/DSM7.0/ds.bromolow-7.0.dev.txz/download",
+          "sha256": "a5fbc3019ae8787988c2e64191549bfc665a5a9a4cdddb5ee44c10a48ff96cdd"
+        }
+      },
+      "redpill_lkm": {
+        "source_url": "https://github.com/pocopico/redpill-lkm.git",
+        "branch": "master"
+      },
+      "redpill_load": {
+        "source_url": "https://github.com/pocopico/redpill-load.git",
+        "branch": "develop"
+      },
       "add_extensions": [
         {
           "all-modules": "https://github.com/pocopico/tcrp-addons/raw/main/all-modules/rpext-index.json",

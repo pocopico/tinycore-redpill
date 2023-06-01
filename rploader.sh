@@ -1392,11 +1392,13 @@ function downloadextractorv2() {
 
         cd /home/tc/patch-extractor/
 
-        [ -f /home/tc/oldpat.tar.gz ] || curl --insecure --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
+        [ ! -f /home/tc/oldpat.tar.gz ] && curl --insecure --location https://global.download.synology.com/download/DSM/release/7.0.1/42218/DSM_DS3622xs%2B_42218.pat --output /home/tc/oldpat.tar.gz
 
-        tar xf ../oldpat.tar.gz hda1.tgz
-        tar xf hda1.tgz usr/lib
-        tar xf hda1.tgz usr/syno/sbin
+        [ -f /home/tc/oldpat.tar.gz ] && echo "OK old pat downloaded !!!" || echo "ERROR downloading old pat !!!" && exit 1
+
+        tar xf ../oldpat.tar.gz hda1.tgz || echo "Error : could not extract extractor pat file, maybe corrupted" && exit 1
+        tar xf hda1.tgz usr/lib || echo "Error : could not extract extractor pat file, maybe corrupted" && exit 1
+        tar xf hda1.tgz usr/syno/sbin || echo "Error : could not extract extractor pat file, maybe corrupted" && exit 1
 
         [ ! -d /home/tc/patch-extractor/lib/ ] && mkdir /home/tc/patch-extractor/lib/
 
@@ -3772,12 +3774,10 @@ if [ -z "$GATEWAY_INTERFACE" ]; then
         ;;
     bringfriend)
         deprecated $@
-        #bringfriend
         exit 0
         ;;
     removefriend)
         deprecated $@
-        #removefriend
         exit 0
         ;;
     downloadupgradepat)

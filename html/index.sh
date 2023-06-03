@@ -282,27 +282,18 @@ function filemanagement() {
 <th title="Field #3">Link</th>
 </tr></thead>
 <tbody><tr>
-EOF
-
-  testarchive /tmp/$patfile >/dev/null 2>&1
-
-  if [ "$isencrypted" == "yes" ]; then
-    echo "    <td>Original downloaded PAT for $MODEL version $VERSION</td>"
-    echo "    <td>Use that for the installation</td>"
-    echo "    <td><a href=/assets/$patfile>$patfile</a></td>"
-    echo "    </tr>"
-
-  fi
-
-  cat <<EOF
-    <td>Unencrypted PAT file for $MODEL version $VERSION</td>
-    <td>Keep that as a backup</td>
-    <td><a href=/assets/$unencpatfile>$unencpatfile</a></td>
-    </tr>
-    <td>User Config file for $MODEL version $VERSION</td>
-    <td>Keep that as a backup</td>
-    <td><a href=/assets/user_config.json>user_config.json</a></td>
-    </tr>
+<td>Original downloaded PAT for $MODEL version $VERSION</td>
+<td>Use that for the installation</td>
+<td><a href=/assets/$patfile>$patfile</a></td>
+</tr>
+<td>Unencrypted PAT file for $MODEL version $VERSION</td>
+<td>Keep that as a backup</td>
+<td><a href=/assets/$unencpatfile>$unencpatfile</a></td>
+</tr>
+<td>User Config file for $MODEL version $VERSION</td>
+<td>Keep that as a backup</td>
+<td><a href=/assets/user_config.json>user_config.json</a></td>
+</tr>
 
 </tr></tbody></table>
 

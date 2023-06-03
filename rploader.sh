@@ -96,7 +96,7 @@ function history() {
     0.9.4.4 Added cmdmonitor function
     0.9.4.5 Changed the way the system is updated to use the new build method
     0.9.4.6 Updated configuration files, minor fixes, changed from 64551 to 64561
-    0.9.4.7 Added missing configs
+    0.9.4.7 Added missing configs, Added support for RS3413xs+
     --------------------------------------------------------------------------------------
 EOF
 
@@ -520,7 +520,7 @@ function syntaxcheck() {
 
         serialgen)
             echo "Syntax error, You have to specify one of the existing models"
-            echo "DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+ SA6400 FS2500"
+            echo "DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+ SA6400 FS2500 RS3413xs+"
             ;;
 
         patchdtc)
@@ -2298,7 +2298,7 @@ function serialgen() {
 
     [ "$2" == "realmac" ] && let keepmac=1 || let keepmac=0
 
-    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "DS923+" ] || [ "$1" = "SA6400" ] || [ "$1" = "FS2500" ]; then
+    if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "DS923+" ] || [ "$1" = "SA6400" ] || [ "$1" = "FS2500" ] || [ "$1" = "RS3413xs+" ]; then
         serial="$(generateSerial $1)"
         mac="$(generateMacAddress $1)"
         realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}')
@@ -2332,7 +2332,7 @@ function serialgen() {
         fi
     else
         echo "Error : $1 is not an available model for serial number generation. "
-        echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+ SA6400 FS2500"
+        echo "Available Models : DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+ SA6400 FS2500 RS3413xs+"
     fi
 
 }
@@ -2375,6 +2375,10 @@ function beginArray() {
     FS2500)
         permanent="PSN"
         serialstart="1960"
+        ;;
+    RS3413xs+)
+        permanent="LWN"
+        serialstart="1130 1230 1330 1430"
         ;;
     DVA3219)
         permanent="RFR"
@@ -2473,6 +2477,9 @@ function generateSerial() {
         serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
         ;;
     FS2500)
+        serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
+        ;;
+    RS3413xs+)
         serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
         ;;
     DS920+)
@@ -2776,7 +2783,7 @@ mountshare, version, monitor, bringfriend, downloadupgradepat, help
   
 - serialgen <synomodel> <option> :
   Generates a serial number and mac address for the following platforms 
-  DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+ SA6400 FS2500
+  DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+ SA6400 FS2500 RS3413xs+
   
   Valid Options :  realmac , keeps the real mac of interface eth0
   
@@ -3286,6 +3293,8 @@ function setplatform() {
         SYNOMODEL="ds2422p_$TARGET_REVISION" && MODEL="DS2422+"
     elif [ "${TARGET_PLATFORM}" = "fs2500" ]; then
         SYNOMODEL="fs2500_$TARGET_REVISION" && MODEL="FS2500"
+    elif [ "${TARGET_PLATFORM}" = "rs3413xsp" ]; then
+        SYNOMODEL="rs3413xsp_$TARGET_REVISION" && MODEL="RS3413xs+"
     elif [ "${TARGET_PLATFORM}" = "rs4021xsp" ]; then
         SYNOMODEL="rs4021xsp_$TARGET_REVISION" && MODEL="RS4021xs+"
     elif [ "${TARGET_PLATFORM}" = "r1000" ] || [ "${TARGET_PLATFORM}" = "ds923p" ]; then

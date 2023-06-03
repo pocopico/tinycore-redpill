@@ -61,6 +61,7 @@ function pagehead() {
       }
     </style>
     <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="assets/css/tcrp.css" rel="stylesheet">
     
 
@@ -296,10 +297,51 @@ function filemanagement() {
 </tr>
 
 </tr></tbody></table>
-
-      </div>
-    
 EOF
+
+  if [ $(ls /home/tc/html/files | wc -l) -gt 0 ]; then
+    cat <<EOF
+
+<table class="table table-dark">
+<thead><tr><th title="Field #1">Uploaded Filename</th>
+<th title="Field #2">Description</th>
+<th title="Field #3">Link</th>
+<th title="Field #4">Action</th>
+</tr></thead>
+<tbody><tr>
+EOF
+    for file in $(ls /home/tc/html/files); do
+      echo "<tr><td>$file</td><td>Uploaded file</td><td><a href=/files/$file>$file</a></td><td><a class=\"btn btn-primary btn-lg active\" role=\"button\" aria-pressed=\"true\" href=/delfile.sh?file=$file>Delete</a</p></td></tr>"
+    done
+
+    usefiles
+
+    cat <<EOF
+   
+</tr></tbody></table></div>
+
+<a class="btn btn-danger btn-lg active btnright" role="button" aria-pressed="true" href=/delfile.sh?file=ALL>Empty Folder</a>
+
+EOF
+  fi
+  cat <<EOF
+<form action="upload.php" method="post" enctype="multipart/form-data">
+<label for="fileToUpload" class="custom-file-upload btn-normal"> Select file to upload (max 500MB)</label>
+<input type="file" name="fileToUpload" id="fileToUpload" class="custom-file-input">
+<input type="submit" value="Upload File" name="submit" class="btn-success">
+</form>
+EOF
+}
+
+function usefiles() {
+
+  for file in $(ls /home/tc/html/files); do
+
+    fileextension="$(echo $file | awk -F. '{print $NF}')"
+    echo "file $file found with extension :$fileextension" >>/home/tc/html/fileuse.txt
+    [ "$fileextension" == "pat" ] && echo "pat file $file found" >>/home/tc/html/fileuse.txt
+    [ "$fileextension" == "json" ] && echo "pat file $file found" >>/home/tc/html/fileuse.txt
+  done
 
 }
 
@@ -311,7 +353,7 @@ function selectmodel() {
 EOF
   echo "<option value=\"'Please Select Model\">Select Model</option>"
   #for model in `getPlatforms`
-  for model in $(ls ${CONFIGFILES} | grep -v comm | sed -e 's/\///'); do
+  for model in $(ls ${CONFIGFILES} | grep -v comm | grep -v disabled | sed -e 's/\///'); do
     echo "<option value=\"'$model\">$model</option>"
   done
   cat <<EOF
@@ -420,9 +462,31 @@ function imgbackuploader() {
 
 function showlogs() {
 
-  wecho "<h3>Current Logs</h3><br>"
+  LOGSPATH="${HOMEPATH}/html/logs"
+  mkdir -p ${LOGSPATH}
 
-  [ -f ${BUILDLOG} ] && echo "<a href=/buildlog.txt>Build Log</a>"
+  cat <<EOF
+   <div class="filemanagement">
+      <div class="title-bar">
+        <h3>Files Download</h3>  
+     </div>
+<table class="table table-dark">
+<thead><tr><th title="Field #1">Log File</th>
+<th title="Field #2">Description</th>
+<th title="Field #3">Link</th>
+</tr></thead>
+<tbody><tr>
+EOF
+
+  [ -f ${BUILDLOG} ] && echo "<td>Current Build Log</td><td>Use that build troubleshooting report</td><td><a href=/buildlog.txt>Build Log</a></td></tr>"
+  [ -f /mnt/${tcrppart}/exts/extlog.log ] && [ ! -h ${LOGSPATH}/extlog.log ] && ln -s /mnt/${tcrppart}/exts/extlog.log ${LOGSPATH}/extlog.log || echo "<td>Last ext load Log</td><td>Use that for boot troubleshooting report</td><td><a href=/logs/extlog.log>Ext Log</a></td></tr>"
+
+  cat <<EOF
+</tr></tbody></table>
+
+      </div>
+    
+EOF
 
 }
 

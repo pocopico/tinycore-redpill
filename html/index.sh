@@ -480,8 +480,9 @@ function showlogs() {
 <tbody><tr>
 EOF
 
-  [ -f ${BUILDLOG} ] && echo "<td>Current Build Log</td><td>Use that build troubleshooting report</td><td><a href=/buildlog.txt>Build Log</a></td></tr>"
-  [ -f /mnt/${tcrppart}/exts/extlog.log ] && [ ! -h ${LOGSPATH}/extlog.log ] && ln -s /mnt/${tcrppart}/exts/extlog.log ${LOGSPATH}/extlog.log || echo "<td>Last ext load Log</td><td>Use that for boot troubleshooting report</td><td><a href=/logs/extlog.log>Ext Log</a></td></tr>"
+  [ -f ${BUILDLOG} ] && echo "<td>Current Build Log</td><td>Use that as a build troubleshooting report</td><td><a href=/buildlog.txt>Build Log</a></td></tr>"
+  [ -f /mnt/${tcrppart}/exts/extlog.log ] && [ ! -h ${LOGSPATH}/extlog.log ] && ln -s /mnt/${tcrppart}/exts/extlog.log ${LOGSPATH}/extlog.log || echo "<td>Last ext load Log</td><td>Use that as a boot troubleshooting report</td><td><a href=/logs/extlog.log>Ext Log</a></td></tr>"
+  [ -f /mnt/${tcrppart}/friendlog.log ] && [ ! -h ${LOGSPATH}/friendlog.log ] && ln -s /mnt/${tcrppart}/exts/friendlog.log ${LOGSPATH}/friendlog.log || echo "<td>Last TCRP Friend load Log</td><td>Use that as a TCRP Friend troubleshooting report</td><td><a href=/logs/extlog.log>Ext Log</a></td></tr>"
 
   cat <<EOF
 </tr></tbody></table>
@@ -828,7 +829,7 @@ EOF
 function sysreboot() {
 
   wecho "System is going for reboot" | tee -a $LOGFILE
-  rm -rf ${HOMEPATH}/html/files/* >> /dev/null
+  rm -rf ${HOMEPATH}/html/files/* >>/dev/null
   #unlink ${HOMEPATH}/html/assets/*pat >> /dev/null
   sync
   sync

@@ -264,15 +264,13 @@ load_kmods)
   _load_kmods >> /exts/extlog.log
   ;;
 on_boot_scripts)
-  _run_scripts "on_boot" >> /exts/extlog.log
-  ;;
+  _run_scripts "on_boot" 2>&1 >> /exts/extlog.log
+  mkdir -p /tcrp && cd /dev && mount synoboot3 /tcrp &&  mkdir -p /tcrp/extlog &&  cp /exts/extlog.log /tcrp/extlog/ && umount /tcrp  
+;;
 on_os_load_scripts)
-  _run_scripts "on_os_load" >> /exts/extlog.log
+  _run_scripts "on_os_load" 2>&1 >> /exts/extlog.log
    cp /exts/extlog.log /tmpRoot/.log.junior/
-   mkdir -p /tcrp && cd /dev && mount synoboot3 /tcrp
-   mkdir -p /tcrp/extlog && cp /var/log /tcrp/extlog/
-   cp /exts/extlog.log /tcrp/extlog/
-   umount /tcrp
+  mkdir -p /tcrp && cd /dev && mount synoboot3 /tcrp && mkdir -p /tcrp/extlog && cp -rf /var/log/* /tcrp/extlog/ && cp /exts/extlog.log /tcrp/extlog/ && umount /tcrp
   ;;
 *)
   if [ \$# -lt 1 ]; then

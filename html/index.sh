@@ -1161,10 +1161,13 @@ function updateuserconfigfield() {
   block="$1"
   field="$2"
   value="$3"
+  retries=0
 
   while [ -f update.tmp ]; do
+    [ $retries -gt 10 ] && rm -f update.tmp
     echo "$(date) - Waiting for update.tmp to be removed" >>updateconfig.log
     sleep 1
+    retries=$((retries + 1))
   done
 
   if [ "$(jq -re ".$block.$field" $USERCONFIGFILE)" != "$value" ]; then

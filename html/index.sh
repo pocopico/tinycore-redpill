@@ -1927,7 +1927,7 @@ function patchramdisk() {
 
   while IFS=":" read KEY VALUE; do
     echo "Key :$KEY Value: $VALUE"
-    _set_conf_kv $KEY $VALUE $temprd/etc/synoinfo.conf
+    _set_conf_kv $KEY "$VALUE" $temprd/etc/synoinfo.conf
   done <<<$(echo $SYNOINFO_PATCH | jq . | grep ":" | sed -s 's/"//g' | sed -s 's/,//g')
 
   echo "Checking synoinfo.conf for config values we've set"
@@ -1940,7 +1940,7 @@ function patchramdisk() {
 
   while IFS=":" read KEY VALUE; do
     echo "Key :$KEY Value: $VALUE"
-    _set_conf_kv $KEY $VALUE $temprd/etc/synoinfo.conf
+    _set_conf_kv $KEY "$VALUE" $temprd/etc/synoinfo.conf
   done <<<$(echo $SYNOINFO_USER | jq . | grep ":" | sed -s 's/"//g' | sed -s 's/,//g')
 
   echo "Checking synoinfo.conf for user_config.json values we've set"

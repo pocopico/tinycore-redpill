@@ -17,7 +17,7 @@ SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 extensionrepofile="https://github.com/pocopico/tcrp-addons/raw/main/addons.json"
 extensionfile="addons.json"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
-SCRIPTVERSION="0.10.7"
+SCRIPTVERSION="0.10.8"
 
 #. ${HOMEPATH}/include/config.sh
 ############################################
@@ -34,6 +34,7 @@ function versionhistory() {
 <br> 0.10.5, Various fixes
 <br> 0.10.6, Added, Logs viewer, and fixed some bugs.
 <br> 0.10.7, Enhanced the redpill model detection as some modules failed to be included.
+<br> 0.10.8, Created the filemanagement function, and added the ability to process files.
 
 EOF
 
@@ -311,37 +312,38 @@ EOF
 <tbody><tr>
 EOF
     for file in $(ls /home/tc/html/files); do
-      echo "<tr><td>$file</td><td>Uploaded file</td><td><a href=/files/$file>$file</a></td><td><a class=\"btn btn-primary btn-lg active\" role=\"button\" aria-pressed=\"true\" href=/delfile.sh?file=$file>Delete</a</p></td></tr>"
+      fileextension="$(echo $file | awk -F. '{print $NF}')"
+      action="$(usefiles $fileextension)"
+      echo "<tr><td>$file</td><td>Uploaded file</td><td><a href=/files/$file>$file</a></td><td><a class=\"btn btn-primary btn-lg active\" role=\"button\" aria-pressed=\"true\" href=/files.sh?action=delfile&file=$file>Delete</a>$action</td></tr>"
     done
-
-    usefiles
 
     cat <<EOF
    
 </tr></tbody></table></div>
 
-<a class="btn btn-danger btn-lg active btnright" role="button" aria-pressed="true" href=/delfile.sh?file=ALL>Empty Folder</a>
+<a class="btn btn-danger btn-lg active btnright" role="button" aria-pressed="true" href=/files.sh?action=delfile&file=ALL>Empty Folder</a>
 
 EOF
   fi
   cat <<EOF
 <form action="upload.php" method="post" enctype="multipart/form-data">
-<label for="fileToUpload" class="custom-file-upload btn-normal"> Select file to upload (max 500MB)</label>
+<label for="fileToUpload" class="custom-file-upload btn-normal" data-toggle="tooltip" data-placement="bottom" title="If you want to use a pat file use the following naming convention: <model>-<version>.pat e.g ds3622xsp-42962.pat"> Select file to upload (max 500MB)</label>
 <input type="file" name="fileToUpload" id="fileToUpload" class="custom-file-input">
 <input type="submit" value="Upload File" name="submit" class="btn-success">
 </form>
+
 EOF
+
 }
 
 function usefiles() {
 
-  for file in $(ls /home/tc/html/files); do
+  fileextension="$1"
 
-    fileextension="$(echo $file | awk -F. '{print $NF}')"
-    echo "file $file found with extension :$fileextension" >>/home/tc/html/fileuse.txt
-    [ "$fileextension" == "pat" ] && echo "pat file $file found" >>/home/tc/html/fileuse.txt
-    [ "$fileextension" == "json" ] && echo "pat file $file found" >>/home/tc/html/fileuse.txt
-  done
+  echo "Extension : $fileextension" >>usefile.log
+  [ "$fileextension" == "zip" ] && echo "<a class=\"btn btn-success btn-lg active\" role=\"button\" aria-pressed=\"true\" href=/files.sh?action=usefile&file=$file>Use File</a>" && echo "Found ZIP file" >>usefile.log
+  [ "$fileextension" == "pat" ] && echo "<a class=\"btn btn-success btn-lg active\" role=\"button\" aria-pressed=\"true\" href=/files.sh?action=usefile&file=$file>Use File</a>" && echo "Found PAT file" >>usefile.log
+  [ "$fileextension" == "json" ] && echo "<a class=\"btn btn-success btn-lg active\" role=\"button\" aria-pressed=\"true\" href=/files.sh?action=usefile&file=$file>Use File</a>" && echo "Found JSON FILE" >>usefile.log
 
 }
 
@@ -805,6 +807,7 @@ function onModelChange() {
 \$('#sataportmap').tooltip({'trigger':'focus', 'title': 'Thats a calculated value, if you dont know what that does leave that as is'});
 \$('#diskidxmap').tooltip({'trigger':'focus', 'title': 'Thats a calculated value, if you dont know what that does leave that as is'});
 \$('#staticboot').tooltip({'trigger':'focus', 'title': 'Set this to true if you have issues with booting TCRP Friend'});
+
 
 
 </script>

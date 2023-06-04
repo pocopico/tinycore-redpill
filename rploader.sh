@@ -143,8 +143,9 @@ function setnetwork() {
 }
 
 function httpconf() {
-
+    tce-load -iw php-8.0-cli 2>&1 >/dev/null
     tce-load -iw lighttpd 2>&1 >/dev/null
+    cp ../include/php.ini /usr/local/etc/php/
 
     cat >/home/tc/lighttpd.conf <<EOF
 server.document-root = "/home/tc/html"

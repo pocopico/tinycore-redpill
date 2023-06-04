@@ -464,6 +464,8 @@ function imgbackuploader() {
 
 function showlogs() {
 
+  getvars
+
   LOGSPATH="${HOMEPATH}/html/logs"
   mkdir -p ${LOGSPATH}
 
@@ -482,7 +484,10 @@ EOF
 
   [ -f ${BUILDLOG} ] && echo "<td>Current Build Log</td><td>Use that as a build troubleshooting report</td><td><a href=/buildlog.txt>Build Log</a></td></tr>"
   [ -f /mnt/${tcrppart}/exts/extlog.log ] && [ ! -h ${LOGSPATH}/extlog.log ] && ln -s /mnt/${tcrppart}/exts/extlog.log ${LOGSPATH}/extlog.log || echo "<td>Last ext load Log</td><td>Use that as a boot troubleshooting report</td><td><a href=/logs/extlog.log>Ext Log</a></td></tr>"
-  [ -f /mnt/${tcrppart}/friendlog.log ] && [ ! -h ${LOGSPATH}/friendlog.log ] && ln -s /mnt/${tcrppart}/exts/friendlog.log ${LOGSPATH}/friendlog.log || echo "<td>Last TCRP Friend load Log</td><td>Use that as a TCRP Friend troubleshooting report</td><td><a href=/logs/extlog.log>Ext Log</a></td></tr>"
+  [ -f /mnt/${tcrppart}/friendlog.log ] && [ ! -h ${LOGSPATH}/friendlog.log ] && ln -s /mnt/${tcrppart}/friendlog.log ${LOGSPATH}/friendlog.log || echo "<td>Last TCRP Friend load Log</td><td>Use that as a TCRP Friend troubleshooting report</td><td><a href=/logs/friendlog.log>Friend log</a></td></tr>"
+  [ -f /mnt/${tcrppart}/extlog/linuxrc.syno.log ] && [ ! -h ${LOGSPATH}/linuxrc.syno.log ] && ln -s /mnt/${tcrppart}/extlog/linuxrc.syno.log ${LOGSPATH}/linuxrc.syno.log || echo "<td>Last booted linuxrc.syno.log</td><td>Use that as a boot troubleshooting report</td><td><a href=/logs/linuxrc.syno.log>linuxrc.syno.log</a></td></tr>"
+  [ -f /mnt/${tcrppart}/extlog/junior_reason ] && [ ! -h ${LOGSPATH}/junior_reason ] && ln -s /mnt/${tcrppart}/extlog/junior_reason ${LOGSPATH}/junior_reason || echo "<td>Last junior reason Log</td><td>Use that for boot troubleshooting report</td><td><a href=/logs/junior_reason>Junior Reason</a></td></tr>"
+  [ -f /mnt/${tcrppart}/extlog/messages ] && [ ! -h ${LOGSPATH}/messages ] && ln -s /mnt/${tcrppart}/extlog/messages ${LOGSPATH}/messages || echo "<td>Last boot kernel messages Log</td><td>Use that for boot troubleshooting report</td><td><a href=/logs/messages>messages</a></td></tr>"
 
   cat <<EOF
 </tr></tbody></table>

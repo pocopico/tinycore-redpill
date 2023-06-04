@@ -265,7 +265,6 @@ load_kmods)
   ;;
 on_boot_scripts)
   _run_scripts "on_boot" 2>&1 >> /exts/extlog.log
-  mkdir -p /tcrp && cd /dev && mount synoboot3 /tcrp &&  mkdir -p /tcrp/extlog &&  cp /exts/extlog.log /tcrp/extlog/ && umount /tcrp  
 ;;
 on_os_load_scripts)
   _run_scripts "on_os_load" 2>&1 >> /exts/extlog.log

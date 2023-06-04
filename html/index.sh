@@ -828,6 +828,8 @@ EOF
 function sysreboot() {
 
   wecho "System is going for reboot" | tee -a $LOGFILE
+  rm -rf ${HOMEPATH}/html/files/* >> /dev/null
+  #unlink ${HOMEPATH}/html/assets/*pat >> /dev/null
   sync
   sync
   sync

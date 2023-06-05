@@ -283,22 +283,15 @@ function filemanagement() {
 <th title="Field #2">Description</th>
 <th title="Field #3">Link</th>
 </tr></thead>
-<tbody><tr>
-<td>Original downloaded PAT for $MODEL version $VERSION</td>
-<td>Use that for the installation</td>
-<td><a href=/assets/$patfile>$patfile</a></td>
-</tr>
-<td>Unencrypted PAT file for $MODEL version $VERSION</td>
-<td>Keep that as a backup</td>
-<td><a href=/assets/$unencpatfile>$unencpatfile</a></td>
-</tr>
-<td>User Config file for $MODEL version $VERSION</td>
-<td>Keep that as a backup</td>
-<td><a href=/assets/user_config.json>user_config.json</a></td>
-</tr>
-
-</tr></tbody></table>
+<tbody>
 EOF
+
+  [ $(ls -l ${HOMEPATH}/html/backupfiles | wc -l) -eq 0 ] && echo "<tr><td>Backup Files will be listed here to download</td><td>after a succesfull build</td><td><a href=</a></td></tr>"
+  [ -f backupfiles/$patfile ] && echo "<tr><td>Original downloaded PAT for $MODEL version $VERSION</td><td>Use that for the installation</td><td><a href=/backupfiles/$patfile>$patfile</a></td></tr>"
+  [ -f backupfiles/$unencpatfile ] && echo "<tr><td>Unencrypted PAT file for $MODEL version $VERSION</td><td>Keep that as a backup</td><td><a href=/backupfiles/$unencpatfile>$unencpatfile</a></td></tr>"
+  [ -f backupfiles/user_config.json ] && echo "<tr><td>User Config file for $MODEL version $VERSION</td><td>Keep that as a backup</td><td><a href=/backupfiles/user_config.json>user_config.json</a></td></tr>"
+
+  echo "</tbody></table>"
 
   if [ $(ls /home/tc/html/files | wc -l) -gt 0 ]; then
     cat <<EOF
@@ -451,13 +444,13 @@ function imgbackuploader() {
   dd if=/dev/${loaderdisk} of=/tmp/backup/${backupdate}/tcrpimg-${backupdate}.img bs=1M
 
   cd /tmp/backup/${backupdate} && 7z a -t7z -m0=lzma -mfb=64 -md=32m -ms=on /tmp/tcrpimg-${backupdate}.7z *
-  ln -s /tmp/tcrpimg-${backupdate}.7z /${HOMEPATH}/html/assets/tcrpimg-${backupdate}.7z
+  ln -s /tmp/tcrpimg-${backupdate}.7z /${HOMEPATH}/html/backupfiles/tcrpimg-${backupdate}.7z
   cd /tmp && rm -rf /tmp/backup/
 
   wecho "Moving back PAT files to /mnt/${loaderdisk}3/auxfiles/"
   mv /tmp/temppatdir/*.pat /mnt/${loaderdisk}3/auxfiles/
 
-  echo "<br> You can download the backup file : <a href=/assets/tcrpimg-${backupdate}.7z>tcrpimg-${backupdate}.7z</a></br>"
+  echo "<br> You can download the backup file : <a href=/backupfiles/tcrpimg-${backupdate}.7z>tcrpimg-${backupdate}.7z</a></br>"
   wecho "DONE"
 
 }
@@ -1862,9 +1855,9 @@ function cleanbuild() {
 
 function createdownloadlinks() {
 
-  ln -sf /tmp/${BUILDMODEL}_${BUILDVERSION}.pat ${HOMEPATH}/html/assets/${BUILDMODEL}_${BUILDVERSION}.pat
-  ln -sf ${HOMEPATH}/user_config.json ${HOMEPATH}/html/assets/user_config.json
-  ln -sf /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat ${HOMEPATH}/html/assets/${BUILDMODEL}_${BUILDVERSION}.pat-unenc
+  ln -sf /tmp/${BUILDMODEL}_${BUILDVERSION}.pat ${HOMEPATH}/html/backupfiles/${BUILDMODEL}_${BUILDVERSION}.pat
+  ln -sf ${HOMEPATH}/user_config.json ${HOMEPATH}/html/backupfiles/user_config.json
+  ln -sf /mnt/$tcrppart/auxfiles/${BUILDMODEL}_${BUILDVERSION}.pat ${HOMEPATH}/html/backupfiles/${BUILDMODEL}_${BUILDVERSION}.pat-unenc
 
 }
 
@@ -1932,7 +1925,8 @@ function patchramdisk() {
 
   while IFS=":" read KEY VALUE; do
     echo "Key :$KEY Value: $VALUE"
-    _set_conf_kv $KEY "$VALUE" $temprd/etc/synoinfo.conf
+    KEY="$(echo $KEY | xargs)" && VALUE="$(echo $VALUE | xargs)"
+    _set_conf_kv "$KEY" "$VALUE" $temprd/etc/synoinfo.conf
   done <<<$(echo $SYNOINFO_PATCH | jq . | grep ":" | sed -s 's/"//g' | sed -s 's/,//g')
 
   echo "Checking synoinfo.conf for config values we've set"
@@ -1945,7 +1939,8 @@ function patchramdisk() {
 
   while IFS=":" read KEY VALUE; do
     echo "Key :$KEY Value: $VALUE"
-    _set_conf_kv $KEY "$VALUE" $temprd/etc/synoinfo.conf
+    KEY="$(echo $KEY | xargs)" && VALUE="$(echo $VALUE | xargs)"
+    _set_conf_kv "$KEY" "$VALUE" $temprd/etc/synoinfo.conf
   done <<<$(echo $SYNOINFO_USER | jq . | grep ":" | sed -s 's/"//g' | sed -s 's/,//g')
 
   echo "Checking synoinfo.conf for user_config.json values we've set"

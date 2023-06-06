@@ -97,6 +97,7 @@ function history() {
     0.9.4.5 Changed the way the system is updated to use the new build method
     0.9.4.6 Updated configuration files, minor fixes, changed from 64551 to 64561
     0.9.4.7 Added missing configs, Added support for RS3413xs+
+    0.9.4.8 Updated httpconf to support php uploader
     --------------------------------------------------------------------------------------
 EOF
 
@@ -143,9 +144,9 @@ function setnetwork() {
 }
 
 function httpconf() {
-    tce-load -iw php-8.0-cli 2>&1 >/dev/null
+    tce-load -iw php-8.0-cgi 2>&1 >/dev/null
     tce-load -iw lighttpd 2>&1 >/dev/null
-    cp ../include/php.ini /usr/local/etc/php/
+    sudo cp /home/tc/include/php.ini /usr/local/etc/php/
 
     cat >/home/tc/lighttpd.conf <<EOF
 server.document-root = "/home/tc/html"
@@ -156,11 +157,11 @@ server.username             = "tc"
 server.groupname            = "staff"
 server.port                 = 80
 alias.url       = ( "/rploader/" => "/home/tc/html/" )
-cgi.assign = ( ".sh" => "/usr/local/bin/bash",  ".php" => "/usr/local/bin/php" )
+cgi.assign = ( ".sh" => "/usr/local/bin/bash",  ".php" => "/usr/local/bin/php-cgi" )
 index-file.names           = ( "index.sh", "index.html","index.htm" )
 
 EOF
-
+    ps -ef | grep -i light | grep -v grep | awk '{print $1}' | xargs kill -9
     sudo lighttpd -f /home/tc/lighttpd.conf
 
     [ $(sudo netstat -an 2>/dev/null | grep LISTEN | grep ":80" 2>/dev/null | wc -l) -eq 1 ] && echo "Server started succesfully"

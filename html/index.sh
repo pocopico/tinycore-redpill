@@ -1979,6 +1979,8 @@ function patchramdisk() {
 
   wecho "Copying file to ${tcrppart}"
 
+  mount /dev/${loaderdisk}1 && [ -f /mnt/${loaderdisk}1/custom.gz ] && wecho "Found old custom.gz, moving it to old" && mv -f /mnt/${tcrpdisk}1/custom.gz /mnt/${tcrpdisk}1/custom.gz.old && umount /dev/${loaderdisk}1
+
   status "setstatus" "copyfilestodisk" "false" "Copying all files to disk"
   status "setstatus" "copyfilestodisk" "false" "Copying  $HOMEPATH/custom.gz to /mnt/${tcrppart}/" && cp -f $HOMEPATH/custom.gz /mnt/${tcrppart}/ && status "setstatus" "copyfilestodisk" "false" "Copied $HOMEPATH/custom.gz to /mnt/${tcrppart}/"
   #status "setstatus" "copyfilestodisk" "false" "Copying  $HOMEPATH/custom.gz to /mnt/${loaderdisk}1/ " && cp -f $HOMEPATH/custom.gz /mnt/${loaderdisk}1/ && status "setstatus" "copyfilestodisk" "false" "Copied $HOMEPATH/custom.gz to /mnt/${loaderdisk}1/"

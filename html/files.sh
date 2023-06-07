@@ -21,6 +21,12 @@ else
   usefile)
     FILENAME="$(echo "${QUERY_STRING}" | awk -F\& '{print $2}' | awk -F= '{print $2}')"
 
+    if [ $(echo $FILENAME | cut -c 1-3) = "DSM" ]; then
+      NEWFILENAME=$(echo $FILENAME | tr '[:upper:]' '[:lower:]' | cut -c 5-99 | sed -e 's/+/p/g' -e 's/%2B/p/g')
+      mv ${FILENAME} ${NEWFILENAME}
+      FILENAME="${NEWFILENAME}"
+    fi
+
     fileextension="$(echo $FILENAME | awk -F. '{print $NF}')"
     models="$(ls ${CONFIGFILES} | grep -v comm | grep -v disabled | sed -e 's/\///' | sed -s 's/+/p/g' | tr '[:upper:]' '[:lower:]')"
     case $fileextension in

@@ -1,0 +1,117 @@
+{
+  "os": {
+    "id": "ds923p_64570",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_DS923%2B_64570.pat",
+    "sha256": "e206e8d9a2b7e48955bc14a0e00322afddec5b760224a21b3cd9b8f15df3f907"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "3bc6186d70d954b32ed9a01d7020591dd6e46c6147a7401583d16e26fea3c89d"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "d85428564dbe68e4c50f87c50e89bc3dc71157150fc7a5e4b5b244b8e3233832"
+    },
+    "vmlinux": {
+      "sha256": "931b7f36c48364a5379a5366cf5c84c84fe1c828870cf8a5a546dbc9f35a8466"
+    }
+  },
+  "patches": {
+    "zlinux": [
+      "zImage-001-923p-64570-ramdisk-and-flag-NOP.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/v7.2.0/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.2.0/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-004-network-hosts.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  "synoinfo": {
+    "rss_server": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/pocopico/redpill-load/develop/rss.json",
+    "small_info_path": "https://example.com/null",
+    "security_version_server": "https://example.com/smallupdate",
+    "maxlanport": "8",
+    "netif_seq": "0 1 2 3 4 5 6 7"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "DS923+",
+      "SMBusHddDynamicPower": 1,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "synoboot2": null,
+      "elevator": "elevator",
+      "syno_ttyS0": "serial,0x3f8",
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "withefi": null,
+      "syno_ttyS1": "serial,0x2f8"
+    },
+    "menu_entries": {
+      "RedPill DS923+ v7.2.0-64570 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd (hd0,msdos3)/initrd-dsm",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill DS923+ v7.2.0-64570 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd (hd0,msdos3)/initrd-dsm",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.302+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

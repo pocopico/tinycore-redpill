@@ -1,0 +1,123 @@
+{
+  "os": {
+    "id": "ds720p_42962",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.1.1/42962-1/DSM_DS720%2B_42962.pat",
+    "sha256": "914641e4885d0a465a46c35e3c271ca5e8cf7f1564591110c762c3ab11d0f202"
+  },
+  "files": {
+    "zlinux": {
+      "name": "zImage",
+      "sha256": "2de065851b8d3a222db1feea696aab12ded7b582876b22ff6e847cd6f2e62ecf"
+    },
+    "ramdisk": {
+      "name": "rd.gz",
+      "sha256": "16a7dc468ff45fa7ee52a48684484ba5b8f1b3607fa3e922b226cc162c33c74d"
+    },
+    "vmlinux": {
+      "sha256": "cf4ab68ef97c4b0f693740984720079d5bca3c3f533bf0136efa10581e8dabbe"
+    }
+  },
+  "patches": {
+    "zlinux": [
+      "zImage-001-720p-42962-ramdisk-and-flag-NOP.bsp"
+    ],
+    "ramdisk": [
+      "@@@COMMON@@@/ramdisk-001-disable-root-pwd.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-002-init-script.patch",
+      "@@@COMMON@@@/v7.1.1/ramdisk-003-post-init-script-noatime.patch",
+      "@@@COMMON@@@/ramdisk-004-network-hosts.patch",
+      "@@@COMMON@@@/ramdisk-common-etc-rc.patch"
+    ]
+  },
+  "synoinfo": {
+    "maxdisks": "16",
+    "internalportcfg": "0xffff",
+    "esataportcfg": "0x0",
+    "HddHotplug": "",
+    "support_led_brightness_adjustment": "",
+    "support_leds_lp3943": "",
+    "buzzeroffen": "0xffff",
+    "rss_server": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.1.1/rss.xml",
+    "rss_server_ssl": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.1.1/rss.xml",
+    "rss_server_v2": "https://raw.githubusercontent.com/PeterSuh-Q3/redpill-load/master/rss/7.1.1/rss.json",
+    "small_info_path": "https://example.com/null",
+    "security_version_server": "https://example.com/smallupdate"
+  },
+  "grub": {
+    "template": "@@@COMMON@@@/grub-template.conf",
+    "base_cmdline": {
+      "sn": "",
+      "vid": "0x46f4",
+      "pid": "0x0001",
+      "mac1": "",
+      "netif_num": 1,
+      "syno_hw_version": "DS720+",
+      "intel_iommu": "igfx_off",
+      "HddEnableDynamicPower": 1,
+      "vender_format_version": 2,
+      "console": "ttyS0,115200n8",
+      "synoboot2": null,
+      "elevator": "elevator",
+      "syno_ttyS0": "serial,0x3f8",
+      "root": "/dev/md0",
+      "earlycon": "uart8250,io,0x3f8,115200n8",
+      "withefi": null,
+      "syno_ttyS1": "serial,0x2f8"
+    },
+    "menu_entries": {
+      "RedPill DS720+ v7.1.1-42962 (USB, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd (hd0,msdos3)/initrd-dsm",
+          "echo Starting kernel with USB boot"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "log_buf_len": "32M"
+        }
+      },
+      "RedPill DS720+ v7.1.1-42962 (SATA, Verbose)": {
+        "options": [
+          "savedefault",
+          "set root=(hd0,msdos1)",
+          "echo Loading Linux...",
+          "linux /zImage @@@CMDLINE@@@",
+          "echo Loading initramfs...",
+          "initrd (hd0,msdos3)/initrd-dsm",
+          "echo Starting kernel with SATA boot",
+          "echo WARNING: SATA boot support on this platform is experimental!"
+        ],
+        "cmdline": {
+          "earlyprintk": null,
+          "loglevel": 15,
+          "synoboot_satadom": 2,
+          "log_buf_len": "32M"
+        }
+      }
+    }
+  },
+  "extra": {
+    "compress_rd": false,
+    "ramdisk_copy": {
+      "@@@EXT@@@/rp-lkm/redpill-linux-v4.4.180+.ko": "usr/lib/modules/rp.ko",
+      "@@@COMMON@@@/iosched-trampoline.sh": "usr/sbin/modprobe"
+    },
+    "bootp1_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.conf": "EFI/BOOT/",
+      "@@@COMMON@@@/EFI/boot/SynoBootLoader.efi": "EFI/BOOT/"
+    },
+    "bootp2_copy": {
+      "@@@PAT@@@/GRUB_VER": "GRUB_VER",
+      "@@@COMMON@@@/EFI": "EFI",
+      "@@@PAT@@@/grub_cksum.syno": "grub_cksum.syno",
+      "@@@PAT@@@/rd.gz": "rd.gz",
+      "@@@PAT@@@/zImage": "zImage"
+    }
+  }
+}

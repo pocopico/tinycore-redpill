@@ -3,9 +3,7 @@
 function beginArray() {
 
 	case $1 in
-
-	\
-		DS3615xs)
+	DS3615xs)
 		permanent="LWN"
 		serialstart="1130 1230 1330 1430"
 		;;
@@ -25,7 +23,7 @@ function beginArray() {
 		permanent="SBR"
 		serialstart="2030 2040 20C0 2150"
 		;;
-	DS3622xsp)
+	DS3622xs+)
 		permanent="SQR"
 		serialstart="2030 2040 20C0 2150"
 		;;
@@ -37,6 +35,14 @@ function beginArray() {
 		permanent="PSN"
 		serialstart="1960"
 		;;
+	FS2500)
+		permanent="PSN"
+		serialstart="1960"
+		;;
+	RS3413xs+)
+		permanent="LWN"
+		serialstart="1130 1230 1330 1430"
+		;;
 	DVA3219)
 		permanent="RFR"
 		serialstart="1930 1940"
@@ -46,18 +52,42 @@ function beginArray() {
 		serialstart="2030 2040 20C0 2150"
 		;;
 	DVA1622)
-		permanent="SJR"
+		permanent="UBR"
 		serialstart="2030 2040 20C0 2150"
+		;;
+	DS2422+)
+		permanent="S7R"
+		serialstart="2080"
 		;;
 	RS4021xs+)
 		permanent="T2R"
 		serialstart="2250"
 		;;
+	DS923+)
+		permanent="TQR"
+		serialstart="2270"
+		;;
 	DS1522+)
 		permanent="TRR"
 		serialstart="2270"
 		;;
-	DS923+)
+	SA6400)
+		permanent="TQR"
+		serialstart="2270"
+		;;
+	DS1019+)
+		permanent="QXR"
+		serialstart="1850"
+		;;
+	DS1521+)
+		permanent="RYR"
+		serialstart="2060"
+		;;
+	DS1621xs+)
+		permanent="S7R"
+		serialstart="2080"
+		;;
+	DS723+)
 		permanent="TQR"
 		serialstart="2270"
 		;;
@@ -125,10 +155,16 @@ function generateSerial() {
 	FS6400)
 		serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
 		;;
+	FS2500)
+		serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
+		;;
+	RS3413xs+)
+		serialnum="$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(random)
+		;;
 	DS920+)
 		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 		;;
-	DS3622xsp)
+	DS3622xs+)
 		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 		;;
 	DS1621+)
@@ -143,6 +179,9 @@ function generateSerial() {
 	DVA1622)
 		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 		;;
+	DS2422+)
+		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+		;;
 	RS4021xs+)
 		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 		;;
@@ -152,6 +191,22 @@ function generateSerial() {
 	DS1522+)
 		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
 		;;
+	SA6400)
+		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+		;;
+	DS1019+)
+		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+		;;
+	DS1520+)
+		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+		;;
+	DS1621xs+)
+		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+		;;
+	DS723+)
+		serialnum=$(toupper "$(echo "$serialstart" | tr ' ' '\n' | sort -R | tail -1)$permanent"$(generateRandomLetter)$(generateRandomLetter)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomValue)$(generateRandomLetter))
+		;;
+
 	esac
 
 	echo $serialnum
@@ -168,7 +223,8 @@ Usage: ${0} <platform>
 
 Available platforms :
 ----------------------------------------------------------------------------------------
-DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xsp FS6400 DVA3219 DVA3221 DS1621+ DVA1622 RS4021xs+ DS923+ DS1522+
+DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 
+DS2422+ RS4021xs+ DS923+ DS1522+ SA6400 FS2500 RS3413xs+ DS1019+ DS1520+ DS1621xs+ DS723+
 
 e.g. $(basename ${0}) DS3615xs
 ----------------------------------------------------------------------------------------

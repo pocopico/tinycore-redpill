@@ -2,7 +2,7 @@
   "os": {
     "id": "dva3219_64570",
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_DVA3219_64570.pat",
-    "sha256": "b5347bc9479c909c6adcbc27a40f53a65bf7303a5e471ea1893640b1323b923f"
+    "sha256": "1fac55d2b133a165d7bac31f647ffc087d52d3e3c36c76ca7c97e4ed07bb417f"
   },
   "files": {
     "zlinux": {

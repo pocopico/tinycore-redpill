@@ -2,7 +2,7 @@
   "os": {
     "id": "ds1520p_64570",
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_DS1520p_64570.pat",
-    "sha256": "eb961b9b9970d66f62e846005877495efabe46df5e8f7a2be466872b291c1817"
+    "sha256": "e3b62ac87f63017d762cc3e5d93175b13302c4ed3ca4747ec1f7610395980881"
   },
   "files": {
     "zlinux": {

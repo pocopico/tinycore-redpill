@@ -2,7 +2,7 @@
   "os": {
     "id": "ds723p_64570",
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_DS723%2B_64570.pat",
-    "sha256": "05a248cf43868dec265ae31c6baf6b2b0b3315af022bd489792b4fd3f18b28eb"
+    "sha256": "79604df6c2084853b26631a46c781f77c3f3cadfc4f1a793af1c45328a7648a4"
   },
   "files": {
     "zlinux": {

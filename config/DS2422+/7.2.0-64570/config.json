@@ -2,7 +2,7 @@
   "os": {
     "id": "ds2422p_64570",
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_DS2422%2B_64570.pat",
-    "sha256": "94bc34da4d805825fa1038bda2e10d61a547d07d7b0f9f035ebe90922744ef22"
+    "sha256": "e2f88804988da7b9c9f180ec19984d4bfc1031a4ac3d7be1968561601938e0e9"
   },
   "files": {
     "zlinux": {

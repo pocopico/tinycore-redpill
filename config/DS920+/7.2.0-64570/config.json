@@ -2,7 +2,7 @@
   "os": {
     "id": "ds920p_64570",
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_DS920%2B_64570.pat",
-    "sha256": "7f73f4502340c4334deafd565dd654653909ffc0c22586df6676e76804e9362b"
+    "sha256": "fd9305b5a34e5aba79e77496ed5a68ec6823a98840be02f36c01fd273031a8f1"
   },
   "files": {
     "zlinux": {

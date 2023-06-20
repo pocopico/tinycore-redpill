@@ -2,7 +2,7 @@
   "os": {
     "id": "rs3618xs_64570",
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_RS3618xs_64570.pat",
-    "sha256": "0fb1ba341e1fd6ede0fe7e98f7f371a972533bf905ccbe5643e2c04593b06246"
+    "sha256": "583d29266def40decd043e9495fdae8ebbd920adf25c1b982dfb87518ad7e311"
   },
   "files": {
     "zlinux": {

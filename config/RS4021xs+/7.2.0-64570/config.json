@@ -2,7 +2,7 @@
   "os": {
     "id": "rs4021xsp_64570",
     "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_RS4021xs%2B_64570.pat",
-    "sha256": "7502ad1b8022381931c7633c75ebbdcf369388b6f42f63e81121e72745ad068f"
+    "sha256": "3004dff33f4cb3e99e97aa834c5478a708df72cbb6e46859bd5dbc1a93269aca"
   },
   "files": {
     "zlinux": {

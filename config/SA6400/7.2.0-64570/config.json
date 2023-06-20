@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "sa6400_64570",
-    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64570/DSM_SA6400_64570.pat",
+    "pat_url": "https://global.synologydownload.com/download/DSM/beta/7.2/64570-1/DSM_SA6400_64570.pat",
     "sha256": "1cdf0a81e889a6d89d795080a9774a15ee1b56ab6c64854739a03113d8143a83"
   },
   "files": {

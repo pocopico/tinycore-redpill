@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "ds923p_64570",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_DS923%2B_64570.pat",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570-1/DSM_DS923%2B_64570.pat",
     "sha256": "7c6dcdc4d0e88585d20d066ed960839b9c08a548e4d439334e051ec3931d2f31"
   },
   "files": {

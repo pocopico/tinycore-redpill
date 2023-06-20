@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "ds1621xsp_64570",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_DS1621xs%2B_64570.pat",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570-1/DSM_DS1621xs%2B_64570.pat",
     "sha256": "611bf57e91be99bcc3d494c482b2b25212c998e3588d424c726f011f21c6efb2"
   },
   "files": {

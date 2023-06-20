@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "rs3621xsp_64570",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_RS3621xs%2B_64570.pat",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570-1/DSM_RS3621xs%2B_64570.pat",
     "sha256": "7b675342f838e99c58a9c124bcd3d11f4537acf3de714c6c2c07e20ad8b252c8"
   },
   "files": {

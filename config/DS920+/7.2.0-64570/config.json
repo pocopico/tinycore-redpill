@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "ds920p_64570",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_DS920%2B_64570.pat",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570-1/DSM_DS920%2B_64570.pat",
     "sha256": "fd9305b5a34e5aba79e77496ed5a68ec6823a98840be02f36c01fd273031a8f1"
   },
   "files": {

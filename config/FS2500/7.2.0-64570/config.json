@@ -1,7 +1,7 @@
 {
   "os": {
     "id": "fs2500_64570",
-    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570/DSM_FS2500_64570.pat",
+    "pat_url": "https://global.download.synology.com/download/DSM/release/7.2/64570-1/DSM_FS2500_64570.pat",
     "sha256": "d6756ef388a3a9ec55c692a62b99c96c4ab8373aaab66a1d24631bafebd64e79"
   },
   "files": {

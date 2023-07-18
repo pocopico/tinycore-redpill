@@ -1,7 +1,7 @@
 {
   "general": {
-    "model": "DS3622xs+",
-    "version": "7.1.1-42962",
+    "model": "rs4021xs+",
+    "version": "7.2.0-64570",
     "smallfixnumber": "0",
     "zimghash": "",
     "rdhash": "",
@@ -25,7 +25,8 @@
     "sn": "",
     "mac1": "",
     "netif_num": "1",
-    "SataPortMap": "58",
+    "SataPortMap": "3A10",
+    "SataPortMap": "3A11",
     "DiskIdxMap": "0A00"
   },
   "synoinfo": {

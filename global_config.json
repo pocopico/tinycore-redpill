@@ -17,9 +17,9 @@
     },
     "build_configs": [
         {
-            "id": "bromolow-6.2.4-25556",
-            "platform_version": "bromolow-6.2.4-25556",
-            "user_config_json": "bromolow_user_config.json",
+            "id": "Broadwellnk-7.2.0-64570",
+            "platform_version": "Broadwellnk-7.2.0-64570",
+            "user_config_json": "Broadwellnk_user_config.json",
             "docker_base_image": "debian:8-slim",
             "compile_with": "kernel",
             "redpill_lkm_make_target": "dev-v6",
@@ -43,9 +43,9 @@
             }
         },
         {
-            "id": "bromolow-7.0-41222",
-            "platform_version": "bromolow-7.0-41222",
-            "user_config_json": "bromolow_user_config.json",
+            "id": "Broadwellnk-7.2.0-64570",
+            "platform_version": "Broadwellnk-7.2.0-64570",
+            "user_config_json": "Broadwellnk_user_config.json",
             "docker_base_image": "debian:8-slim",
             "compile_with": "toolkit_dev",
             "redpill_lkm_make_target": "dev-v7",
@@ -69,9 +69,9 @@
             }
         },
         {
-            "id": "apollolake-6.2.4-25556",
-            "platform_version": "apollolake-6.2.4-25556",
-            "user_config_json": "apollolake_user_config.json",
+            "id": "Broadwellnk-7.2.0-64570",
+            "platform_version": "Broadwellnk-7.2.0-64570",
+            "user_config_json": "Broadwellnk_user_config.json",
             "docker_base_image": "debian:8-slim",
             "compile_with": "kernel",
             "redpill_lkm_make_target": "dev-v6",
@@ -95,9 +95,9 @@
             }
         },
         {
-            "id": "apollolake-7.0-41890",
-            "platform_version": "apollolake-7.0-41890",
-            "user_config_json": "apollolake_user_config.json",
+            "id": "Broadwellnk-7.2.0-64570",
+            "platform_version": "Broadwellnk-7.2.0-64570",
+            "user_config_json": "Broadwellnk_user_config.json",
             "docker_base_image": "debian:10-slim",
             "compile_with": "toolkit_dev",
             "redpill_lkm_make_target": "dev-v7",

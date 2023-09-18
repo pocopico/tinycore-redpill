@@ -484,7 +484,7 @@ function monitor() {
         df -Ph | grep -v loop
         [ $(lscpu | grep Hypervisor | wc -l) -gt 0 ] && echo "$(hostname) is a VM"
 
-        echo "Press ctrl-c to exti"
+        echo "Press ctrl-c to exit"
         sleep 10
     done
 

@@ -2312,7 +2312,7 @@ function serialgen() {
     if [ "$1" = "DS3615xs" ] || [ "$1" = "DS3617xs" ] || [ "$1" = "DS916+" ] || [ "$1" = "DS918+" ] || [ "$1" = "DS920+" ] || [ "$1" = "DS3622xs+" ] || [ "$1" = "FS6400" ] || [ "$1" = "DVA3219" ] || [ "$1" = "DVA3221" ] || [ "$1" = "DS1621+" ] || [ "$1" = "DVA1622" ] || [ "$1" = "DS2422+" ] || [ "$1" = "RS4021xs+" ] || [ "$1" = "DS1522+" ] || [ "$1" = "DS923+" ] || [ "$1" = "SA6400" ] || [ "$1" = "FS2500" ] || [ "$1" = "RS3413xs+" ] || [ "$1" = "ds1019p" ] || [ "$1" = "dS1520p" ] || [ "$1" = "ds1621xsp" ] || [ "$1" = "ds723p" ]; then
         serial="$(generateSerial $1)"
         mac="$(generateMacAddress $1)"
-	    realmac=$(ifconfig $keepmacinterface | head -1 | awk '{print $NF}')
+        realmac=$(ifconfig $keepmacinterface | head -1 | awk '{print $NF}')
         echo "Serial Number for Model = $serial"
         echo "Mac Address for Model $1 = $mac "
         [ $keepmac -eq 1 ] && echo "Real Mac Address : $realmac"

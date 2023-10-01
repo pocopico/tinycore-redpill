@@ -2826,6 +2826,7 @@ mountshare, version, monitor, bringfriend, downloadupgradepat, help
   DS3615xs DS3617xs DS916+ DS918+ DS920+ DS3622xs+ FS6400 DVA3219 DVA3221 DS1621+ DVA1622 DS2422+ RS4021xs+ DS923+ DS1522+ SA6400 FS2500 RS3413xs+ DS1019+ DS1520+ DS1621xs+ DS723+
   
   Valid Options :  realmac , keeps the real mac of interface eth0
+                   realmac <ethernet interface>, realmac eth2
   
 - identifyusb :    
   Tries to identify your loader usb stick VID:PID and updates the user_config.json file 

@@ -3343,7 +3343,7 @@ function setplatform() {
     elif [ "${TARGET_PLATFORM}" = "ds1522p" ]; then
         SYNOMODEL="ds1522p_$TARGET_REVISION" && MODEL="DS1522+"
     elif [ "${TARGET_PLATFORM}" = "sa6400" ]; then
-        SYNOMODEL="sa6400_$TARGET_REVISION" && MODEL="sa6400"
+        SYNOMODEL="sa6400_$TARGET_REVISION" && MODEL="SA6400"
     elif [ "${TARGET_PLATFORM}" = "ds1019p" ]; then
         SYNOMODEL="ds1019p_$TARGET_REVISION" && MODEL="DS1019+"
     elif [ "${TARGET_PLATFORM}" = "dS1520p" ]; then

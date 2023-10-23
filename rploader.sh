@@ -1,13 +1,13 @@
 #!/bin/bash
 #
 # Author :
-# Date : 230607
-# Version : 0.9.4.9
+# Date : 23102023
+# Version : 0.10.0.0
 #
 #
 # User Variables :
 
-rploaderver="0.9.4.9"
+rploaderver="0.10.0.0"
 build="main"
 redpillmake="prod"
 
@@ -99,6 +99,7 @@ function history() {
     0.9.4.7 Added missing configs, Added support for RS3413xs+
     0.9.4.8 Updated httpconf to support php uploader
     0.9.4.9 Included DS1019+ DS1520+ DS1621xs+ DS723+
+    0.10.0.0 Jumping to version 10, HTML Builder is introduced to public
     --------------------------------------------------------------------------------------
 EOF
 

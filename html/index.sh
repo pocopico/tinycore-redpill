@@ -17,7 +17,7 @@ SCRIPTREPO="https://github.com/pocopico/tinycore-redpill/raw/main/html/index.sh"
 extensionrepofile="https://github.com/pocopico/tcrp-addons/raw/main/addons.json"
 extensionfile="addons.json"
 TOOLS="bspatch bzImage-to-vmlinux.sh calc_run_size.sh crc32 dtc kexec ramdisk-patch.sh vmlinux-to-bzImage.sh xxd zimage-patch.sh kpatch zImage_template.gz grub-editenv"
-SCRIPTVERSION="0.10.9"
+SCRIPTVERSION="0.10.10"
 
 #. ${HOMEPATH}/include/config.sh
 ############################################
@@ -35,7 +35,8 @@ function versionhistory() {
 <br> 0.10.6, Added, Logs viewer, and fixed some bugs.
 <br> 0.10.7, Enhanced the redpill model detection as some modules failed to be included.
 <br> 0.10.8, Created the filemanagement function, and added the ability to process files.
-<br> 0.10.9, **Critical, Fixed missing init.post patch 
+<br> 0.10.9, **Critical, Fixed missing init.post patch
+<br> 0.10.10, Fixed an issue preventing version history and update check
 
 EOF
 
@@ -1948,7 +1949,7 @@ function patchramdisk() {
   for key in $(echo $SYNOINFO_USER | jq -re '. | keys_unsorted' | sed -e 's/\[//g' -e 's/\]//g' -e 's/"//g' -e 's/,//g'); do
     [ $(grep $key ${temprd}/etc/synoinfo.conf | wc -l) -le 0 ] && echo "Key $key : not found in synoinfo.conf" || echo "Key $key : OK "
   done
-  
+
   wecho "Patching sbin/init.post"
   status "setstatus" "ramdiskpatch" "false" "Patching init.post"
   grep -v -e '^[\t ]*#' -e '^$' "${HOMEPATH}/html/patch/config-manipulators.sh" >"${HOMEPATH}/rp.txt"
@@ -1956,28 +1957,28 @@ function patchramdisk() {
   rm "${HOMEPATH}/rp.txt"
   touch "${HOMEPATH}/rp.txt"
 
-   echo "Applying model synoinfo patches"
+  echo "Applying model synoinfo patches"
 
-    while IFS=":" read KEY VALUE; do
-        echo "Key : $KEY Value: $VALUE"
-        KEY="$(echo $KEY | xargs)" && VALUE="$(echo $VALUE | xargs)"
-        _set_conf_kv "${KEY}" "${VALUE}" $temprd/etc/synoinfo.conf
-        echo "_set_conf_kv \"${KEY}\" \"${VALUE}\" /tmpRoot/etc/synoinfo.conf" >>"${HOMEPATH}/rp.txt"
-        echo "_set_conf_kv \"${KEY}\" \"${VALUE}\" /tmpRoot/etc.defaults/synoinfo.conf" >>"${HOMEPATH}/rp.txt"
-    done <<<$(echo $SYNOINFO_PATCH | jq . | grep ":" | sed -e 's/"//g' | sed -e 's/,//g')
+  while IFS=":" read KEY VALUE; do
+    echo "Key : $KEY Value: $VALUE"
+    KEY="$(echo $KEY | xargs)" && VALUE="$(echo $VALUE | xargs)"
+    _set_conf_kv "${KEY}" "${VALUE}" $temprd/etc/synoinfo.conf
+    echo "_set_conf_kv \"${KEY}\" \"${VALUE}\" /tmpRoot/etc/synoinfo.conf" >>"${HOMEPATH}/rp.txt"
+    echo "_set_conf_kv \"${KEY}\" \"${VALUE}\" /tmpRoot/etc.defaults/synoinfo.conf" >>"${HOMEPATH}/rp.txt"
+  done <<<$(echo $SYNOINFO_PATCH | jq . | grep ":" | sed -e 's/"//g' | sed -e 's/,//g')
 
-    echo "Applying user synoinfo settings"
+  echo "Applying user synoinfo settings"
 
-    while IFS=":" read KEY VALUE; do
-        echo "Key : $KEY Value: $VALUE"
-        KEY="$(echo $KEY | xargs)" && VALUE="$(echo $VALUE | xargs)"
-        _set_conf_kv "${KEY}" "${VALUE}" $temprd/etc/synoinfo.conf
-        echo "_set_conf_kv \"${KEY}\" \"${VALUE}\" /tmpRoot/etc/synoinfo.conf" >>"${HOMEPATH}/rp.txt"
-        echo "_set_conf_kv \"${KEY}\" \"${VALUE}\" /tmpRoot/etc.defaults/synoinfo.conf" >>"${HOMEPATH}/rp.txt"
-    done <<<$(echo $SYNOINFO_USER | jq . | grep ":" | sed -e 's/"//g' | sed -e 's/,//g')
+  while IFS=":" read KEY VALUE; do
+    echo "Key : $KEY Value: $VALUE"
+    KEY="$(echo $KEY | xargs)" && VALUE="$(echo $VALUE | xargs)"
+    _set_conf_kv "${KEY}" "${VALUE}" $temprd/etc/synoinfo.conf
+    echo "_set_conf_kv \"${KEY}\" \"${VALUE}\" /tmpRoot/etc/synoinfo.conf" >>"${HOMEPATH}/rp.txt"
+    echo "_set_conf_kv \"${KEY}\" \"${VALUE}\" /tmpRoot/etc.defaults/synoinfo.conf" >>"${HOMEPATH}/rp.txt"
+  done <<<$(echo $SYNOINFO_USER | jq . | grep ":" | sed -e 's/"//g' | sed -e 's/,//g')
 
-    sed -e "/@@@CONFIG-GENERATED@@@/ {" -e "r ${HOMEPATH}/rp.txt" -e 'd' -e '}' -i "${temprd}/sbin/init.post"
-    rm ${HOMEPATH}/rp.txt
+  sed -e "/@@@CONFIG-GENERATED@@@/ {" -e "r ${HOMEPATH}/rp.txt" -e 'd' -e '}' -i "${temprd}/sbin/init.post"
+  rm ${HOMEPATH}/rp.txt
 
   wecho "Copying extra ramdisk files "
   status "setstatus" "ramdiskpatch" "false" "Copying extra ramdisk files"
@@ -2686,7 +2687,10 @@ function latestscript() {
 
   rm -f /tmp/index.sh
 
-  if [ "$curversion" != "$repoversion" ] || [ "$reposha256sum" != "$cursha256sum" ] && [ $(($(echo $repoversion | sed -e 's/\.//g') - $(echo $curversion | sed -e 's/\.//g'))) -gt 0 ]; then
+  if
+    [ "$curversion" != "$repoversion" ] || [ "$reposha256sum" != "$cursha256sum" ] && [ echo $(($(echo $repoversion | sed -e 's/\.//g' | sed -r 's/0*([0-9]*)/\1/') - $(echo $curversion | sed -e 's/\.//g' | sed -r 's/0*([0-9]*)/\1/')))
+    -gt 0 ]
+  then
     wecho "Current version : $curversion, new version available $repoversion, please update"
     echo "<a href=\"${THISURL}?action=updatescript\" class=\"btn btn-primary btn-lg active\" role=\"button\" aria-pressed=\"true\">UPDATE</a>"
   fi

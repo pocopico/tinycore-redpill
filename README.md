@@ -1,3 +1,8 @@
+<a href="https://github.com/pocopico/tinycore-redpill/releases"><img src="https://img.shields.io/github/release/pocopico/tinycore-redpill.svg"></a>
+<a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fpocopico%2Ftinycore-redpill&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false"/></a>
+[![](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=%23fe8e86)](https://github.com/sponsors/pocopico)
+
+
 # tinycore-redpill
 
 This is a testing version. Do not use unless you are certain you have no data to lose.

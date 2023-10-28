@@ -595,7 +595,7 @@ function restoresession() {
             if [ -d $lastsessiondir ] && [ -f ${lastsessiondir}/extensions.list ]; then
                 for extension in $(cat ${lastsessiondir}/extensions.list); do
                     echo "Adding extension ${extension} "
-                    cd /home/tc/redpill-load/ && ./ext-manager.sh add "$(echo $extension | sed -s 's/"//g' | sed -s 's/,//g')"
+                    cd /home/tc/redpill-load/ && ./ext-manager.sh add "$(echo $extension | sed -e 's/"//g' | sed -e 's/,//g')"
                 done
             fi
             if [ -d $lastsessiondir ] && [ -f ${lastsessiondir}/user_config.json ]; then
@@ -785,7 +785,7 @@ function processpat() {
         echo "Could not find pat file locally cached"
         configdir="/home/tc/redpill-load/config/${MODEL}/${TARGET_VERSION}-${TARGET_REVISION}"
         configfile="${configdir}/config.json"
-        pat_url=$(cat ${configfile} | jq '.os .pat_url' | sed -s 's/"//g')
+        pat_url=$(cat ${configfile} | jq '.os .pat_url' | sed -e 's/"//g')
         echo -e "Configdir : $configdir \nConfigfile: $configfile \nPat URL : $pat_url"
         echo "Downloading pat file from URL : ${pat_url} "
 
@@ -850,7 +850,7 @@ function addrequiredexts() {
 
     for extension in ${EXTENSIONS_SOURCE_URL}; do
         echo "Adding extension ${extension} "
-        cd /home/tc/redpill-load/ && ./ext-manager.sh add "$(echo $extension | sed -s 's/"//g' | sed -s 's/,//g')"
+        cd /home/tc/redpill-load/ && ./ext-manager.sh add "$(echo $extension | sed -e 's/"//g' | sed -e 's/,//g')"
     done
     for extension in ${EXTENSIONS}; do
         echo "Updating extension : ${extension} contents for model : ${SYNOMODEL}  "
@@ -1444,9 +1444,9 @@ function downloadextractorv2() {
 
         chmod +x xxd
 
-        ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0100/' | ./xxd -r >synoarchive.nano
-        ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0a00/' | ./xxd -r >synoarchive.smallpatch
-        ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0000/' | ./xxd -r >synoarchive.system
+        ./xxd synoarchive | sed -e 's/000039f0: 0300/000039f0: 0100/' | ./xxd -r >synoarchive.nano
+        ./xxd synoarchive | sed -e 's/000039f0: 0300/000039f0: 0a00/' | ./xxd -r >synoarchive.smallpatch
+        ./xxd synoarchive | sed -e 's/000039f0: 0300/000039f0: 0000/' | ./xxd -r >synoarchive.system
 
         chmod +x synoarchive.*
 
@@ -1491,7 +1491,7 @@ function downloadupgradepat() {
         echo "Selected model : ${model} "
 
         PS3="Select update version : "
-        select version in $(curl --insecure --silent https://archive.synology.com/download/Os/DSM/ | grep "/download/Os/DSM/7" | awk '{print $2}' | awk -F\/ '{print $5}' | sed -s 's/"//g'); do
+        select version in $(curl --insecure --silent https://archive.synology.com/download/Os/DSM/ | grep "/download/Os/DSM/7" | awk '{print $2}' | awk -F\/ '{print $5}' | sed -e 's/"//g'); do
             echo "Selected version : $version"
             selectedmodel=$(echo $model | sed -e 's/DS//g' | sed -e 's/RS//g' | sed -e 's/DVA//g' | sed -e 's/+//g')
             PS3="Select pat file URL : "
@@ -1786,7 +1786,7 @@ function patchdtc() {
     localnvme=$(lsblk | grep -i nvme | awk '{print $1}')
     usbpid=$(cat user_config.json | jq '.extra_cmdline .pid' | sed -e 's/"//g' | sed -e 's/0x//g')
     usbvid=$(cat user_config.json | jq '.extra_cmdline .vid' | sed -e 's/"//g' | sed -e 's/0x//g')
-    loaderusb=$(lsusb | grep "${usbvid}:${usbpid}" | awk '{print $2 "-"  $4 }' | sed -e 's/://g' | sed -s 's/00//g')
+    loaderusb=$(lsusb | grep "${usbvid}:${usbpid}" | awk '{print $2 "-"  $4 }' | sed -e 's/://g' | sed -e 's/00//g')
 
     if [ "${TARGET_PLATFORM}" = "v1000" ]; then
         dtbfile="ds1621p"
@@ -2324,9 +2324,9 @@ function serialgen() {
             json="$(jq --arg var "$serial" '.extra_cmdline.sn = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
 
             if [ $keepmac -eq 1 ]; then
-                macaddress=$(echo $realmac | sed -s 's/://g')
+                macaddress=$(echo $realmac | sed -e 's/://g')
             else
-                macaddress=$(echo $mac | sed -s 's/://g')
+                macaddress=$(echo $mac | sed -e 's/://g')
             fi
 
             json="$(jq --arg var "$macaddress" '.extra_cmdline.mac1 = $var' user_config.json)" && echo -E "${json}" | jq . >user_config.json
@@ -3363,7 +3363,7 @@ function getvars() {
     LKM_SOURCE_URL="$(echo $platform_selected | jq -r -e '.redpill_lkm .source_url')"
     LKM_BRANCH="$(echo $platform_selected | jq -r -e '.redpill_lkm .branch')"
     #EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]')"
-    EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
+    EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -e 's/"//g')"
     #EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq '.add_extensions[] .url')"
     EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq '.add_extensions[]' | grep json | awk '{print $2}')"
     TOOLKIT_URL="$(echo $platform_selected | jq -r -e '.downloads .toolkit_dev .url')"

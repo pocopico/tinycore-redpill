@@ -211,7 +211,7 @@ function createcustominitfile() {
 
         #### CREATE modprobe file
 
-        MODPROBE=$(cat ${CONFIGFILES}/${model}/${version}/config.json | jq -r -e ' .extra .ramdisk_copy' | sed -e 's/"//g' | grep modprobe | sed -s 's/@@@COMMON@@@/\/home\/tc\/config\/_common/' | awk -F: '{print $1}')
+        MODPROBE=$(cat ${CONFIGFILES}/${model}/${version}/config.json | jq -r -e ' .extra .ramdisk_copy' | sed -e 's/"//g' | grep modprobe | sed -e 's/@@@COMMON@@@/\/home\/tc\/config\/_common/' | awk -F: '{print $1}')
 
         cat $MODPROBE >usr/sbin/modprobe
 

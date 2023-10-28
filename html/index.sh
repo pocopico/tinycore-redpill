@@ -271,7 +271,7 @@ function filemanagement() {
 
   getvars
 
-  SYNOMODEL="$(echo $MODEL | sed -s 's/+/p/g' | tr '[:upper:]' '[:lower:]')"
+  SYNOMODEL="$(echo $MODEL | sed -e 's/+/p/g' | tr '[:upper:]' '[:lower:]')"
   REVISION="$(echo "${VERSION}" | awk -F- '{print $2}')"
   patfile="${SYNOMODEL}_${REVISION}.pat"
   unencpatfile="${SYNOMODEL}_${REVISION}.pat-unenc"
@@ -867,7 +867,7 @@ function serialgen() {
     echo "Serial Number for Model = $serial"
     echo "Mac Address for Model $1 = $mac "
 
-    macaddress=$(echo $mac | sed -s 's/://g')
+    macaddress=$(echo $mac | sed -e 's/://g')
 
     updateuserconfigfield "extra_cmdline" "sn" "${serial}"
     updateuserconfigfield "extra_cmdline" "mac1" "${macaddress}"
@@ -1505,7 +1505,7 @@ function getvars() {
   vendorid=$(cat $USERCONFIGFILE | jq -r -e ' .extra_cmdline .vid')
 
   FILENAME="${OS_ID}.pat"
-  realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}' | sed -s 's/://g')
+  realmac=$(ifconfig eth0 | head -1 | awk '{print $NF}' | sed -e 's/://g')
   genmac="$(generateMacAddress $MODEL | sed -e "s/://g")"
 
   mount ${tcrppart}
@@ -1596,9 +1596,9 @@ function downloadextractor() {
 
   chmod +x xxd
 
-  ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0100/' | ./xxd -r >synoarchive.nano
-  ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0a00/' | ./xxd -r >synoarchive.smallpatch
-  ./xxd synoarchive | sed -s 's/000039f0: 0300/000039f0: 0000/' | ./xxd -r >synoarchive.system
+  ./xxd synoarchive | sed -e 's/000039f0: 0300/000039f0: 0100/' | ./xxd -r >synoarchive.nano
+  ./xxd synoarchive | sed -e 's/000039f0: 0300/000039f0: 0a00/' | ./xxd -r >synoarchive.smallpatch
+  ./xxd synoarchive | sed -e 's/000039f0: 0300/000039f0: 0000/' | ./xxd -r >synoarchive.system
 
   chmod +x synoarchive.*
 
@@ -1610,13 +1610,13 @@ function downloadextractor() {
   cp -rf ${PATCHEXTRACTOR}/synoarchive.* /mnt/${tcrppart}/auxfiles/patch-extractor/
 
   ## get list of available pat versions from
-  #curl --silent https://archive.synology.com/download/Os/DSM/ | grep "/download/Os/DSM/7" | awk '{print $2}' | awk -F\/ '{print $5}' | sed -s 's/"//g'
+  #curl --silent https://archive.synology.com/download/Os/DSM/ | grep "/download/Os/DSM/7" | awk '{print $2}' | awk -F\/ '{print $5}' | sed -e 's/"//g'
   ## Get the selected update pats for your platform/version
   #curl --silent https://archive.synology.com/download/Os/DSM/7.1-42661-3 | grep href | grep apollolake | awk '{print $2}'
   ## Select URL
   #curl --silent https://archive.synology.com/download/Os/DSM/7.1-42661-2 | grep href | grep apollolake | awk '{print $2}' | awk -F= '{print $2}'
   ## URL
-  #url=$(curl --silent https://archive.synology.com/download/Os/DSM/7.1-42661-3 | grep href | grep geminilake | awk '{print $2}' | awk -F= '{print $2}' | sed -s 's/"//g')
+  #url=$(curl --silent https://archive.synology.com/download/Os/DSM/7.1-42661-3 | grep href | grep geminilake | awk '{print $2}' | awk -F= '{print $2}' | sed -e 's/"//g')
 
   #curl --location $url -O
 
@@ -1643,8 +1643,8 @@ function downloadextractor() {
 
 function getstaticmodule() {
 
-  #SYNOMODEL="$(echo $MODEL | sed -s 's/+/p/g' | tr '[:upper:]' '[:lower:]')_${REVISION}"
-  SYNOMODEL="$(echo $OS_ID | sed -s 's/+/p/g' | tr '[:upper:]' '[:lower:]')"
+  #SYNOMODEL="$(echo $MODEL | sed -e 's/+/p/g' | tr '[:upper:]' '[:lower:]')_${REVISION}"
+  SYNOMODEL="$(echo $OS_ID | sed -e 's/+/p/g' | tr '[:upper:]' '[:lower:]')"
 
   cd ${HOMEPATH}
 
@@ -1872,7 +1872,7 @@ function addextensions() {
   # extadd URL PLATFORM
   BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]' | sed -e "s/+/p/g")"
   platform_selected="$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' $CUSTOMCONFIG | jq ".build_configs[] | select(.id==\"${BUILDMODEL}-${VERSION}\")")"
-  EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
+  EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -e 's/"//g')"
   EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
   BUILDVERSION="$(echo $VERSION | awk -F- '{print $2}')"
 
@@ -1912,7 +1912,7 @@ function patchramdisk() {
   [ ! -d $temprd ] && mkdir -p $temprd && cd $temprd && xz -dc <"${TEMPPAT}/rd.gz" | cpio -idm >/dev/null 2>&1
   [ -f ${TEMPPAT}/rd.temp/VERSION ] && ${TEMPPAT}/rd.temp/VERSION
   wecho "Extracted ramdisk VERSION : ${major}.${minor}.${micro}_${buildnumber}"
-  PATCHES="$(echo $RAMDISK_PATCH | jq . | sed -s 's/@@@COMMON@@@/\/home\/tc\/config\/_common/' | grep config | sed -s 's/"//g' | sed -s 's/,//g')"
+  PATCHES="$(echo $RAMDISK_PATCH | jq . | sed -e 's/@@@COMMON@@@/\/home\/tc\/config\/_common/' | grep config | sed -e 's/"//g' | sed -e 's/,//g')"
 
   wecho "Patches to be applied : $PATCHES"
 
@@ -1929,7 +1929,7 @@ function patchramdisk() {
     echo "Key :$KEY Value: $VALUE"
     KEY="$(echo $KEY | xargs)" && VALUE="$(echo $VALUE | xargs)"
     _set_conf_kv "$KEY" "$VALUE" $temprd/etc/synoinfo.conf
-  done <<<$(echo $SYNOINFO_PATCH | jq . | grep ":" | sed -s 's/"//g' | sed -s 's/,//g')
+  done <<<$(echo $SYNOINFO_PATCH | jq . | grep ":" | sed -e 's/"//g' | sed -e 's/,//g')
 
   echo "Checking synoinfo.conf for config values we've set"
   for key in $(echo $SYNOINFO_PATCH | jq -re '. | keys_unsorted' | sed -e 's/\[//g' -e 's/\]//g' -e 's/"//g' -e 's/,//g'); do
@@ -1943,7 +1943,7 @@ function patchramdisk() {
     echo "Key :$KEY Value: $VALUE"
     KEY="$(echo $KEY | xargs)" && VALUE="$(echo $VALUE | xargs)"
     _set_conf_kv "$KEY" "$VALUE" $temprd/etc/synoinfo.conf
-  done <<<$(echo $SYNOINFO_USER | jq . | grep ":" | sed -s 's/"//g' | sed -s 's/,//g')
+  done <<<$(echo $SYNOINFO_USER | jq . | grep ":" | sed -e 's/"//g' | sed -e 's/,//g')
 
   echo "Checking synoinfo.conf for user_config.json values we've set"
   for key in $(echo $SYNOINFO_USER | jq -re '. | keys_unsorted' | sed -e 's/\[//g' -e 's/\]//g' -e 's/"//g' -e 's/,//g'); do
@@ -1987,7 +1987,7 @@ function patchramdisk() {
     echo "Source :$SRC Destination : $DST"
     cp -f $SRC $DST
     cmp -s $SRC $DST || echo "File $SRC differ to $DST" && echo "FILE : $SRC copied to : $DST succesfully"
-  done <<<$(echo $RAMDISK_COPY | jq . | grep "COMMON" | sed -s 's/"//g' | sed -s 's/,//g' | sed -s 's/@@@COMMON@@@/\/home\/tc\/config\/_common/')
+  done <<<$(echo $RAMDISK_COPY | jq . | grep "COMMON" | sed -e 's/"//g' | sed -e 's/,//g' | sed -e 's/@@@COMMON@@@/\/home\/tc\/config\/_common/')
 
   #wecho "Adding precompiled redpill module"
   #getstaticmodule
@@ -2302,10 +2302,10 @@ function build() {
 
       fi
     fi
-  done <<<$(echo $extracmdline | sed -s 's/ /\n/g')
+  done <<<$(echo $extracmdline | sed -e 's/ /\n/g')
 
   #wecho "Clearing and testing $USERCONFIGFILE"
-  json="$(cat $USERCONFIGFILE | sed -s 's/\\r//g' | jq .)" && echo -E "${json}" | jq . >$USERCONFIGFILE
+  json="$(cat $USERCONFIGFILE | sed -e 's/\\r//g' | jq .)" && echo -E "${json}" | jq . >$USERCONFIGFILE
 
   #updating user_config with build form data
   echo "Updating $USERCONFIGFILE with build form data SataPortMap: $sataportmap DiskIdxMap: $diskidxmap StaticBoot: $staticboot" | tee -a $LOGFILE
@@ -2569,7 +2569,7 @@ function autoaddexts() {
   wecho "Automatically detecting the required extensions"
   BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]' | sed -e "s/+/p/g")"
   platform_selected="$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' $CUSTOMCONFIG | jq ".build_configs[] | select(.id==\"${BUILDMODEL}-${VERSION}\")")"
-  EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
+  EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -e 's/"//g')"
   EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
   BUILDVERSION="$(echo $VERSION | awk -F- '{print $2}')"
 
@@ -2597,7 +2597,7 @@ EOF
 
   BUILDMODEL="$(echo $MODEL | tr '[:upper:]' '[:lower:]' | sed -e "s/+/p/g")"
   platform_selected="$(jq -s '.[0].build_configs=(.[1].build_configs + .[0].build_configs | unique_by(.id)) | .[0]' $CUSTOMCONFIG | jq ".build_configs[] | select(.id==\"${BUILDMODEL}-${VERSION}\")")"
-  EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -s 's/"//g')"
+  EXTENSIONS="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk -F: '{print $1}' | sed -e 's/"//g')"
   EXTENSIONS_SOURCE_URL="$(echo $platform_selected | jq -r -e '.add_extensions[]' | grep json | awk '{print $2}' | sed -e 's/,//g' -e 's/"//g')"
   BUILDVERSION="$(echo $VERSION | awk -F- '{print $2}')"
   if [ -z "$EXTENSIONS" ]; then
@@ -2814,50 +2814,50 @@ else
   #echo "<br>INITIAL PAGE, REQUEST : $REQUEST_METHOD"
 
   if [ "$REQUEST_METHOD" = "GET" ]; then
-    MODEL="$(echo ${get[mymodel]} | sed -s "s/'//g")"
-    VERSION="$(echo ${get[myversion]} | sed -s "s/'//g")"
-    action="$(echo "${get[action]}" | sed -s "s/'//g")"
+    MODEL="$(echo ${get[mymodel]} | sed -e "s/'//g")"
+    VERSION="$(echo ${get[myversion]} | sed -e "s/'//g")"
+    action="$(echo "${get[action]}" | sed -e "s/'//g")"
   elif [ "$REQUEST_METHOD" = "POST" ]; then
-    if [ -z "$(echo ${post[mymodel]} | sed -s "s/'//g")" ]; then
-      MODEL="$(echo "${get[mymodel]}" | sed -s "s/'//g")"
+    if [ -z "$(echo ${post[mymodel]} | sed -e "s/'//g")" ]; then
+      MODEL="$(echo "${get[mymodel]}" | sed -e "s/'//g")"
     else
-      MODEL="$(echo "${post[mymodel]}" | sed -s "s/'//g")"
+      MODEL="$(echo "${post[mymodel]}" | sed -e "s/'//g")"
     fi
-    VERSION="$(echo "${post[myversion]}" | sed -s "s/'//g")"
+    VERSION="$(echo "${post[myversion]}" | sed -e "s/'//g")"
     REVISION="$(echo "${VERSION}" | awk -F- '{print $2}')"
-    serial="$(echo "${post[serial]}" | sed -s "s/'//g")"
-    macaddress="$(echo "${post[macaddress]}" | sed -s "s/'//g")"
-    staticboot="$(echo "${post[staticboot]}" | sed -s "s/'//g")"
-    sataportmap="$(echo "${post[sataportmap]}" | sed -s "s/'//g")"
-    diskidxmap="$(echo "${post[diskidxmap]}" | sed -s "s/'//g")"
-    redpillmake="$(echo "${post[redpillmake]}" | sed -s "s/'//g")"
-    if [ -z "$(echo ${post[action]} | sed -s "s/'//g")" ]; then
-      action="$(echo "${get[action]}" | sed -s "s/'//g")"
+    serial="$(echo "${post[serial]}" | sed -e "s/'//g")"
+    macaddress="$(echo "${post[macaddress]}" | sed -e "s/'//g")"
+    staticboot="$(echo "${post[staticboot]}" | sed -e "s/'//g")"
+    sataportmap="$(echo "${post[sataportmap]}" | sed -e "s/'//g")"
+    diskidxmap="$(echo "${post[diskidxmap]}" | sed -e "s/'//g")"
+    redpillmake="$(echo "${post[redpillmake]}" | sed -e "s/'//g")"
+    if [ -z "$(echo ${post[action]} | sed -e "s/'//g")" ]; then
+      action="$(echo "${get[action]}" | sed -e "s/'//g")"
     else
-      action="$(echo "${post[action]}" | sed -s "s/'//g")"
+      action="$(echo "${post[action]}" | sed -e "s/'//g")"
     fi
-    #action="$(echo "${post[action]}" | sed -s "s/'//g")"
+    #action="$(echo "${post[action]}" | sed -e "s/'//g")"
     extracmdline="$(
-      echo "${post[extracmdline]}" | sed -s "s/'//g" | sed -s 's/ /\n/g' | sed -s 's/%3D/=/g'
+      echo "${post[extracmdline]}" | sed -e "s/'//g" | sed -e 's/ /\n/g' | sed -e 's/%3D/=/g'
     )"
-    buildit="$(echo "${post[buildit]}" | sed -s "s/'//g")"
+    buildit="$(echo "${post[buildit]}" | sed -e "s/'//g")"
     if [ "$action" == "extadd" ]; then
-      exturl="$(echo "${post[exturl]}" | sed -s "s/'//g")"
+      exturl="$(echo "${post[exturl]}" | sed -e "s/'//g")"
     fi
     if [ "$action" == "staticipset" ]; then
-      ipset="$(echo "${post[ipset]}" | sed -s "s/'//g")"
-      ipaddr="$(echo "${post[ipaddr]}" | sed -s "s/'//g")"
-      ipgw="$(echo "${post[ipgw]}" | sed -s "s/'//g")"
-      ipdns="$(echo "${post[ipdns]}" | sed -s "s/'//g")"
-      ipproxy="$(echo "${post[ipproxy]}" | sed -s "s/'//g")"
+      ipset="$(echo "${post[ipset]}" | sed -e "s/'//g")"
+      ipaddr="$(echo "${post[ipaddr]}" | sed -e "s/'//g")"
+      ipgw="$(echo "${post[ipgw]}" | sed -e "s/'//g")"
+      ipdns="$(echo "${post[ipdns]}" | sed -e "s/'//g")"
+      ipproxy="$(echo "${post[ipproxy]}" | sed -e "s/'//g")"
     fi
     if [ "$action" == "mountshare" ]; then
-      share="$(echo "${post[share]}" | sed -s "s/'//g")"
-      mountpoint="$(echo "${post[mountpoint]}" | sed -s "s/'//g")"
-      cifsuser="$(echo "${post[cifsuser]}" | sed -s "s/'//g")"
-      cifspass="$(echo "${post[cifspass]}" | sed -s "s/'//g")"
-      enccifsuser="$(printf %s "${post[cifsuser]}" | jq -sRr @uri | sed -s "s/'//g")"
-      enccifspass="$(printf %s "${post[cifspass]}" | jq -sRr @uri | sed -s "s/'//g")"
+      share="$(echo "${post[share]}" | sed -e "s/'//g")"
+      mountpoint="$(echo "${post[mountpoint]}" | sed -e "s/'//g")"
+      cifsuser="$(echo "${post[cifsuser]}" | sed -e "s/'//g")"
+      cifspass="$(echo "${post[cifspass]}" | sed -e "s/'//g")"
+      enccifsuser="$(printf %s "${post[cifsuser]}" | jq -sRr @uri | sed -e "s/'//g")"
+      enccifspass="$(printf %s "${post[cifspass]}" | jq -sRr @uri | sed -e "s/'//g")"
     fi
 
   fi

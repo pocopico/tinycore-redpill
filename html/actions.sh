@@ -58,32 +58,32 @@ if [ -z "$GATEWAY_INTERFACE" ]; then
 else
 
   if [ "$REQUEST_METHOD" = "GET" ]; then
-    MODEL="$(echo ${get[mymodel]} | sed -s "s/'//g")"
-    VERSION="$(echo ${get[myversion]} | sed -s "s/'//g")"
-    action="$(echo "${get[action]}" | sed -s "s/'//g")"
+    MODEL="$(echo ${get[mymodel]} | sed -e "s/'//g")"
+    VERSION="$(echo ${get[myversion]} | sed -e "s/'//g")"
+    action="$(echo "${get[action]}" | sed -e "s/'//g")"
   elif [ "$REQUEST_METHOD" = "POST" ]; then
     exturl="$(echo ${post[exturl]})"
     platform="$(echo ${post[platform]})"
-    if [ -z "$(echo ${post[mymodel]} | sed -s "s/'//g")" ]; then
-      MODEL="$(echo "${get[mymodel]}" | sed -s "s/'//g")"
+    if [ -z "$(echo ${post[mymodel]} | sed -e "s/'//g")" ]; then
+      MODEL="$(echo "${get[mymodel]}" | sed -e "s/'//g")"
     else
-      MODEL="$(echo "${post[mymodel]}" | sed -s "s/'//g")"
+      MODEL="$(echo "${post[mymodel]}" | sed -e "s/'//g")"
     fi
-    VERSION="$(echo "${post[myversion]}" | sed -s "s/'//g")"
+    VERSION="$(echo "${post[myversion]}" | sed -e "s/'//g")"
     REVISION="$(echo "${VERSION}" | awk -F- '{print $2}')"
-    serial="$(echo "${post[serial]}" | sed -s "s/'//g")"
-    macaddress="$(echo "${post[macaddress]}" | sed -s "s/'//g")"
+    serial="$(echo "${post[serial]}" | sed -e "s/'//g")"
+    macaddress="$(echo "${post[macaddress]}" | sed -e "s/'//g")"
 
-    if [ -z "$(echo ${post[action]} | sed -s "s/'//g")" ]; then
-      action="$(echo "${get[action]}" | sed -s "s/'//g")"
+    if [ -z "$(echo ${post[action]} | sed -e "s/'//g")" ]; then
+      action="$(echo "${get[action]}" | sed -e "s/'//g")"
     else
-      action="$(echo "${post[action]}" | sed -s "s/'//g")"
+      action="$(echo "${post[action]}" | sed -e "s/'//g")"
     fi
-    #action="$(echo "${post[action]}" | sed -s "s/'//g")"
+    #action="$(echo "${post[action]}" | sed -e "s/'//g")"
     extracmdline="$(
-      echo "${post[extracmdline]}" | sed -s "s/'//g" | sed -s 's/ /\n/g' | sed -s 's/%3D/=/g'
+      echo "${post[extracmdline]}" | sed -e "s/'//g" | sed -e 's/ /\n/g' | sed -e 's/%3D/=/g'
     )"
-    buildit="$(echo "${post[buildit]}" | sed -s "s/'//g")"
+    buildit="$(echo "${post[buildit]}" | sed -e "s/'//g")"
 
   fi
 

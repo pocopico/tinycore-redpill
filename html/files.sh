@@ -28,7 +28,7 @@ else
     fi
 
     fileextension="$(echo $FILENAME | awk -F. '{print $NF}')"
-    models="$(ls ${CONFIGFILES} | grep -v comm | grep -v disabled | sed -e 's/\///' | sed -s 's/+/p/g' | tr '[:upper:]' '[:lower:]')"
+    models="$(ls ${CONFIGFILES} | grep -v comm | grep -v disabled | sed -e 's/\///' | sed -e 's/+/p/g' | tr '[:upper:]' '[:lower:]')"
     case $fileextension in
     pat)
 
@@ -39,7 +39,7 @@ else
     json)
 
       if [ "$FILENAME" = "user_config.json" ]; then
-        model=$(jq -re '.general.model' /home/tc/html/files/$FILENAME | sed -s 's/+/p/g' | tr '[:upper:]' '[:lower:]')
+        model=$(jq -re '.general.model' /home/tc/html/files/$FILENAME | sed -e 's/+/p/g' | tr '[:upper:]' '[:lower:]')
         echo "MODELS : $models , model: $model" >>/home/tc/html/files.txt && [ $(echo $models | grep -w $model) ] && echo "found user config file for model $model" >>/home/tc/html/files.txt
         mv /home/tc/$FILENAME /home/tc/${FILENAME}.$(date +%Y%m%d%H%M) && ln -s /home/tc/html/files/$FILENAME /home/tc/$FILENAME
       else

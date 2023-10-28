@@ -90,7 +90,7 @@ function extremove() {
 
 function extvars() {
 
-        ext="$(curl --silent --location $1)"
+        ext="$(curl --insecure --silent --location $1)"
         platform="$2"
         [ $(echo $ext | grep 404 | wc -l) -eq 1 ] && echo "Extension not found" && exit 1
         if [ -f platform ] && [ ! "$(cat platform)" == "$platform" ]; then
@@ -102,7 +102,7 @@ function extvars() {
         fi
 
         extid="$(echo $ext | jq -r -e .id)"
-        extrelease="$(curl --silent --location $extcontents)"
+        extrelease="$(curl --insecure --silent --location $extcontents)"
 
         [ $(echo $extrelease | jq . | wc -l) -eq 0 ] && echo "Extension does not contain information about platform $2" && exit 1
 
@@ -129,7 +129,7 @@ function processexts() {
                         download=$(echo $extrelease | jq -r -e ".files[] | select(.name | contains(\"$file\")) .url")
                         modules="$(echo $extrelease | jq -r -e '.kmods')"
                         echo " Downloading : $name "
-                        cd $extid && curl --silent --location $download -O && cd ..
+                        cd $extid && curl --insecure --silent --location $download -O && cd ..
 
                         packed=$(echo $extrelease | jq -r -e ".files[] | select(.name | contains(\"$file\")) .packed")
 

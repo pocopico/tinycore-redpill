@@ -1487,7 +1487,7 @@ function getvars() {
   tcrppart="$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)3"
   loaderdisk=$(mount | grep -i optional | grep cde | awk -F / '{print $3}' | uniq | cut -c 1-3)
   local_cache="/mnt/${tcrppart}/auxfiles"
-  GETTIME=$(curl -v --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
+  GETTIME=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
   INTERNETDATE=$(date +"%d%m%Y" -d "$GETTIME")
   LOCALDATE=$(date +"%d%m%Y")
 
@@ -1592,7 +1592,7 @@ function downloadextractor() {
 
   status "setstatus" "patextraction" "warn" "Patching extraction binaries"
 
-  curl --silent --location "https://github.com/pocopico/tinycore-redpill/blob/main/tools/xxd?raw=true" --output xxd
+  curl --insecure --silent --location "https://github.com/pocopico/tinycore-redpill/blob/main/tools/xxd?raw=true" --output xxd
 
   chmod +x xxd
 
@@ -1779,7 +1779,7 @@ function downloadtools() {
   [ ! -d ${HOMEPATH}/tools ] && mkdir -p ${HOMEPATH}/tools
   cd ${HOMEPATH}/tools
   for FILE in $TOOLS; do
-    [ ! -f ${HOMEPATH}/tools/$FILE ] && curl --silent --insecure --location "$TOOLSPATH/${FILE}" -O
+    [ ! -f ${HOMEPATH}/tools/$FILE ] && curl --insecure --silent --insecure --location "$TOOLSPATH/${FILE}" -O
     chmod +x $FILE
   done
 
